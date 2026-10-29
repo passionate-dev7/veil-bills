@@ -1,0 +1,13 @@
+#!/bin/sh
+# veil: the ONLY door out of the sandbox. Talks to the host-side Veil gateway (the sandbox has no internet).
+# Usage:  veil claims | veil audit FILE.pdf [FILE.pdf ...] | veil rules INSURER_TYPE TOPIC | veil queue_email TO SUBJECT BODYFILE
+# queue_email never sends: it drafts for a human to approve, or is refused if TO is not a trusted contact.
+B="${VEIL_URL:-http://host.openshell.internal:8000}/tools/veil"
+post() { curl -sS -m 240 -H 'Content-Type: application/json' -w '\n[http %{http_code}]\n' -d @- "$B/$1"; }
+case "$1" in
+  claims) curl -sS -m 60 -w '\n[http %{http_code}]\n' "$B/claims" ;;
+  audit) shift; jq -n '{files: $ARGS.positional}' --args "$@" | post audit ;;
+  rules) jq -n --arg i "$2" --arg t "$3" '{insurer_type:$i, topic:$t}' | post lookup_appeal_rules ;;
+  queue_email) jq -n --arg to "$2" --arg s "$3" --rawfile b "$4" '{to:$to, subject:$s, body:$b}' | post queue_email ;;
+  *) sed -n 2,4p "$0"; exit 2 ;;
+esac

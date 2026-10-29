@@ -42,6 +42,9 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         e = ledger.get(entry_id)
         return e or err(404, "no such ledger entry", "not_found")
 
+    from .sandbox_tools import router as sandbox_router
+    app.include_router(sandbox_router(s))
+
     @app.post("/tools/search")
     async def search(request: Request):
         """Web search for the agent (Tavily). Same discipline as inference: redact, canary on the final bytes, ledger the exact outbound body."""

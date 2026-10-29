@@ -6,6 +6,7 @@ from pathlib import Path
 from .client import ensure_gateway, Gateway, DEFAULT_URL
 from .config import Settings, ROOT
 from .egress import Policy, Outbox
+from .ledger import Ledger
 from .appeal import handle_tool
 
 
@@ -172,6 +173,17 @@ def cmd_static(a):
     print(f"static judge bundle in {out}/  (index.html + run.json; no backend). Try: python -m http.server -d {out}")
 
 
+def cmd_sandbox_events(a):
+    from . import sandbox_events as se
+    s = Settings()
+    lines = se.read_logs(a.sandbox)
+    ids = se.ingest(s, lines, a.trigger, since=a.since, only=a.only)
+    denied = [l for l in lines if se.parse(l)]
+    print(f"{len(denied)} DENIED line(s) in the sandbox log; {len(ids)} new ledger row(s): {ids}")
+    for i in ids:
+        print("  ", Ledger(s.ledger_db).get(i)["meta"]["raw"])
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="veil", description="Veil: private paperwork agent. Synthetic data only.")
     p.add_argument("--url", default=DEFAULT_URL)
@@ -192,6 +204,9 @@ def main(argv=None):
     x = sub.add_parser("app", help="the product app (live mode) on 127.0.0.1"); x.add_argument("--port", type=int, default=8800); x.add_argument("--watch")
     x.add_argument("--interval", type=float, default=3.0); x.add_argument("--as-of"); x.add_argument("--run", default="veil-watch"); x.add_argument("--within", type=int, default=21)
     x.add_argument("--no-appeal", action="store_true"); x.set_defaults(f=cmd_app)
+    x = sub.add_parser("sandbox-events", help="ingest real OpenShell DENIED lines into the ledger (live)"); x.add_argument("--sandbox", default="veil-hermes")
+    x.add_argument("--trigger", required=True, help="honest label of what caused the traffic"); x.add_argument("--since", type=float, default=0.0); x.add_argument("--only")
+    x.set_defaults(f=cmd_sandbox_events)
     x = sub.add_parser("static", help="write a static judge bundle (no backend)"); x.add_argument("out"); x.set_defaults(f=cmd_static)
     a = p.parse_args(argv)
     a.f(a)

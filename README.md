@@ -136,3 +136,20 @@ veil static OUT                       # static judge bundle (index.html + run.js
 Veil is a hackathon prototype. It is not medical, billing, insurance or legal advice and does not replace a patient advocate, your insurer or an attorney. All documents, people and amounts in this repository are synthetic. Nothing is sent to any real address: delivery is to a local sandbox mailbox only.
 
 MIT licensed.
+
+## Round 3: Hermes in the OpenShell sandbox
+
+The sandbox agent (`veil-hermes`, Hermes 0.21.3 under NemoClaw/OpenShell) has no internet. Everything it can reach is on the host, behind four exact gateway paths.
+
+| piece | what it is |
+|---|---|
+| `policy/veil-egress-sandbox-tools.yaml` | policy v3: the `infra/` gateway-only policy plus four exact rules (`GET /tools/veil/claims`, `POST /tools/veil/{audit,lookup_appeal_rules,queue_email}`) for `/usr/bin/curl` |
+| `veil/sandbox_tools.py` | the endpoints. `audit` takes basenames only and returns integer-cent findings, `lookup_appeal_rules` is the Tavily tool (ledgered), `queue_email` can only create a draft for human approval, or is refused and ledgered (`source=sandbox-agent`) |
+| `scripts/sandbox_install.sh` | idempotent: apply policy, upload the three skills, the corpus (chmod read-only) and `/sandbox/bin/veil` |
+| `sandbox/veil` | the curl/jq helper the skills call inside the sandbox |
+| `veil sandbox-events` | reads OpenShell's own `DENIED` OCSF lines and ledgers them verbatim as `source=openshell` (LIVE), with an honest `trigger` label. Idempotent |
+| `scripts/sandbox_hermes_run.sh audit\|injection` | runs Hermes in the sandbox end to end, then ingests any DENIED lines produced during the run |
+
+Run the gateway the sandbox expects: `VEIL_GATEWAY=http://127.0.0.1:8000 .venv/bin/python -m veil --url http://127.0.0.1:8000 gateway`.
+
+Status: the tool paths and the deny capture are verified (the deny rows come from a scripted curl GET, labelled as such). The Hermes-driven runs need Token Factory credit; when the account returned HTTP 402 the Hermes call reached the gateway and was ledgered as an error, and no model output exists.
