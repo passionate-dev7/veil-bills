@@ -64,8 +64,19 @@ class Pseudonymizer:
         if isinstance(obj, list):
             return [self.redact_payload(x, counts) for x in obj]
         if isinstance(obj, dict):
-            return {k: (v if k in SKIP_KEYS else self.redact_payload(v, counts)) for k, v in obj.items()}
+            return {k: (v if k in SKIP_KEYS else self._redact_field(k, v, counts)) for k, v in obj.items()}
         return obj
+
+    def _redact_field(self, k, v, counts):
+        # Tool-call `arguments` is JSON encoded inside a string. Redact the decoded values, not the escaped text
+        # (otherwise "\\n" + "name@x.org" reads as the address "nname@x.org"), then re-encode.
+        if k == "arguments" and isinstance(v, str):
+            try:
+                parsed = json.loads(v)
+            except ValueError:
+                return self.redact_text(v, counts)
+            return json.dumps(self.redact_payload(parsed, counts))
+        return self.redact_payload(v, counts)
 
     # -- canary ---------------------------------------------------------------
     def canary(self, outbound: bytes) -> list[tuple[str, str]]:

@@ -82,3 +82,16 @@ def test_stream_rehydrator_split_tokens(tmp_path):
     sr = StreamRehydrator(p)
     out = "".join(sr.feed(x) for x in ["Dear [PERS", "ON_", "1], hi [", "x", " and [PERSON_1]"]) + sr.flush()
     assert out == "Dear Jane Doe, hi [x and Jane Doe"
+
+
+def test_tool_call_arguments_redacted_structurally(tmp_path):
+    _, pseudo = mk(tmp_path)
+    """Regression: JSON-escaped "\\n" + email must not be read as a different address, and the arguments must stay valid JSON."""
+    import json
+    args = json.dumps({"to": ["jane.doe@example.org"], "body": "Appeals\nappeals@northstarhealth.example\nDear Jane Doe"})
+    out = pseudo.redact_payload({"tool_calls": [{"function": {"name": "queue_email", "arguments": args}}]})
+    redacted = out["tool_calls"][0]["function"]["arguments"]
+    parsed = json.loads(redacted)  # still valid JSON
+    assert "Jane Doe" not in redacted and "jane.doe@example.org" not in redacted
+    assert parsed["body"].startswith("Appeals\n[EMAIL_")
+    assert "nappeals" not in redacted
