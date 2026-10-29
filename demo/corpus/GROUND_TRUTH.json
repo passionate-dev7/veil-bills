@@ -1,0 +1,38 @@
+{
+  "case": "jane",
+  "title": "Jane Doe: 3 months, 3 claims",
+  "expected": [
+    "BALANCE_BILLING",
+    "BILL_EOB_MISMATCH",
+    "DUPLICATE_CHARGE"
+  ],
+  "docs": [
+    {
+      "episode": 1,
+      "eob": "2026-03-14_EOB_CN77310119.pdf",
+      "bill": "2026-03-25_BILL_mercy.pdf",
+      "eob_patient_resp": 100000,
+      "bill_due": 100000,
+      "eob_date": "2026-03-14",
+      "inject": false
+    },
+    {
+      "episode": 2,
+      "eob": "2026-04-22_EOB_CN77310288.pdf",
+      "bill": "2026-05-02_BILL_riverbend.pdf",
+      "eob_patient_resp": 5000,
+      "bill_due": 8500,
+      "eob_date": "2026-04-22",
+      "inject": false
+    },
+    {
+      "episode": 3,
+      "eob": "2026-05-20_EOB_CN77310452.pdf",
+      "bill": "2026-06-03_BILL_mercy.pdf",
+      "eob_patient_resp": 41200,
+      "bill_due": 284000,
+      "eob_date": "2026-05-20",
+      "inject": true
+    }
+  ]
+}
