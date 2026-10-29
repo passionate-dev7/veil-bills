@@ -1,0 +1,20 @@
+[project]
+name = "veil"
+version = "0.1.0"
+description = "Private always-on paperwork agent: a pseudonymizing gateway in front of NVIDIA Nemotron on Nebius Token Factory"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = ["fastapi", "uvicorn", "httpx", "reportlab", "pypdf"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+veil = "veil.cli:main"
+
+[tool.setuptools]
+packages = ["veil"]
+
+[tool.pytest.ini_options]
+markers = ["live: hits the real Nebius Token Factory (needs NEBIUS_API_KEY); deselect with -m 'not live'"]
+testpaths = ["tests"]

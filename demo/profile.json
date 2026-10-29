@@ -1,0 +1,18 @@
+{
+  "_note": "SYNTHETIC profile for the fictional patient Jane Doe. Every value is fake.",
+  "entities": [
+    {"kind": "PERSON", "value": "Jane Doe", "aliases": ["Jane A. Doe", "Doe, Jane A.", "Doe, Jane", "DOE, JANE", "Jane", "Doe"]},
+    {"kind": "MEMBER_ID", "value": "NSH884217353"},
+    {"kind": "SSN", "value": "987-65-4321"},
+    {"kind": "DOB", "value": "04/12/1985", "aliases": ["April 12, 1985", "1985-04-12"]},
+    {"kind": "PHONE", "value": "(555) 014-2297", "aliases": ["555-014-2297"]},
+    {"kind": "EMAIL", "value": "jane.doe@example.org"},
+    {"kind": "ADDRESS", "value": "4821 Willow Creek Lane, Springfield, IL 62704", "aliases": ["4821 Willow Creek Lane", "Springfield, IL 62704"]}
+  ],
+  "trusted_contacts": [
+    {"name": "Northstar Health Plan Appeals", "email": "appeals@northstarhealth.example"},
+    {"name": "Mercy Valley Hospital Billing", "email": "billing@mercyvalley.example"},
+    {"name": "Riverbend Clinical Laboratory Billing", "email": "billing@riverbendlab.example"},
+    {"name": "Jane Doe (sandbox)", "email": "jane.doe@example.org"}
+  ]
+}

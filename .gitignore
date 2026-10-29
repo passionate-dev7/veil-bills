@@ -1,0 +1,8 @@
+.venv/
+.veil/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+*.key
+sandbox_mailbox/
