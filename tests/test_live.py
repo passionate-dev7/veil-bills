@@ -13,7 +13,7 @@ def test_ultra_through_gateway_sees_only_tokens(tmp_path):
         r = c.post("/v1/chat/completions", headers={"x-veil-tag": "live-smoke"}, json={
             "model": ULTRA, "max_tokens": 1500, "temperature": 0,
             "messages": [{"role": "user", "content": "Write one sentence thanking Jane Doe (Member ID NSH884217353, jane.doe@example.org) "
-                                                     "for her claim CN77310452 of $412.00. Repeat her name, member id and email exactly as written."}]})
+                                                     "for her claim (Claim Number: CN77310452) of $412.00. Repeat her name, member id and email exactly as written."}]})
         assert r.status_code == 200, r.text
         j = r.json()
         text = j["choices"][0]["message"]["content"]
