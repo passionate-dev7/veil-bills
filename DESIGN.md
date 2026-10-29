@@ -1,0 +1,9 @@
+# Veil design system (direction A, "Folder on the desk")
+Job of the screen: show that the assistant caught real problems in a (synthetic) medical bill, and prove with the ledger that nothing identifying left this machine. Primary action: approve the drafted appeal.
+Fonts (Google Fonts): Fraunces 500/600 (display + headings), Albert Sans 400/500/600 (UI), DM Mono 400/500 (money, codes, hashes, document text). Never Inter, never system-ui as primary.
+Type scale, ONLY three sizes: 14px (body, UI, mono, labels; labels are sentence case, weight 600), 20px (section headings, sub-numbers, Fraunces), 40px (the hero figures and page title, Fraunces). line-height 1.5 body, 1.15 display.
+Palette (CSS variables): --paper #faf6ee page; --sheet #fffdf8 surfaces; --sunk #f0eadc wells; --line #ddd4c1 hairlines; --ink #16221b text; --dim #5c675f secondary text; --accent #1c4a38 ink-green (buttons, tokens, links); --accent-soft #e0eae2; --crit #9a2b1e critical/real identifier; --crit-soft #f8e9e5; --warn #8a5a00 / --warn-soft #f6ead0; --ok = accent.
+Semantic colour only: red-brown = real identifier or blocked attack; green = token / allowed / verified; amber = deadline. 
+Spacing 4/8/12/16/24/40/64. Radius 4 (inputs, chips) and 8 (panels). No shadows except a 1px hairline; no gradients; no backdrop-filter; no animation (except none). Numbers: font-variant-numeric: tabular-nums, DM Mono for all money, CPT codes, claim ids, hashes.
+Layout: max-width 1280. Alert strip (2px solid --crit, --crit-soft) first. Then "stage": 2 columns (bill | parity) that stack at <=860px. Panels are flat surfaces separated by hairlines, never nested boxed cards. Tables fully styled (padding, separators, right-aligned tabular numbers, status chips with text).
+Component notes: .btn.primary solid --accent on --sheet text; .btn secondary = 1px --accent border; chips = 4px radius, text + tinted bg; focus ring 2px --accent offset 2px; tap targets >=44px at 390.
