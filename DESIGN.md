@@ -1,7 +1,7 @@
 # Veil design system (direction A, "Folder on the desk")
 Job of the screen: show that the assistant caught real problems in a (synthetic) medical bill, and prove with the ledger that nothing identifying left this machine. Primary action: approve the drafted appeal.
-Fonts (Google Fonts): Fraunces 500/600 (display + headings), Albert Sans 400/500/600 (UI), DM Mono 400/500 (money, codes, hashes, document text). Never Inter, never system-ui as primary.
-Type scale, ONLY three sizes: 14px (body, UI, mono, labels; labels are sentence case, weight 600), 20px (section headings, sub-numbers, Fraunces), 40px (the hero figures and page title, Fraunces). line-height 1.5 body, 1.15 display.
+Fonts (Google Fonts): Newsreader 500/600 (display + headings), Albert Sans 400/500/600 (UI), DM Mono 400/500 (money, codes, hashes, document text). Never Inter, never system-ui as primary.
+Type scale, ONLY three sizes: 14px (body, UI, mono, labels; labels are sentence case, weight 600), 20px (section headings, sub-numbers, Newsreader), 40px (the hero figures and page title, Newsreader). line-height 1.5 body, 1.15 display.
 Palette (CSS variables): --paper #faf6ee page; --sheet #fffdf8 surfaces; --sunk #f0eadc wells; --line #ddd4c1 hairlines; --ink #16221b text; --dim #5c675f secondary text; --accent #1c4a38 ink-green (buttons, tokens, links); --accent-soft #e0eae2; --crit #9a2b1e critical/real identifier; --crit-soft #f8e9e5; --warn #8a5a00 / --warn-soft #f6ead0; --ok = accent.
 Semantic colour only: red-brown = real identifier or blocked attack; green = token / allowed / verified; amber = deadline. 
 Spacing 4/8/12/16/24/40/64. Radius 4 (inputs, chips) and 8 (panels). No shadows except a 1px hairline; no gradients; no backdrop-filter; no animation (except none). Numbers: font-variant-numeric: tabular-nums, DM Mono for all money, CPT codes, claim ids, hashes.

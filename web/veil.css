@@ -1,7 +1,7 @@
 /* Veil design system, direction A "Folder on the desk". Sizes: 14 / 20 / 40 only. See DESIGN.md. */
 :root{--paper:#faf6ee;--sheet:#fffdf8;--sunk:#f0eadc;--line:#ddd4c1;--ink:#16221b;--dim:#5c675f;--accent:#1c4a38;--accent-soft:#e0eae2;--crit:#9a2b1e;--crit-soft:#f8e9e5;--warn:#8a5a00;--warn-soft:#f6ead0;--ok:#1c4a38;--surface:var(--sheet);
 --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:40px;--s7:64px;--r1:4px;--r2:8px;
---serif:"Fraunces",Georgia,serif;--sans:"Albert Sans",Helvetica,sans-serif;--mono:"DM Mono",Menlo,monospace}
+--serif:"Newsreader",Georgia,serif;--sans:"Albert Sans",Helvetica,sans-serif;--mono:"DM Mono",Menlo,monospace}
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:auto}
 body{margin:0;background:var(--paper);color:var(--ink);font:400 14px/1.5 var(--sans);overflow-wrap:break-word}
@@ -128,14 +128,14 @@ footer{max-width:1280px;margin:0 auto;padding:var(--s5);color:var(--dim)}
  .btn,.tab,.seg button{min-height:44px}
  .tagline{display:none}
 }
-@media(max-width:560px){.figures{grid-template-columns:repeat(2,1fr)}.figures>div,.figures>div:nth-child(3n),.figures>div:nth-child(3n+1){padding-left:var(--s3);border-right:1px solid var(--line)}.figures>div:nth-child(2n){border-right:0}.figures>div:nth-child(2n+1){padding-left:0}.figures b{font-size:40px}ul.parity li{grid-template-columns:1fr auto}.actions .btn{width:100%}}
+@media(max-width:560px){.figures{grid-template-columns:repeat(2,1fr)}.figures>div,.figures>div:nth-child(3n),.figures>div:nth-child(3n+1){padding-left:var(--s3);border-right:1px solid var(--line)}.figures>div:nth-child(2n){border-right:0}.figures>div:nth-child(2n+1){padding-left:0}.figures b,.figures b.mono{font-size:20px;letter-spacing:0}.figures>div{min-width:0}.figures span{overflow-wrap:anywhere}ul.parity li{gap:var(--s2)}.actions .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
 /* round-1 fixes */
-.alert .row p span.mono{display:block;margin-bottom:var(--s1);overflow-wrap:anywhere}
+.alert .row p:not(.ids) span.mono{display:block;margin-bottom:var(--s1);overflow-wrap:anywhere}
 .rail-block .row{display:flex;flex-direction:column;gap:var(--s1)}
 .rail-block small,.ev small,.ev b{display:block}
 textarea{width:100%;min-height:88px;padding:var(--s3);font:400 14px var(--sans);background:var(--sheet);border:1px solid var(--line);border-radius:var(--r1);color:var(--ink);resize:vertical}
 /* round-2 fixes */
-.syn{flex-wrap:wrap}.syn .mode{flex-basis:100%}
+@media(max-width:860px){.syn .mode{flex-basis:100%;margin-left:0}}
 pre.doc,.alert pre{overflow-x:auto}
