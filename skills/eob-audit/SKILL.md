@@ -14,7 +14,7 @@ Everything the model sees passes through the local Veil gateway (pseudonymized, 
 
 ## Steps
 
-1. Make sure the gateway is up: `veil gateway` (or let `veil audit` start it in-process). Base URL `http://127.0.0.1:8787/v1`.
+1. Make sure the gateway is up: `veil gateway` (or let `veil audit` start it in-process). Base URL `http://127.0.0.1:8790/v1`.
 2. Run the audit on the folder of PDFs: `veil audit <folder> --as-of <YYYY-MM-DD> --no-appeal`
    - Each PDF is converted to text locally (`pdftotext -layout`, pypdf fallback) and extracted by Lightning with thinking disabled (`chat_template_kwargs={"enable_thinking": false}`) at temperature 0.
    - Bills are paired to EOBs by claim number, then provider and date of service.

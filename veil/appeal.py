@@ -8,6 +8,7 @@ from decimal import Decimal
 from .audit import usd
 from .config import ULTRA
 from .egress import Policy, Outbox, EMAIL
+from . import research
 
 TOOLS = [
     {"type": "function", "function": {"name": "calc", "description": "Evaluate an arithmetic expression with exact decimals (+ - * / parentheses). Use it for every number you state.",
@@ -15,11 +16,12 @@ TOOLS = [
     {"type": "function", "function": {"name": "queue_email", "description": "Queue the appeal letter as an email draft for the patient to review and approve. Nothing is sent until the human approves.",
                                        "parameters": {"type": "object", "properties": {"to": {"type": "array", "items": {"type": "string"}}, "subject": {"type": "string"}, "body": {"type": "string"}},
                                                       "required": ["to", "subject", "body"]}}},
+    research.SPEC,
 ]
 
 SYSTEM = """You are Veil, a careful paperwork assistant that drafts a medical-bill appeal on behalf of the patient.
 The audit findings below were computed by deterministic code. Treat them as ground truth; do not recompute or contradict them.
-Use the calc tool to confirm any figure you state. Then call queue_email exactly once with the finished appeal letter, addressed ONLY to the
+Use the calc tool to confirm any figure you state. You may call lookup_appeal_rules once (two enum values only, never patient details) to check the general public rules for this kind of appeal; use it only to keep the request consistent with those rules and do not state legal conclusions. Then call queue_email exactly once with the finished appeal letter, addressed ONLY to the
 insurer appeals contact named in the findings. Write a firm, polite, specific letter: cite the claim number, member ID, provider, date of service, the CPT lines,
 the allowed amount versus the amount billed, and request (1) written confirmation that the account is adjusted to the EOB patient responsibility, (2) that the
 account be held from collections during review, and (3) a response within 30 days. Mention the appeal is filed inside the 180-day window. Do not claim to attach anything; say the EOB and statement are available on request.
@@ -77,6 +79,13 @@ def handle_tool(name: str, args: dict, ctx: dict) -> tuple[str, dict]:
         ctx.setdefault("drafts", []).append(d)
         ev["draft_id"] = d["id"]
         return f"Queued as draft {d['id']}; awaiting the patient's approval. Nothing has been sent.", ev
+    if name == "lookup_appeal_rules":
+        try:
+            r = research.lookup(ctx["gw"], str(args.get("insurer_type", "")), str(args.get("topic", "")), tag=ctx["tag"])
+        except Exception as e:
+            return f"error: {e}", dict(tool=name, error=str(e))
+        ctx.setdefault("research", []).append({k: v for k, v in r.items() if k != "text_for_model"})
+        return r["text_for_model"] or "no results", dict(tool=name, query=r["query"], ledger_id=r["ledger_id"], sources=[x["url"] for x in r["sources"]])
     return f"error: unknown tool {name}", dict(tool=name, error="unknown tool")
 
 
@@ -114,7 +123,7 @@ def run_appeal(gw, pseudo_rehydrate, bill_name: str, audit: dict, docs_by_name: 
             f"\n\nUNTRUSTED DOCUMENT: EOB ({eob_name}) as scanned:\n<<<\n{texts[eob_name]}\n>>>\n\nUNTRUSTED DOCUMENT: bill ({bill_name}) as scanned:\n<<<\n{texts[bill_name]}\n>>>")
     msgs = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
     events, calls, final = [], [], ""
-    ctx = {**ctx, "draft_meta": {"claim": eob["claim_number"], "bill_doc": bill_name, "eob_doc": eob_name, "finding_ids": [f["id"] for f in fs]}}
+    ctx = {**ctx, "gw": gw, "draft_meta": {"claim": eob["claim_number"], "bill_doc": bill_name, "eob_doc": eob_name, "finding_ids": [f["id"] for f in fs]}}
     for turn in range(max_turns):
         resp = gw.chat(ULTRA, msgs, tag=ctx["tag"], tools=TOOLS, tool_choice="auto", max_tokens=6000, temperature=0.2)
         calls.append({"id": resp.get("id"), "usage": resp.get("usage")})
@@ -136,5 +145,5 @@ def run_appeal(gw, pseudo_rehydrate, bill_name: str, audit: dict, docs_by_name: 
             # draft queued: allow one more turn for the model's wrap-up, but do not loop on
             pass
     draft = (ctx.get("drafts") or [None])[-1]
-    return dict(bill_doc=bill_name, eob_doc=eob_name, events=events, calls=calls, draft=draft, final_text=final, turns=len(calls),
+    return dict(research=ctx.get("research", []), bill_doc=bill_name, eob_doc=eob_name, events=events, calls=calls, draft=draft, final_text=final, turns=len(calls),
                 blocked=ctx.get("blocked", []))

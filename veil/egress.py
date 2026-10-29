@@ -31,6 +31,15 @@ class Policy:
                                reason=reason, meta={"to": to, "subject": subject, "allowlist_size": len(self.allow), "source": source})
 
 
+def render_eml(d: dict) -> bytes:
+    """The exact bytes approval writes to the sandbox mailbox. The page's judge mode shows this same rendering as a preview."""
+    m = EmailMessage()
+    m["From"] = "jane.doe@example.org"; m["To"] = ", ".join(d["to"]); m["Subject"] = d["subject"]; m["Date"] = formatdate(localtime=True)
+    m["X-Veil-Sandbox"] = "delivered to local sandbox mailbox only; not sent over any network"
+    m.set_content(d["body"])
+    return bytes(m)
+
+
 class Outbox:
     def __init__(self, settings: Settings):
         self.dir, self.mail = settings.outbox, settings.mailbox
@@ -63,13 +72,10 @@ class Outbox:
         policy.log(ok, "approve", d["to"], d["subject"], d["run"], id, "approved by human; delivered to sandbox mailbox" if ok else f"recipient not on allowlist: {bad}", source="human")
         if not ok:
             raise PermissionError(f"recipients not on allowlist: {bad}")
-        m = EmailMessage()
-        m["From"] = "jane.doe@example.org"; m["To"] = ", ".join(d["to"]); m["Subject"] = d["subject"]; m["Date"] = formatdate(localtime=True)
-        m["X-Veil-Sandbox"] = "delivered to local sandbox mailbox only; not sent over any network"
-        m.set_content(d["body"])
+        raw = render_eml(d)
         self.mail.mkdir(parents=True, exist_ok=True)
         path = self.mail / f"{id}.eml"
-        path.write_bytes(bytes(m))
+        path.write_bytes(raw)
         d["status"] = "delivered_to_sandbox"; d["eml"] = str(path); d["approved"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         self._save(d)
         return d

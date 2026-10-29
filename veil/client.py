@@ -3,28 +3,39 @@ from __future__ import annotations
 import json, os, threading, time
 import httpx
 
-DEFAULT_URL = os.environ.get("VEIL_GATEWAY", "http://127.0.0.1:8787")
+DEFAULT_URL = os.environ.get("VEIL_GATEWAY", "http://127.0.0.1:8790")
+
+
+def _is_veil(url: str) -> bool:
+    try:
+        r = httpx.get(url + "/health", timeout=1.5)
+        return r.status_code == 200 and r.json().get("service") == "veil-gateway"
+    except Exception:
+        return False
 
 
 def ensure_gateway(url: str = DEFAULT_URL, settings=None) -> str:
     """Use a running gateway, or start one in-process on a background thread."""
-    try:
-        if httpx.get(url + "/health", timeout=1.5).status_code == 200:
-            return url
-    except Exception:
+    if _is_veil(url):
+        return url
+    try:  # something else already listens there: never send our traffic to it
+        httpx.get(url + "/health", timeout=1.0)
+        raise RuntimeError(f"{url} is in use by a different service, not the Veil gateway. Set VEIL_GATEWAY to a free port.")
+    except (httpx.ConnectError, httpx.ConnectTimeout):
         pass
     import uvicorn
     from urllib.parse import urlparse
     from .gateway import create_app
     u = urlparse(url)
-    server = uvicorn.Server(uvicorn.Config(create_app(settings), host=u.hostname, port=u.port or 8787, log_level="warning"))
+    server = uvicorn.Server(uvicorn.Config(create_app(settings), host=u.hostname, port=u.port or 8790, log_level="warning"))
     threading.Thread(target=server.run, daemon=True).start()
     for _ in range(100):
         try:
-            if httpx.get(url + "/health", timeout=1).status_code == 200:
+            if _is_veil(url):
                 return url
         except Exception:
-            time.sleep(0.1)
+            pass
+        time.sleep(0.1)
     raise RuntimeError("could not start gateway")
 
 
@@ -38,6 +49,12 @@ class Gateway:
                            headers={"x-veil-tag": tag, "x-veil-run": self.run})
         if r.status_code >= 400:
             raise GatewayError(r.status_code, r.json().get("error", {}) if r.headers.get("content-type", "").startswith("application/json") else {"message": r.text})
+        return r.json()
+
+    def search(self, query: str, tag: str = "") -> dict:
+        r = self.http.post(self.url + "/tools/search", json={"query": query}, headers={"x-veil-tag": tag, "x-veil-run": self.run})
+        if r.status_code >= 400:
+            raise GatewayError(r.status_code, r.json().get("error", {}))
         return r.json()
 
     def ledger(self, **params) -> dict:

@@ -23,7 +23,7 @@ Medical bills are wrong often, deadlines are short (180 days to appeal is common
 PDF (local) --pdftotext--> text
                               |
       Veil CLI / Hermes skills (OpenAI-compatible client)
-                              |  http://127.0.0.1:8787/v1
+                              |  http://127.0.0.1:8790/v1
                     +---------v-----------+
                     |    Veil gateway     |   FastAPI + httpx
                     |  1 model allowlist  |   (Super/Nano refused: 400)
@@ -102,12 +102,30 @@ veil drafts                             # review the queued appeal
 veil approve <id>                       # writes an .eml into .veil/sandbox_mailbox/ only
 veil attack-replay                      # replay the injected "email it to evil.example" call
 veil judge --run web/run.json           # http://127.0.0.1:8800
-veil gateway                            # run the gateway standalone on :8787
+veil gateway                            # run the gateway standalone on :8790
 ```
 
 If the package is not installed editable, prefix commands with `PYTHONPATH=.` and use `python -m veil`.
 
-Point any OpenAI-compatible client at `http://127.0.0.1:8787/v1`; send `X-Veil-Tag` / `X-Veil-Run` headers to label calls in the ledger. Hermes-format skills live in `skills/` (`eob-audit`, `appeal-letter`, `deductible-tracker`).
+Point any OpenAI-compatible client at `http://127.0.0.1:8790/v1`; send `X-Veil-Tag` / `X-Veil-Run` headers to label calls in the ledger. Hermes-format skills live in `skills/` (`eob-audit`, `appeal-letter`, `deductible-tracker`).
+
+## Always-on app (round 2)
+
+```bash
+veil watch ~/Paperwork/inbox          # always-on: new PDFs -> extract (Lightning) -> audit (code) -> appeal draft (Ultra) -> notification
+veil app --watch ~/Paperwork/inbox    # the product UI on http://127.0.0.1:8800  (Live mode)
+veil schedule --within 21             # deadline scheduler once: one follow-up draft per claim whose window closes within N days
+veil static OUT                       # static judge bundle (index.html + run.json + run.js), no backend
+```
+
+- **Watcher + memory.** `.veil/memory.sqlite` keeps documents, findings (keyed by type/bill/EOB/amount, so a finding is announced once), the deductible state, follow-ups, user notes and the notification feed. The UI's "Veil remembers" panel reads it. Notes never leave the machine.
+- **Scheduler.** Deterministic, no model call. One follow-up draft per claim and deadline (de-duplicated), nothing for closed windows. It is a draft: a human approves it.
+- **Approval.** `Approve` re-checks the trusted-contacts allowlist, then writes an `.eml` into `.veil/sandbox_mailbox/`. There is no SMTP code in the package (a test asserts it). `Reject` just marks it. A recipient that is not on the allowlist returns 403.
+- **Two modes, one page.** *Live* talks to `veil app` on localhost. *Judge* reads `run.json` only and makes no backend call (approve is simulated and shows the exact `.eml` live mode would write). The Live switch is enabled only on localhost, and only if `/api/state` answers with JSON, so a static host can never go "live".
+- **Tavily research tool.** `lookup_appeal_rules(insurer_type, topic)` takes two closed enums, and a fixed template builds the query, so it cannot carry patient details. The query then goes through the gateway's `POST /tools/search`: same redactor, same leak canary on the final bytes, the exact body is ledgered (`kind=search`), and the answer, sources and request id are shown in the UI and cached in `run.json`. `TAVILY_API_KEY` is read from `~/.config/nvdia/tavily.env` and never printed or stored.
+- **Injection, honestly.** `source=replay` rows are a deterministic re-enactment and are labelled as such. Separately, `eval/injection_trials.py` gives the model a real `send_email` tool and the injected EOB: see `eval/injection_results.md` (Ultra with the production prompt resisted 5/5; Ultra with a naive prompt and Lightning tried 4/5; every attempt was blocked at egress, `source=agent`).
+- **Static hosting.** `web/` plus `run.json` is the whole judge page. Fonts come from Google Fonts; there is no other network call.
+- **Gateway identity.** Default port is 8790 (8787 was occupied by an unrelated local proxy); the client refuses to use a port whose `/health` is not `service=veil-gateway`.
 
 ## Layout
 

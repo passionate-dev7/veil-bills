@@ -27,7 +27,7 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
 
     @app.get("/health")
     def health():
-        return {"ok": True, "vault": vault.stats(), "key_configured": bool(s.api_key), "upstream": s.upstream}
+        return {"ok": True, "service": "veil-gateway", "vault": vault.stats(), "key_configured": bool(s.api_key), "upstream": s.upstream}
 
     @app.get("/v1/models")
     def models():
@@ -41,6 +41,46 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
     def ledger_get(entry_id: int):
         e = ledger.get(entry_id)
         return e or err(404, "no such ledger entry", "not_found")
+
+    @app.post("/tools/search")
+    async def search(request: Request):
+        """Web search for the agent (Tavily). Same discipline as inference: redact, canary on the final bytes, ledger the exact outbound body."""
+        t0 = time.time()
+        tag, run = request.headers.get("x-veil-tag", ""), request.headers.get("x-veil-run", "")
+        try:
+            q = str((await request.json()).get("query", "")).strip()
+        except Exception:
+            return err(400, "body must be JSON with a query", "bad_request")
+        if not q or len(q) > 400:
+            return err(400, "query must be 1-400 characters", "bad_request")
+        counts: Counter = Counter()
+        body = pseudo.redact_payload({"query": q, "search_depth": "basic", "max_results": 5, "include_answer": "basic"}, counts)
+        outbound = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        leaks = pseudo.canary(outbound)
+        base = dict(kind="search", run=run, tag=tag, route="tavily", model="tavily/search", redacted_total=sum(counts.values()),
+                    redacted_by_kind=dict(counts))
+        if leaks:
+            ledger.add(**base, status="blocked", leaked_count=len(leaks), leaked_kinds=[f"{k}:{how}" for k, how in leaks],
+                       reason="canary: sensitive value would have left the machine; search refused", latency_ms=int((time.time() - t0) * 1000))
+            return err(422, "Veil canary refused this search query", "leak_blocked", leaked_count=len(leaks),
+                       leaked_kinds=sorted({k for k, _ in leaks}))
+        if not s.tavily_key and transport is None:
+            return err(500, "TAVILY_API_KEY not configured", "no_key")
+        entry = ledger.add(**base, status="pending", outbound=outbound, leaked_count=0)
+        try:
+            r = await client.post(s.tavily_url, content=outbound, headers={"Authorization": f"Bearer {s.tavily_key or 'test'}", "Content-Type": "application/json"})
+            data = r.json()
+        except Exception as e:
+            ledger.update(entry, status="error", reason=f"upstream: {type(e).__name__}", latency_ms=int((time.time() - t0) * 1000))
+            return err(502, f"search upstream failed: {type(e).__name__}", "upstream_error")
+        ms = int((time.time() - t0) * 1000)
+        results = data.get("results") or []
+        sources = [{"title": x.get("title"), "url": x.get("url"), "score": x.get("score")} for x in results]
+        ledger.update(entry, status="ok" if r.status_code < 400 else "error", http_status=r.status_code, latency_ms=ms,
+                      upstream_id=data.get("request_id"), usage=data.get("usage") or {}, response_text=json.dumps(data, ensure_ascii=False)[:60000],
+                      meta={"query": body.get("query"), "sources": sources, "answer": data.get("answer"), "response_time": data.get("response_time")})
+        data["veil"] = {"ledger_id": entry, "sha256": ledger.get(entry)["outbound_sha256"], "latency_ms": ms}
+        return JSONResponse(data, status_code=r.status_code)
 
     @app.post("/v1/chat/completions")
     async def chat(request: Request):

@@ -19,7 +19,7 @@ def cmd_gateway(a):
     from urllib.parse import urlparse
     u = urlparse(a.url)
     print(f"Veil gateway on {a.url}  (OpenAI-compatible: /v1/chat/completions, /v1/models; ledger: /ledger)")
-    uvicorn.run(create_app(Settings()), host=u.hostname, port=u.port or 8787, log_level="info")
+    uvicorn.run(create_app(Settings()), host=u.hostname, port=u.port or 8790, log_level="info")
 
 
 def cmd_audit(a):
@@ -109,6 +109,69 @@ def cmd_judge(a):
         srv.serve_forever()
 
 
+def _engine(a, run=None, say=print):
+    from .watch import Engine
+    s = Settings()
+    as_of = date.fromisoformat(a.as_of) if getattr(a, "as_of", None) else None
+    gw = Gateway(ensure_gateway(a.url, s), run or getattr(a, "run", None) or "veil-watch")
+    return s, Engine(s, gw, as_of=as_of, say=say, appeal=not getattr(a, "no_appeal", False), within=getattr(a, "within", 21))
+
+
+def cmd_watch(a):
+    s, eng = _engine(a)
+    inbox = Path(a.dir).expanduser()
+    if a.once:
+        r = eng.process_inbox(inbox, settle_s=0)
+        print(json.dumps({k: (v if k in ("added", "new_findings") else [d["id"] for d in v]) for k, v in r.items()}, indent=1))
+        if a.export:
+            export_record(s, eng, a.export)
+        return
+    try:
+        eng.watch(inbox, a.interval)
+    except KeyboardInterrupt:
+        print("stopped")
+
+
+def export_record(s, eng, out):
+    from .run import build_record
+    rec = build_record(s, eng.today, eng.gw.run)
+    out = Path(out); out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(rec, indent=2, default=str))
+    if out.resolve().parent == (ROOT / "web").resolve():
+        (out.parent / "run.js").write_text("window.VEIL_RUN = " + out.read_text() + ";")
+    print("run record:", out)
+
+
+def cmd_schedule(a):
+    s, eng = _engine(a)
+    made = eng.schedule()
+    print(f"{len(made)} follow-up draft(s) created (pending approval)" + "".join(f"\n  {d['id']}  {d['subject']}" for d in made))
+
+
+def cmd_app(a):
+    """Product server + (optional) watcher in one process. 127.0.0.1 only."""
+    import threading, uvicorn
+    from .app import create_app as create_web
+    s = Settings()
+    as_of = date.fromisoformat(a.as_of) if a.as_of else None
+    info = {"dir": str(Path(a.watch).expanduser()) if a.watch else None, "interval": a.interval}
+    if a.watch:
+        _, eng = _engine(a)
+        threading.Thread(target=eng.watch, args=(Path(a.watch).expanduser(), a.interval), daemon=True).start()
+    print(f"Veil app: http://127.0.0.1:{a.port}/   (live mode; add ?mode=judge for the cached run; local only)")
+    uvicorn.run(create_web(s, as_of, info), host="127.0.0.1", port=a.port, log_level="warning")
+
+
+def cmd_static(a):
+    import shutil
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    web = ROOT / "web"
+    for f in ("index.html", "run.json", "run.js"):
+        shutil.copy(web / f, out / f)
+    print(f"static judge bundle in {out}/  (index.html + run.json; no backend). Try: python -m http.server -d {out}")
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="veil", description="Veil: private paperwork agent. Synthetic data only.")
     p.add_argument("--url", default=DEFAULT_URL)
@@ -121,6 +184,15 @@ def main(argv=None):
     x = sub.add_parser("reject"); x.add_argument("id"); x.set_defaults(f=cmd_reject)
     x = sub.add_parser("attack-replay"); x.add_argument("--run", default="attack-replay"); x.set_defaults(f=cmd_attack)
     x = sub.add_parser("judge"); x.add_argument("--run"); x.add_argument("--port", type=int, default=8800); x.set_defaults(f=cmd_judge)
+    x = sub.add_parser("watch", help="always-on: watch a folder of PDFs"); x.add_argument("dir", nargs="?", default="~/Paperwork/inbox")
+    x.add_argument("--interval", type=float, default=3.0); x.add_argument("--once", action="store_true"); x.add_argument("--as-of"); x.add_argument("--run", default="veil-watch")
+    x.add_argument("--within", type=int, default=21, help="create a follow-up draft when a deadline is within N days"); x.add_argument("--no-appeal", action="store_true")
+    x.add_argument("--export"); x.set_defaults(f=cmd_watch)
+    x = sub.add_parser("schedule", help="run the deadline scheduler once"); x.add_argument("--within", type=int, default=21); x.add_argument("--as-of"); x.set_defaults(f=cmd_schedule)
+    x = sub.add_parser("app", help="the product app (live mode) on 127.0.0.1"); x.add_argument("--port", type=int, default=8800); x.add_argument("--watch")
+    x.add_argument("--interval", type=float, default=3.0); x.add_argument("--as-of"); x.add_argument("--run", default="veil-watch"); x.add_argument("--within", type=int, default=21)
+    x.add_argument("--no-appeal", action="store_true"); x.set_defaults(f=cmd_app)
+    x = sub.add_parser("static", help="write a static judge bundle (no backend)"); x.add_argument("out"); x.set_defaults(f=cmd_static)
     a = p.parse_args(argv)
     a.f(a)
 
