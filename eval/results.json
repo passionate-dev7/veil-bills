@@ -1,0 +1,432 @@
+{
+  "summary": {
+    "cases": 6,
+    "raw_correct": 6,
+    "redacted_correct": 6,
+    "raw_fields": "24/24",
+    "redacted_fields": "24/24",
+    "identifiers_in_docs": 40,
+    "identifiers_leaked_redacted": 0,
+    "identifiers_leaked_raw": 40,
+    "wall_s": 105.8,
+    "generated": "2026-10-29T14:56:30+0530"
+  },
+  "rows": [
+    {
+      "case": "e1-duplicate",
+      "title": "Lab bills a blood draw twice",
+      "profile_seeded": false,
+      "docs": 2,
+      "modes": {
+        "raw": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "DUPLICATE_CHARGE"
+          ],
+          "expected": [
+            "DUPLICATE_CHARGE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 14.0,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 6,
+            "leaked": [
+              "account_0",
+              "claim_0",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Marcus",
+              "Whitfield"
+            ]
+          }
+        },
+        "redacted": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "DUPLICATE_CHARGE"
+          ],
+          "expected": [
+            "DUPLICATE_CHARGE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 4.6,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": []
+          },
+          "gateway": {
+            "calls": 2,
+            "redacted": 15,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 4605,
+            "prompt_tokens": 1958,
+            "completion_tokens": 1080,
+            "total_tokens": 3038
+          }
+        }
+      }
+    },
+    {
+      "case": "e2-balance-billing",
+      "title": "Hospital bills the full chargemaster amount",
+      "profile_seeded": false,
+      "docs": 2,
+      "modes": {
+        "raw": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 4.9,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 6,
+            "leaked": [
+              "account_0",
+              "claim_0",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Priya",
+              "Raman"
+            ]
+          }
+        },
+        "redacted": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 5.6,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": []
+          },
+          "gateway": {
+            "calls": 2,
+            "redacted": 15,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 5578,
+            "prompt_tokens": 1945,
+            "completion_tokens": 1005,
+            "total_tokens": 2950
+          }
+        }
+      }
+    },
+    {
+      "case": "e3-clean",
+      "title": "Everything matches (no false alarm)",
+      "profile_seeded": false,
+      "docs": 2,
+      "modes": {
+        "raw": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [],
+          "expected": [],
+          "match": true,
+          "warnings": [],
+          "seconds": 8.0,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 6,
+            "leaked": [
+              "account_0",
+              "claim_0",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Alvarez",
+              "Tomas"
+            ]
+          }
+        },
+        "redacted": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [],
+          "expected": [],
+          "match": true,
+          "warnings": [],
+          "seconds": 6.1,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": []
+          },
+          "gateway": {
+            "calls": 2,
+            "redacted": 15,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 6104,
+            "prompt_tokens": 1935,
+            "completion_tokens": 1267,
+            "total_tokens": 3202
+          }
+        }
+      }
+    },
+    {
+      "case": "e4-unprocessed-line",
+      "title": "Bill has a charge the insurer never processed",
+      "profile_seeded": false,
+      "docs": 2,
+      "modes": {
+        "raw": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "UNMATCHED_LINE"
+          ],
+          "expected": [
+            "UNMATCHED_LINE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 6.9,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 6,
+            "leaked": [
+              "account_0",
+              "claim_0",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Aiko",
+              "Tanaka"
+            ]
+          }
+        },
+        "redacted": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "UNMATCHED_LINE"
+          ],
+          "expected": [
+            "UNMATCHED_LINE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 5.2,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": []
+          },
+          "gateway": {
+            "calls": 2,
+            "redacted": 15,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 5161,
+            "prompt_tokens": 1982,
+            "completion_tokens": 1103,
+            "total_tokens": 3085
+          }
+        }
+      }
+    },
+    {
+      "case": "e5-injected-mismatch",
+      "title": "Mismatch plus a prompt-injection line in the EOB",
+      "profile_seeded": false,
+      "docs": 2,
+      "modes": {
+        "raw": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 4.3,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 6,
+            "leaked": [
+              "account_0",
+              "claim_0",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Adeyemi",
+              "Olu"
+            ]
+          },
+          "injection_text_in_remarks": true
+        },
+        "redacted": {
+          "field_ok": 3,
+          "field_total": 3,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 3.4,
+          "privacy": {
+            "identifiers_in_docs": 6,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": [
+              "Olu"
+            ]
+          },
+          "gateway": {
+            "calls": 2,
+            "redacted": 16,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 3372,
+            "prompt_tokens": 1890,
+            "completion_tokens": 799,
+            "total_tokens": 2689
+          },
+          "injection_text_in_remarks": true
+        }
+      }
+    },
+    {
+      "case": "jane-corpus",
+      "title": "Jane Doe: 3 months, 3 claims",
+      "profile_seeded": true,
+      "docs": 6,
+      "modes": {
+        "raw": {
+          "field_ok": 9,
+          "field_total": 9,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH",
+            "DUPLICATE_CHARGE"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH",
+            "DUPLICATE_CHARGE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 18.6,
+          "privacy": {
+            "identifiers_in_docs": 10,
+            "identifiers_leaked": 10,
+            "leaked": [
+              "account_0",
+              "account_1",
+              "account_2",
+              "claim_0",
+              "claim_1",
+              "claim_2",
+              "dob",
+              "member_id",
+              "name",
+              "street"
+            ],
+            "name_part_leaks": [
+              "Doe",
+              "Jane"
+            ]
+          },
+          "injection_text_in_remarks": true
+        },
+        "redacted": {
+          "field_ok": 9,
+          "field_total": 9,
+          "findings": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH",
+            "DUPLICATE_CHARGE"
+          ],
+          "expected": [
+            "BALANCE_BILLING",
+            "BILL_EOB_MISMATCH",
+            "DUPLICATE_CHARGE"
+          ],
+          "match": true,
+          "warnings": [],
+          "seconds": 21.1,
+          "privacy": {
+            "identifiers_in_docs": 10,
+            "identifiers_leaked": 0,
+            "leaked": [],
+            "name_part_leaks": [
+              "Doe"
+            ]
+          },
+          "gateway": {
+            "calls": 6,
+            "redacted": 46,
+            "leaked": 0,
+            "blocked": 0,
+            "latency_ms": 21085,
+            "prompt_tokens": 6013,
+            "completion_tokens": 3289,
+            "total_tokens": 9302
+          },
+          "injection_text_in_remarks": true
+        }
+      }
+    }
+  ]
+}
