@@ -8,8 +8,8 @@
     "identifiers_in_docs": 40,
     "identifiers_leaked_redacted": 0,
     "identifiers_leaked_raw": 40,
-    "wall_s": 105.8,
-    "generated": "2026-10-29T14:56:30+0530"
+    "wall_s": 253.7,
+    "generated": "2026-10-29T15:02:23+0530"
   },
   "rows": [
     {
@@ -29,7 +29,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 14.0,
+          "seconds": 10.2,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 6,
@@ -58,7 +58,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 4.6,
+          "seconds": 20.6,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 0,
@@ -70,10 +70,10 @@
             "redacted": 15,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 4605,
+            "latency_ms": 20425,
             "prompt_tokens": 1958,
-            "completion_tokens": 1080,
-            "total_tokens": 3038
+            "completion_tokens": 1412,
+            "total_tokens": 3370
           }
         }
       }
@@ -97,7 +97,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 4.9,
+          "seconds": 123.0,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 6,
@@ -128,7 +128,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 5.6,
+          "seconds": 13.5,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 0,
@@ -140,7 +140,7 @@
             "redacted": 15,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 5578,
+            "latency_ms": 13514,
             "prompt_tokens": 1945,
             "completion_tokens": 1005,
             "total_tokens": 2950
@@ -161,7 +161,7 @@
           "expected": [],
           "match": true,
           "warnings": [],
-          "seconds": 8.0,
+          "seconds": 9.4,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 6,
@@ -186,7 +186,7 @@
           "expected": [],
           "match": true,
           "warnings": [],
-          "seconds": 6.1,
+          "seconds": 8.9,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 0,
@@ -198,7 +198,7 @@
             "redacted": 15,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 6104,
+            "latency_ms": 8922,
             "prompt_tokens": 1935,
             "completion_tokens": 1267,
             "total_tokens": 3202
@@ -223,7 +223,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 6.9,
+          "seconds": 7.0,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 6,
@@ -252,7 +252,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 5.2,
+          "seconds": 4.7,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 0,
@@ -264,7 +264,7 @@
             "redacted": 15,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 5161,
+            "latency_ms": 4694,
             "prompt_tokens": 1982,
             "completion_tokens": 1103,
             "total_tokens": 3085
@@ -291,7 +291,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 4.3,
+          "seconds": 3.4,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 6,
@@ -323,24 +323,22 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 3.4,
+          "seconds": 4.2,
           "privacy": {
             "identifiers_in_docs": 6,
             "identifiers_leaked": 0,
             "leaked": [],
-            "name_part_leaks": [
-              "Olu"
-            ]
+            "name_part_leaks": []
           },
           "gateway": {
             "calls": 2,
             "redacted": 16,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 3372,
+            "latency_ms": 4145,
             "prompt_tokens": 1890,
-            "completion_tokens": 799,
-            "total_tokens": 2689
+            "completion_tokens": 1065,
+            "total_tokens": 2955
           },
           "injection_text_in_remarks": true
         }
@@ -367,7 +365,7 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 18.6,
+          "seconds": 14.2,
           "privacy": {
             "identifiers_in_docs": 10,
             "identifiers_leaked": 10,
@@ -405,24 +403,22 @@
           ],
           "match": true,
           "warnings": [],
-          "seconds": 21.1,
+          "seconds": 32.1,
           "privacy": {
             "identifiers_in_docs": 10,
             "identifiers_leaked": 0,
             "leaked": [],
-            "name_part_leaks": [
-              "Doe"
-            ]
+            "name_part_leaks": []
           },
           "gateway": {
             "calls": 6,
             "redacted": 46,
             "leaked": 0,
             "blocked": 0,
-            "latency_ms": 21085,
+            "latency_ms": 32105,
             "prompt_tokens": 6013,
-            "completion_tokens": 3289,
-            "total_tokens": 9302
+            "completion_tokens": 3567,
+            "total_tokens": 9580
           },
           "injection_text_in_remarks": true
         }

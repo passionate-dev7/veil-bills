@@ -9,7 +9,7 @@ Identifiers = ground-truth name, last-first name, DOB, member ID, SSN, phone, em
 | e2-balance-billing | BALANCE_BILLING, BILL_EOB_MISMATCH | OK | 3/3 | OK | 3/3 | 0/6 / 6/6 | - |
 | e3-clean | none | OK | 3/3 | OK | 3/3 | 0/6 / 6/6 | - |
 | e4-unprocessed-line | UNMATCHED_LINE | OK | 3/3 | OK | 3/3 | 0/6 / 6/6 | - |
-| e5-injected-mismatch | BALANCE_BILLING, BILL_EOB_MISMATCH | OK | 3/3 | OK | 3/3 | 0/6 / 6/6 | Olu |
-| jane-corpus (profile-seeded) | BALANCE_BILLING, BILL_EOB_MISMATCH, DUPLICATE_CHARGE | OK | 9/9 | OK | 9/9 | 0/10 / 10/10 | Doe |
+| e5-injected-mismatch | BALANCE_BILLING, BILL_EOB_MISMATCH | OK | 3/3 | OK | 3/3 | 0/6 / 6/6 | - |
+| jane-corpus (profile-seeded) | BALANCE_BILLING, BILL_EOB_MISMATCH, DUPLICATE_CHARGE | OK | 9/9 | OK | 9/9 | 0/10 / 10/10 | - |
 
-**Summary:** findings correct raw 6/6, redacted 6/6; money/date fields raw 24/24, redacted 24/24; identifiers reaching Nebius: 0/40 redacted vs 40/40 raw. Wall 105.8s.
+**Summary:** findings correct raw 6/6, redacted 6/6; money/date fields raw 24/24, redacted 24/24; identifiers reaching Nebius: 0/40 redacted vs 40/40 raw. Wall 253.7s.

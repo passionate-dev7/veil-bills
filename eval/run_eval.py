@@ -5,7 +5,7 @@ Also measures privacy: how many ground-truth identifiers (known from the generat
 Run:  python eval/run_eval.py     writes eval/results.json and eval/results.md
 """
 from __future__ import annotations
-import json, shutil, sys, time
+import json, re, shutil, sys, time
 from datetime import date
 from pathlib import Path
 import httpx
@@ -49,7 +49,7 @@ def leaks(case, texts: list[str], sent: list[str]) -> dict:
     leaked = sorted(k for k, v in present.items() if v.lower() in out)
     p = case.person
     parts = [w for w in {p.name.split()[0], p.name.split()[-1]} if len(w) > 2]
-    part_leaks = sorted(w for w in parts if w.lower() in out)
+    part_leaks = sorted(w for w in parts if re.search(r'\b' + re.escape(w.lower()) + r'\b', out))
     return dict(identifiers_in_docs=len(present), identifiers_leaked=len(leaked), leaked=leaked, name_part_leaks=part_leaks)
 
 
