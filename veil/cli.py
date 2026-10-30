@@ -163,7 +163,7 @@ def cmd_app(a):
     uvicorn.run(create_web(s, as_of, info), host="127.0.0.1", port=a.port, log_level="warning")
 
 
-STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "run.js", "run.json", "vercel.json")
+STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "receipts.js", "run.js", "run.json", "vercel.json")
 
 
 def cmd_static(a):
@@ -205,6 +205,83 @@ def cmd_export_run(a):
     _write_run(rec, a.out)
     print(f"  {rec['totals']['calls']} gateway calls, {len(rec['receipts'])} receipts, {len(rec['hermes_runs'])} Hermes transcript(s), sandbox rows model-driven: "
           f"{sum(1 for e in rec['egress'] if (e.get('meta') or {}).get('model_driven'))}, impact ${rec['impact']['total_cents'] / 100:,.2f}")
+
+
+def _fmt_verify(v, where):
+    if v["ok"]:
+        extra = f", {v['ledger_rows']} ledger rows" if "ledger_rows" in v else ""
+        return (f"OK  {where}: {v['count']} receipts{extra}, {v['bytes_checked']} outbound payloads re-hashed\n"
+                f"    head {v['head']}\n"
+                f"    tamper-evident, not tamper-proof: publish the head somewhere you control, then re-check with `veil verify --head <hash>`")
+    b = v["broken"]
+    return f"FAIL {where}: first break at seq {b['seq']} ({b['code']})\n    {b['reason']}"
+
+
+def cmd_verify(a):
+    """Recompute the receipt chain. Exit 0 if intact, 1 at the first broken seq."""
+    import sqlite3
+    from . import receipts as rc
+    head = a.head.strip().lower() if a.head else None
+    if a.run_json:
+        ch = json.loads(Path(a.run_json).read_text()).get("chain")
+        if not ch:
+            print(f"FAIL {a.run_json}: no chain in this run record"); return 1
+        v = rc.verify_chain(ch["entries"], {int(k): t.encode() for k, t in (ch.get("bytes") or {}).items()}, head)
+        where = a.run_json
+    else:
+        db_path = Path(a.db) if a.db else Settings().ledger_db
+        if not db_path.exists():
+            print(f"FAIL {db_path}: no ledger there"); return 1
+        db = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)  # read-only: verifying never repairs or backfills
+        try:
+            has = db.execute("SELECT 1 FROM sqlite_master WHERE name='receipts'").fetchone()
+            if not has:
+                print(f"FAIL {db_path}: no receipts table (open this ledger once with `veil receipts backfill`)"); return 1
+            v = rc.verify_db(db, head)
+        finally:
+            db.close()
+        where = str(db_path)
+    print(json.dumps(v, indent=2) if a.json else _fmt_verify(v, where))
+    return 0 if v["ok"] else 1
+
+
+def _tamper_demo(db_path):
+    import shutil, sqlite3, tempfile
+    from . import receipts as rc
+    tmp = Path(tempfile.mkdtemp()) / "ledger.sqlite"
+    shutil.copy(db_path, tmp)
+    db = sqlite3.connect(tmp)
+    seq, lid = db.execute("SELECT r.seq, json_extract(r.receipt,'$.ledger_id') FROM receipts r WHERE json_extract(r.receipt,'$.type')='call' "
+                          "AND json_extract(r.receipt,'$.byte_count')>0 ORDER BY seq LIMIT 1 OFFSET 3").fetchone()
+    blob = bytearray(db.execute("SELECT outbound FROM ledger WHERE id=?", (lid,)).fetchone()[0])
+    blob[len(blob) // 2] ^= 0x01
+    db.execute("UPDATE ledger SET outbound=? WHERE id=?", (bytes(blob), lid)); db.commit()
+    out = (rc.verify_db(db), seq)
+    db.close(); shutil.rmtree(tmp.parent)
+    return out
+
+
+def cmd_receipts(a):
+    """backfill: seal receipts for ledger rows that predate the chain. attach: put the chain in a run record. demo: tamper a COPY and verify."""
+    from . import receipts as rc
+    s = Settings()
+    db_path = Path(a.db) if a.db else s.ledger_db
+    if a.action == "demo":
+        ok = rc.verify_db(__import__("sqlite3").connect(f"file:{db_path}?mode=ro", uri=True))
+        print(_fmt_verify(ok, str(db_path)))
+        v, seq = _tamper_demo(db_path)
+        print(f"\nflip one bit in the stored bytes of call receipt seq {seq} (on a temp copy):")
+        print(_fmt_verify(v, "tampered copy"))
+        return 0 if ok["ok"] and not v["ok"] else 1
+    led = Ledger(db_path)  # opening backfills once, when the receipts table is empty
+    ch = led.chain()
+    print(f"{db_path}: {ch['count']} receipts, head {ch['head']}")
+    if a.action == "attach":
+        p = Path(a.path)
+        rec = json.loads(p.read_text())
+        rec["chain"] = ch
+        _write_run(rec, p)
+    return 0
 
 
 def cmd_toolargs_demo(a):
@@ -254,9 +331,14 @@ def main(argv=None):
     x.add_argument("--as-of"); x.add_argument("--run"); x.set_defaults(f=cmd_export_run)
     x = sub.add_parser("enrich-run", help="add impact/parity to an existing run.json (offline)"); x.add_argument("path", nargs="?", default=str(ROOT / "web" / "run.json"))
     x.add_argument("--hermes-dir"); x.set_defaults(f=cmd_enrich_run)
+    x = sub.add_parser("verify", help="recompute the receipt hash chain; exit 1 at the first broken seq"); x.add_argument("--db"); x.add_argument("--head", help="anchored head hash to compare against")
+    x.add_argument("--run-json", help="verify the chain embedded in a run record instead of a database"); x.add_argument("--json", action="store_true"); x.set_defaults(f=cmd_verify)
+    x = sub.add_parser("receipts", help="backfill / attach / demo for the receipt chain"); x.add_argument("action", choices=["backfill", "attach", "demo"])
+    x.add_argument("path", nargs="?", default=str(ROOT / "web" / "run.json")); x.add_argument("--db"); x.set_defaults(f=cmd_receipts)
     x = sub.add_parser("static", help="write a static judge bundle (no backend)"); x.add_argument("out"); x.set_defaults(f=cmd_static)
     a = p.parse_args(argv)
-    a.f(a)
+    r = a.f(a)
+    sys.exit(r if isinstance(r, int) and not isinstance(r, bool) else 0)
 
 
 if __name__ == "__main__":

@@ -137,4 +137,5 @@ def build_record(settings: Settings, as_of: date, run: str | None = None, live: 
                        redacted=e.get("redacted_total"), status=e.get("status")) for e in entries if e.get("kind") in ("inference", "search")],
         injection_trials=json.loads(inj.read_text()) if inj.exists() else None,
     )
+    rec["chain"] = led.chain()  # tamper-evident receipt chain; web/receipts.js re-verifies it in the browser
     return enrich_record(rec, settings.home)
