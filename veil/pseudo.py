@@ -4,6 +4,10 @@ import json, re
 from collections import Counter
 from .vault import Vault, TOKEN_RE, norm
 from . import detectors
+from .fold import fold
+
+# Letters or digits separated by single spaces/dots/dashes/underscores ('J a n e  D o e', 'N.S.H.8.8.4...'). Collapsed and compared with the vault.
+SPLIT_RX = re.compile(r"(?<![A-Za-z0-9])(?:[A-Za-z0-9][ .\-_]{1,2}){2,}[A-Za-z0-9](?![A-Za-z0-9])")
 
 SKIP_KEYS = {"model"}  # structural fields we never rewrite
 
@@ -24,6 +28,7 @@ class Pseudonymizer:
         self._rx = None
         self._rx_version = -1
         self._tok = {}
+        self._amap: dict[str, tuple[str, str]] = {}
 
     # -- dictionary pass ----------------------------------------------------
     def _compile(self):
@@ -36,7 +41,25 @@ class Pseudonymizer:
         else:
             alts = [r"\s+".join(re.escape(p) for p in raw.split()) for raw, _, _ in surfaces]
             self._rx = re.compile(r"(?<![A-Za-z0-9])(?:" + "|".join(alts) + r")(?![A-Za-z0-9])", re.I)
+        self._amap = {_alnum(raw): (tok, kind) for raw, tok, kind in surfaces if len(_alnum(raw)) >= 3}
         self._rx_version = self.vault.version
+
+    def _split_hits(self, text: str):
+        """Yield (start, end, token, kind) for spaced-out vault values such as 'J a n e D o e'. Longest window first, left to right."""
+        if not self._amap:
+            return
+        for m in SPLIT_RX.finditer(text):
+            run = m.group(0)
+            pos = [(i, c.lower()) for i, c in enumerate(run) if c.isalnum()]
+            i, n = 0, len(pos)
+            while i < n:
+                for j in range(n, i + 2, -1):
+                    hit = self._amap.get("".join(c for _, c in pos[i:j]))
+                    if hit:
+                        yield m.start() + pos[i][0], m.start() + pos[j - 1][0] + 1, hit[0], hit[1]
+                        i = j - 1
+                        break
+                i += 1
 
     def learn(self, text: str):
         for kind, value in detectors.find(text):
@@ -45,8 +68,17 @@ class Pseudonymizer:
     def redact_text(self, text: str, counts: Counter | None = None) -> str:
         if not text:
             return text
+        text = fold(text)
         self.learn(text)
         self._compile()
+        hits = list(self._split_hits(text))
+        if hits:
+            parts, last = [], 0
+            for a, b, tok, _k in hits:
+                parts.append(text[last:a]); parts.append(tok); last = b
+                if counts is not None:
+                    counts[tok.strip("[]").rsplit("_", 1)[0]] += 1
+            parts.append(text[last:]); text = "".join(parts)
 
         def sub(m):
             tok = self._tok.get(norm(m.group(0)))
@@ -87,7 +119,7 @@ class Pseudonymizer:
             _collect_strings(json.loads(text), flat)
         except Exception:
             pass
-        hay = [text, "\n".join(flat)]
+        hay = [fold(text), fold("\n".join(flat))]
         hay_alnum = _alnum("\n".join(hay))
         leaks: list[tuple[str, str]] = []
         for raw, tok, kind in self.vault.surfaces():
@@ -98,6 +130,11 @@ class Pseudonymizer:
                 leaks.append((kind, "vault-exact"))
             elif len(_alnum(raw)) >= 8 and _alnum(raw) in hay_alnum:
                 leaks.append((kind, "vault-normalized"))
+        self._compile()
+        for h in hay:
+            for _a, _b, _tok, kind in self._split_hits(h):
+                leaks.append((kind, "vault-split"))
+                break
         for kind, _v in detectors.find("\n".join(hay)):
             leaks.append((kind, "regex"))
         return leaks

@@ -1,0 +1,190 @@
+[
+ {
+  "name": "lone_surname",
+  "text": "Please call Mr Quillfeather about the balance. Later Quillfeather phoned again.",
+  "gone": [
+   "Quillfeather"
+  ]
+ },
+ {
+  "name": "title_dr_dot",
+  "text": "Seen by Dr. Brightwater on the ward.",
+  "gone": [
+   "Brightwater"
+  ]
+ },
+ {
+  "name": "dob_long_dmy",
+  "text": "Born 12 April 1985 in Ohio.",
+  "gone": [
+   "12 April 1985"
+  ]
+ },
+ {
+  "name": "dob_long_mdy",
+  "text": "DOB March 3rd, 1971",
+  "gone": [
+   "March 3rd, 1971"
+  ]
+ },
+ {
+  "name": "dob_slash_old",
+  "text": "birthday 7/9/1962 noted",
+  "gone": [
+   "7/9/1962"
+  ]
+ },
+ {
+  "name": "dob_iso_old",
+  "text": "born 1990-02-14",
+  "gone": [
+   "1990-02-14"
+  ]
+ },
+ {
+  "name": "claim_prose_bare",
+  "text": "I disputed claim CN55501234 last week.",
+  "gone": [
+   "CN55501234"
+  ]
+ },
+ {
+  "name": "claim_bare_shape",
+  "text": "Reference AB12345678 is open.",
+  "gone": [
+   "AB12345678"
+  ]
+ },
+ {
+  "name": "member_prose_bare",
+  "text": "Her member ZQX123456789 was denied.",
+  "gone": [
+   "ZQX123456789"
+  ]
+ },
+ {
+  "name": "account_shape",
+  "text": "Acct RB-2026117 overdue",
+  "gone": [
+   "RB-2026117"
+  ]
+ },
+ {
+  "name": "name_in_prose_my_name",
+  "text": "Hello, my name is Alice Brightwater and I have a question.",
+  "gone": [
+   "Alice Brightwater"
+  ]
+ },
+ {
+  "name": "name_in_prose_signoff",
+  "text": "Thanks for helping.\nSincerely,\nBob Marlowe",
+  "gone": [
+   "Bob Marlowe"
+  ]
+ },
+ {
+  "name": "name_in_prose_patient",
+  "text": "The patient Carla Nguyen was admitted.",
+  "gone": [
+   "Carla Nguyen"
+  ]
+ },
+ {
+  "name": "split_letters_name",
+  "text": "Name: J a n e  D o e please",
+  "gone": [
+   "J a n e"
+  ]
+ },
+ {
+  "name": "split_letters_dots",
+  "text": "signed J.a.n.e D.o.e.",
+  "gone": [
+   "J.a.n.e"
+  ]
+ },
+ {
+  "name": "cyrillic_name",
+  "text": "Patient J\u0430ne D\u043ee called.",
+  "gone": [
+   "J\u0430ne",
+   "Jane Doe"
+  ]
+ },
+ {
+  "name": "zero_width_name",
+  "text": "Jane\u200b Doe",
+  "gone": [
+   "Jane"
+  ]
+ },
+ {
+  "name": "fullwidth_name",
+  "text": "\uff2a\uff41\uff4e\uff45 Doe",
+  "gone": [
+   "Jane"
+  ]
+ },
+ {
+  "name": "profile_ssn",
+  "text": "SSN 987-65-4321 on file",
+  "gone": [
+   "987-65-4321"
+  ]
+ },
+ {
+  "name": "keep_service_date",
+  "text": "Service date 2026-05-02, CPT 99213, billed $214.00",
+  "keep": [
+   "2026-05-02",
+   "99213",
+   "$214.00"
+  ]
+ },
+ {
+  "name": "keep_slash_service",
+  "text": "Date of service 03/14/2026 amount $35.00 CPT 80053",
+  "keep": [
+   "03/14/2026",
+   "$35.00",
+   "80053"
+  ]
+ },
+ {
+  "name": "keep_prose",
+  "text": "This is the summary. I am writing about claim 2026-05-20 and the Member Services desk.",
+  "keep": [
+   "claim 2026-05-20",
+   "Member Services"
+  ]
+ },
+ {
+  "name": "keep_org",
+  "text": "Mercy Valley Hospital charged a facility fee.",
+  "keep": [
+   "Mercy Valley Hospital"
+  ]
+ },
+ {
+  "name": "canary_member_spaced_groups",
+  "text": "my member id is NSH 884 217 353",
+  "canary": [
+   "MEMBER_ID"
+  ]
+ },
+ {
+  "name": "canary_member_dashed",
+  "text": "NSH-884-217-353",
+  "canary": [
+   "MEMBER_ID"
+  ]
+ },
+ {
+  "name": "canary_ssn_spaced",
+  "text": "ssn 987 65 4321",
+  "canary": [
+   "SSN"
+  ]
+ }
+]
