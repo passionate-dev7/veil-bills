@@ -33,3 +33,18 @@ def test_canary_demo_blocks_without_sending():
     ok, *bad = d["rows"]
     assert ok["http"] == 200 and ok["sent_upstream"]
     assert bad and all(b["http"] == 422 and not b["sent_upstream"] and b["ledger_status"] == "blocked" for b in bad)
+
+
+def test_static_bundle_is_self_contained(tmp_path):
+    """`veil static` output must open with no backend: every local file index.html references is in the bundle."""
+    import re, subprocess, sys
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent
+    r = subprocess.run([sys.executable, "-m", "veil", "static", str(tmp_path)], cwd=root, capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    html = (tmp_path / "index.html").read_text()
+    refs = [x for x in re.findall(r'(?:src|href)="([^":#?]+)"', html) + re.findall(r"fetch\('([^'/][^']*)'\)", html) if "$" not in x]
+    assert {"veil.css", "pseudo.js", "run.js", "run.json"} <= set(refs)
+    for f in refs:
+        assert (tmp_path / f).exists(), f
+    assert (tmp_path / "vercel.json").exists()

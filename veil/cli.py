@@ -163,14 +163,17 @@ def cmd_app(a):
     uvicorn.run(create_web(s, as_of, info), host="127.0.0.1", port=a.port, log_level="warning")
 
 
+STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "run.js", "run.json", "vercel.json")
+
+
 def cmd_static(a):
     import shutil
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     web = ROOT / "web"
-    for f in ("index.html", "run.json", "run.js"):
+    for f in STATIC_FILES:
         shutil.copy(web / f, out / f)
-    print(f"static judge bundle in {out}/  (index.html + run.json; no backend). Try: python -m http.server -d {out}")
+    print(f"static judge bundle in {out}/  ({', '.join(STATIC_FILES)}; no backend). Try: python -m http.server -d {out}")
 
 
 def cmd_sandbox_events(a):
