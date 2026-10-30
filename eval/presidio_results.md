@@ -16,7 +16,7 @@ Recall = share of gold identifiers fully removed. Precision = share of a tool's 
 | D | Telephone numbers (synthetic examples only) | 4 | 100% / 75% | 83% / 75% | 83% / 75% | 100% / 75% |
 | E | Fax numbers (synthetic examples only) | 2 | 100% / 100% | 83% / 100% | 83% / 100% | 100% / 100% |
 | F | Email addresses (synthetic examples only) | 2 | 100% / 100% | 100% / 100% | 100% / 100% | 100% / 100% |
-| G | Social security numbers | 3 | 100% / 33% | 100% / 100% | 100% / 100% | 100% / 33% |
+| G | Social security numbers (synthetic examples only) | 3 | 100% / 33% | 100% / 100% | 100% / 100% | 100% / 33% |
 | H | Medical record numbers (synthetic examples only) | 3 | n/a / 33% | n/a / 33% | 100% / 100% | n/a / 33% |
 | I | Health plan beneficiary numbers | 21 | 100% / 90% | n/a / 43% | 100% / 100% | 100% / 90% |
 | J | Account numbers | 10 | 83% / 100% | 100% / 10% | 85% / 100% | 83% / 100% |
@@ -104,7 +104,7 @@ Recall by identifier, cold Veil against the better of the two stock-or-custom Pr
 - Two scopes are reported. 'All identifiers' counts every Safe Harbor letter as printed, including service dates. 'Veil scope' drops service dates for every tool so the comparison is about what Veil tries to remove.
 - Veil cold vs primed: cold means an empty vault (detectors only), the fair match for Presidio's stock behaviour. Primed means the patient profile is loaded, which is how the product runs; Presidio gets the same profile as exact-string deny lists in the last configuration.
 - Small n: the Jane/persona corpus repeats the same six identifier types in templated documents, so per-letter counts are small. Hard cases and synthetic extras are hand-written to probe known weak spots and are not a sample of real documents. Treat the numbers as a probe, not a population estimate.
-- Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters K, L, M, N, O, E are tested on a few synthetic examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.
+- Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters D through O (phone, fax, email, SSN, MRN, license, vehicle, device, URL, IP) have no instances in the generated documents and are tested on a handful of hand-written examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.
 - Presidio is run at three score thresholds and each configuration is reported at its best micro-F1 threshold, which favours Presidio. The custom recognizers are deliberately simple regexes, not a copy of Veil's detectors.
 
 ## False positives (largest buckets)

@@ -163,7 +163,7 @@ def cmd_app(a):
     uvicorn.run(create_web(s, as_of, info), host="127.0.0.1", port=a.port, log_level="warning")
 
 
-STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "receipts.js", "run.js", "run.json", "vercel.json")
+STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "receipts.js", "run.js", "run.json", "presidio_results.json", "vercel.json")
 
 
 def cmd_static(a):

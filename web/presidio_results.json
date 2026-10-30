@@ -1,0 +1,4319 @@
+{
+ "meta": {
+  "generated": "2026-10-30",
+  "safe_harbor_source": "https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html",
+  "safe_harbor_verified": "2026-10-30",
+  "presidio_analyzer": "2.2.366",
+  "presidio_anonymizer": "2.2.366",
+  "spacy_model": "en_core_web_lg 3.8.0",
+  "presidio_thresholds_tried": [
+   0.0,
+   0.35,
+   0.5
+  ],
+  "documents": {
+   "corpus": 16,
+   "hard_cases": 35,
+   "synthetic_extras": 27
+  },
+  "data": "all synthetic (fictional patients; no real PHI)",
+  "claim": "Scored against the HIPAA Safe Harbor identifier list. This is not a HIPAA compliance claim, and Veil does not meet Safe Harbor by design: it keeps service dates, amounts, CPT codes and provider names/addresses in the clear so the audit math works."
+ },
+ "tools": {
+  "veil": {
+   "label": "Veil (cold)",
+   "description": "Shipped redactor, empty vault: regex detectors + folding only. The like-for-like comparison.",
+   "threshold": null,
+   "sensitivity": null,
+   "rows": {
+    "A": {
+     "n_gold": 40,
+     "hit": 32,
+     "recall": 0.8,
+     "tp_pred": 32,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 54,
+     "recall": 0.9643,
+     "tp_pred": 18,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "C": {
+     "n_gold": 77,
+     "hit": 21,
+     "recall": 0.2727,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 19,
+     "recall": 0.9048,
+     "tp_pred": 19,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 2,
+     "precision": 0.8333
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total": {
+    "n_gold": 240,
+    "hit": 155,
+    "recall": 0.6458,
+    "tp_pred": 118,
+    "fp_pred": 2,
+    "precision": 0.9833,
+    "f1": 0.7796,
+    "unmapped_fp": 0
+   },
+   "rows_veil_scope": {
+    "A": {
+     "n_gold": 40,
+     "hit": 32,
+     "recall": 0.8,
+     "tp_pred": 32,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 54,
+     "recall": 0.9643,
+     "tp_pred": 18,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "C": {
+     "n_gold": 22,
+     "hit": 21,
+     "recall": 0.9545,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 19,
+     "recall": 0.9048,
+     "tp_pred": 19,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 2,
+     "precision": 0.8333
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total_veil_scope": {
+    "n_gold": 185,
+    "hit": 155,
+    "recall": 0.8378,
+    "tp_pred": 118,
+    "fp_pred": 2,
+    "precision": 0.9833,
+    "f1": 0.9047,
+    "unmapped_fp": 0
+   },
+   "breakdown": [
+    {
+     "letter": "A",
+     "sub": "employer",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "A",
+     "sub": "full",
+     "n_gold": 26,
+     "hit": 26,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "obfuscated",
+     "n_gold": 5,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "A",
+     "sub": "prose",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "A",
+     "sub": "relative",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "A",
+     "sub": "surname",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "city",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "county",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "B",
+     "sub": "street",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "zip",
+     "n_gold": 19,
+     "hit": 18,
+     "recall": 0.9474
+    },
+    {
+     "letter": "C",
+     "sub": "age90",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "C",
+     "sub": "dob",
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "svc",
+     "n_gold": 55,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "D",
+     "sub": "-",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "E",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "F",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "-",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "H",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333
+    },
+    {
+     "letter": "I",
+     "sub": "bare",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "labelled",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "J",
+     "sub": "labelled",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "K",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "L",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "M",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "N",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "O",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "R",
+     "sub": "claim",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "trial",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    }
+   ],
+   "false_positives": {
+    "by_label": {
+     "ACCOUNT_NO": 2
+    },
+    "examples": [
+     {
+      "label": "ACCOUNT_NO",
+      "text": "MR-5530918",
+      "count": 1
+     },
+     {
+      "label": "ACCOUNT_NO",
+      "text": "SN-77281904",
+      "count": 1
+     }
+    ]
+   },
+   "gold_by_source": {
+    "C": {
+     "corpus": 67,
+     "hard": 10
+    },
+    "R": {
+     "corpus": 8,
+     "hard": 2,
+     "extra": 1
+    },
+    "A": {
+     "corpus": 24,
+     "hard": 14,
+     "extra": 2
+    },
+    "I": {
+     "corpus": 16,
+     "hard": 4,
+     "extra": 1
+    },
+    "B": {
+     "corpus": 48,
+     "extra": 8
+    },
+    "J": {
+     "corpus": 8,
+     "hard": 2
+    },
+    "G": {
+     "hard": 3
+    },
+    "D": {
+     "extra": 4
+    },
+    "E": {
+     "extra": 2
+    },
+    "F": {
+     "extra": 2
+    },
+    "H": {
+     "extra": 3
+    },
+    "K": {
+     "extra": 3
+    },
+    "L": {
+     "extra": 2
+    },
+    "M": {
+     "extra": 2
+    },
+    "N": {
+     "extra": 2
+    },
+    "O": {
+     "extra": 2
+    }
+   }
+  },
+  "veil_primed": {
+   "label": "Veil (primed)",
+   "description": "Same, with the patient's profile loaded in the vault (how the product runs).",
+   "threshold": null,
+   "sensitivity": null,
+   "rows": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 37,
+     "fp_pred": 2,
+     "precision": 0.9487
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 54,
+     "recall": 0.9643,
+     "tp_pred": 18,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "C": {
+     "n_gold": 77,
+     "hit": 21,
+     "recall": 0.2727,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 19,
+     "recall": 0.9048,
+     "tp_pred": 19,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 2,
+     "precision": 0.8333
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total": {
+    "n_gold": 240,
+    "hit": 160,
+    "recall": 0.6667,
+    "tp_pred": 123,
+    "fp_pred": 4,
+    "precision": 0.9685,
+    "f1": 0.7897,
+    "unmapped_fp": 0
+   },
+   "rows_veil_scope": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 37,
+     "fp_pred": 2,
+     "precision": 0.9487
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 54,
+     "recall": 0.9643,
+     "tp_pred": 18,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "C": {
+     "n_gold": 22,
+     "hit": 21,
+     "recall": 0.9545,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 19,
+     "recall": 0.9048,
+     "tp_pred": 19,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 2,
+     "precision": 0.8333
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total_veil_scope": {
+    "n_gold": 185,
+    "hit": 160,
+    "recall": 0.8649,
+    "tp_pred": 123,
+    "fp_pred": 4,
+    "precision": 0.9685,
+    "f1": 0.9138,
+    "unmapped_fp": 0
+   },
+   "breakdown": [
+    {
+     "letter": "A",
+     "sub": "employer",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "A",
+     "sub": "full",
+     "n_gold": 26,
+     "hit": 26,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "obfuscated",
+     "n_gold": 5,
+     "hit": 5,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "prose",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "A",
+     "sub": "relative",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "A",
+     "sub": "surname",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "city",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "county",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "B",
+     "sub": "street",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "zip",
+     "n_gold": 19,
+     "hit": 18,
+     "recall": 0.9474
+    },
+    {
+     "letter": "C",
+     "sub": "age90",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "C",
+     "sub": "dob",
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "svc",
+     "n_gold": 55,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "D",
+     "sub": "-",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "E",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "F",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "-",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "H",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333
+    },
+    {
+     "letter": "I",
+     "sub": "bare",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "labelled",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "J",
+     "sub": "labelled",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "K",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "L",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "M",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "N",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "O",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "R",
+     "sub": "claim",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "trial",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    }
+   ],
+   "false_positives": {
+    "by_label": {
+     "ACCOUNT_NO": 2,
+     "PERSON": 2
+    },
+    "examples": [
+     {
+      "label": "ACCOUNT_NO",
+      "text": "MR-5530918",
+      "count": 1
+     },
+     {
+      "label": "ACCOUNT_NO",
+      "text": "SN-77281904",
+      "count": 1
+     },
+     {
+      "label": "PERSON",
+      "text": "jane",
+      "count": 1
+     },
+     {
+      "label": "PERSON",
+      "text": "doe",
+      "count": 1
+     }
+    ]
+   },
+   "gold_by_source": {
+    "C": {
+     "corpus": 67,
+     "hard": 10
+    },
+    "R": {
+     "corpus": 8,
+     "hard": 2,
+     "extra": 1
+    },
+    "A": {
+     "corpus": 24,
+     "hard": 14,
+     "extra": 2
+    },
+    "I": {
+     "corpus": 16,
+     "hard": 4,
+     "extra": 1
+    },
+    "B": {
+     "corpus": 48,
+     "extra": 8
+    },
+    "J": {
+     "corpus": 8,
+     "hard": 2
+    },
+    "G": {
+     "hard": 3
+    },
+    "D": {
+     "extra": 4
+    },
+    "E": {
+     "extra": 2
+    },
+    "F": {
+     "extra": 2
+    },
+    "H": {
+     "extra": 3
+    },
+    "K": {
+     "extra": 3
+    },
+    "L": {
+     "extra": 2
+    },
+    "M": {
+     "extra": 2
+    },
+    "N": {
+     "extra": 2
+    },
+    "O": {
+     "extra": 2
+    }
+   }
+  },
+  "presidio_default": {
+   "label": "Presidio (defaults)",
+   "description": "AnalyzerEngine, en_core_web_lg, stock recognizers.",
+   "threshold": 0.35,
+   "sensitivity": {
+    "0.0": {
+     "precision": 0.566,
+     "recall": 0.7125,
+     "f1": 0.6309,
+     "fp": 125
+    },
+    "0.35": {
+     "precision": 0.6075,
+     "recall": 0.7,
+     "f1": 0.6505,
+     "fp": 104
+    },
+    "0.5": {
+     "precision": 0.5992,
+     "recall": 0.675,
+     "f1": 0.6348,
+     "fp": 103
+    }
+   },
+   "rows": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 39,
+     "fp_pred": 62,
+     "precision": 0.3861
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 30,
+     "recall": 0.5357,
+     "tp_pred": 27,
+     "fp_pred": 1,
+     "precision": 0.9643
+    },
+    "C": {
+     "n_gold": 77,
+     "hit": 77,
+     "recall": 1.0,
+     "tp_pred": 77,
+     "fp_pred": 35,
+     "precision": 0.6875
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 9,
+     "recall": 0.4286,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 1,
+     "recall": 0.1,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    }
+   },
+   "total": {
+    "n_gold": 240,
+    "hit": 168,
+    "recall": 0.7,
+    "tp_pred": 161,
+    "fp_pred": 104,
+    "precision": 0.6075,
+    "f1": 0.6505,
+    "unmapped_fp": 0
+   },
+   "rows_veil_scope": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 39,
+     "fp_pred": 62,
+     "precision": 0.3861
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 30,
+     "recall": 0.5357,
+     "tp_pred": 27,
+     "fp_pred": 1,
+     "precision": 0.9643
+    },
+    "C": {
+     "n_gold": 22,
+     "hit": 22,
+     "recall": 1.0,
+     "tp_pred": 22,
+     "fp_pred": 35,
+     "precision": 0.386
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 9,
+     "recall": 0.4286,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 1,
+     "recall": 0.1,
+     "tp_pred": 1,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    }
+   },
+   "total_veil_scope": {
+    "n_gold": 185,
+    "hit": 113,
+    "recall": 0.6108,
+    "tp_pred": 106,
+    "fp_pred": 104,
+    "precision": 0.5048,
+    "f1": 0.5528,
+    "unmapped_fp": 0
+   },
+   "breakdown": [
+    {
+     "letter": "A",
+     "sub": "employer",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "full",
+     "n_gold": 26,
+     "hit": 26,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "obfuscated",
+     "n_gold": 5,
+     "hit": 2,
+     "recall": 0.4
+    },
+    {
+     "letter": "A",
+     "sub": "prose",
+     "n_gold": 4,
+     "hit": 4,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "relative",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "surname",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "city",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "county",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "street",
+     "n_gold": 18,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "B",
+     "sub": "zip",
+     "n_gold": 19,
+     "hit": 11,
+     "recall": 0.5789
+    },
+    {
+     "letter": "C",
+     "sub": "age90",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "dob",
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "svc",
+     "n_gold": 55,
+     "hit": 55,
+     "recall": 1.0
+    },
+    {
+     "letter": "D",
+     "sub": "-",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "E",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "F",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "-",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "H",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 1,
+     "recall": 0.3333
+    },
+    {
+     "letter": "I",
+     "sub": "bare",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "I",
+     "sub": "labelled",
+     "n_gold": 18,
+     "hit": 8,
+     "recall": 0.4444
+    },
+    {
+     "letter": "I",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5
+    },
+    {
+     "letter": "J",
+     "sub": "labelled",
+     "n_gold": 10,
+     "hit": 1,
+     "recall": 0.1
+    },
+    {
+     "letter": "K",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "L",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "M",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "N",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5
+    },
+    {
+     "letter": "O",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "claim",
+     "n_gold": 10,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "R",
+     "sub": "trial",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    }
+   ],
+   "false_positives": {
+    "by_label": {
+     "ORGANIZATION": 45,
+     "DATE_TIME": 35,
+     "PERSON": 17,
+     "URL": 3,
+     "MEDICAL_LICENSE": 2,
+     "LOCATION": 1,
+     "PHONE_NUMBER": 1
+    },
+    "examples": [
+     {
+      "label": "DATE_TIME",
+      "text": "180 days",
+      "count": 9
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "30 days",
+      "count": 9
+     },
+     {
+      "label": "PERSON",
+      "text": "Bill",
+      "count": 8
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Veil",
+      "count": 6
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Description | Service",
+      "count": 5
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "year 2026",
+      "count": 4
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "NSH884217353         Group",
+      "count": 3
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "IL 62704\nProvider",
+      "count": 3
+     }
+    ]
+   },
+   "gold_by_source": {
+    "C": {
+     "corpus": 67,
+     "hard": 10
+    },
+    "R": {
+     "corpus": 8,
+     "hard": 2,
+     "extra": 1
+    },
+    "A": {
+     "corpus": 24,
+     "hard": 14,
+     "extra": 2
+    },
+    "I": {
+     "corpus": 16,
+     "hard": 4,
+     "extra": 1
+    },
+    "B": {
+     "corpus": 48,
+     "extra": 8
+    },
+    "J": {
+     "corpus": 8,
+     "hard": 2
+    },
+    "G": {
+     "hard": 3
+    },
+    "D": {
+     "extra": 4
+    },
+    "E": {
+     "extra": 2
+    },
+    "F": {
+     "extra": 2
+    },
+    "H": {
+     "extra": 3
+    },
+    "K": {
+     "extra": 3
+    },
+    "L": {
+     "extra": 2
+    },
+    "M": {
+     "extra": 2
+    },
+    "N": {
+     "extra": 2
+    },
+    "O": {
+     "extra": 2
+    }
+   }
+  },
+  "presidio_custom": {
+   "label": "Presidio + custom regex",
+   "description": "Defaults plus simple regex recognizers: member/claim/account/MRN shapes, street, ZIP-after-state, Mr/Mrs surname.",
+   "threshold": 0.35,
+   "sensitivity": {
+    "0.0": {
+     "precision": 0.6543,
+     "recall": 0.9458,
+     "f1": 0.7735,
+     "fp": 130
+    },
+    "0.35": {
+     "precision": 0.6912,
+     "recall": 0.9458,
+     "f1": 0.7987,
+     "fp": 109
+    },
+    "0.5": {
+     "precision": 0.687,
+     "recall": 0.9208,
+     "f1": 0.7869,
+     "fp": 108
+    }
+   },
+   "rows": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 41,
+     "fp_pred": 62,
+     "precision": 0.3981
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 56,
+     "recall": 1.0,
+     "tp_pred": 64,
+     "fp_pred": 4,
+     "precision": 0.9412
+    },
+    "C": {
+     "n_gold": 77,
+     "hit": 77,
+     "recall": 1.0,
+     "tp_pred": 77,
+     "fp_pred": 35,
+     "precision": 0.6875
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 11,
+     "fp_pred": 2,
+     "precision": 0.8462
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total": {
+    "n_gold": 240,
+    "hit": 227,
+    "recall": 0.9458,
+    "tp_pred": 244,
+    "fp_pred": 109,
+    "precision": 0.6912,
+    "f1": 0.7987,
+    "unmapped_fp": 0
+   },
+   "rows_veil_scope": {
+    "A": {
+     "n_gold": 40,
+     "hit": 37,
+     "recall": 0.925,
+     "tp_pred": 41,
+     "fp_pred": 62,
+     "precision": 0.3981
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 56,
+     "recall": 1.0,
+     "tp_pred": 64,
+     "fp_pred": 4,
+     "precision": 0.9412
+    },
+    "C": {
+     "n_gold": 22,
+     "hit": 22,
+     "recall": 1.0,
+     "tp_pred": 22,
+     "fp_pred": 35,
+     "precision": 0.386
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 1,
+     "precision": 0.8333
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0,
+     "tp_pred": 21,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 11,
+     "fp_pred": 2,
+     "precision": 0.8462
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total_veil_scope": {
+    "n_gold": 185,
+    "hit": 172,
+    "recall": 0.9297,
+    "tp_pred": 189,
+    "fp_pred": 109,
+    "precision": 0.6342,
+    "f1": 0.754,
+    "unmapped_fp": 0
+   },
+   "breakdown": [
+    {
+     "letter": "A",
+     "sub": "employer",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "full",
+     "n_gold": 26,
+     "hit": 26,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "obfuscated",
+     "n_gold": 5,
+     "hit": 2,
+     "recall": 0.4
+    },
+    {
+     "letter": "A",
+     "sub": "prose",
+     "n_gold": 4,
+     "hit": 4,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "relative",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "surname",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "city",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "county",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "street",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "zip",
+     "n_gold": 19,
+     "hit": 19,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "age90",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "dob",
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "svc",
+     "n_gold": 55,
+     "hit": 55,
+     "recall": 1.0
+    },
+    {
+     "letter": "D",
+     "sub": "-",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "E",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "F",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "-",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "H",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "bare",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "labelled",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "J",
+     "sub": "labelled",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "K",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "L",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "M",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "N",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5
+    },
+    {
+     "letter": "O",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "claim",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "trial",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    }
+   ],
+   "false_positives": {
+    "by_label": {
+     "ORGANIZATION": 45,
+     "DATE_TIME": 35,
+     "PERSON": 17,
+     "US_ZIP": 3,
+     "URL": 3,
+     "MEDICAL_LICENSE": 2,
+     "ACCOUNT_NO": 2,
+     "LOCATION": 1,
+     "PHONE_NUMBER": 1
+    },
+    "examples": [
+     {
+      "label": "DATE_TIME",
+      "text": "180 days",
+      "count": 9
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "30 days",
+      "count": 9
+     },
+     {
+      "label": "PERSON",
+      "text": "Bill",
+      "count": 8
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Veil",
+      "count": 6
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Description | Service",
+      "count": 5
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "year 2026",
+      "count": 4
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "NSH884217353         Group",
+      "count": 3
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "IL 62704\nProvider",
+      "count": 3
+     }
+    ]
+   },
+   "gold_by_source": {
+    "C": {
+     "corpus": 67,
+     "hard": 10
+    },
+    "R": {
+     "corpus": 8,
+     "hard": 2,
+     "extra": 1
+    },
+    "A": {
+     "corpus": 24,
+     "hard": 14,
+     "extra": 2
+    },
+    "I": {
+     "corpus": 16,
+     "hard": 4,
+     "extra": 1
+    },
+    "B": {
+     "corpus": 48,
+     "extra": 8
+    },
+    "J": {
+     "corpus": 8,
+     "hard": 2
+    },
+    "G": {
+     "hard": 3
+    },
+    "D": {
+     "extra": 4
+    },
+    "E": {
+     "extra": 2
+    },
+    "F": {
+     "extra": 2
+    },
+    "H": {
+     "extra": 3
+    },
+    "K": {
+     "extra": 3
+    },
+    "L": {
+     "extra": 2
+    },
+    "M": {
+     "extra": 2
+    },
+    "N": {
+     "extra": 2
+    },
+    "O": {
+     "extra": 2
+    }
+   }
+  },
+  "presidio_custom_profile": {
+   "label": "Presidio + custom + profile deny-list",
+   "description": "Adds the same patient profile Veil gets as exact-string deny lists.",
+   "threshold": 0.35,
+   "sensitivity": {
+    "0.0": {
+     "precision": 0.7087,
+     "recall": 0.95,
+     "f1": 0.8118,
+     "fp": 134
+    },
+    "0.35": {
+     "precision": 0.7414,
+     "recall": 0.95,
+     "f1": 0.8328,
+     "fp": 113
+    },
+    "0.5": {
+     "precision": 0.7389,
+     "recall": 0.9333,
+     "f1": 0.8248,
+     "fp": 112
+    }
+   },
+   "rows": {
+    "A": {
+     "n_gold": 40,
+     "hit": 38,
+     "recall": 0.95,
+     "tp_pred": 68,
+     "fp_pred": 66,
+     "precision": 0.5075
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 56,
+     "recall": 1.0,
+     "tp_pred": 80,
+     "fp_pred": 4,
+     "precision": 0.9524
+    },
+    "C": {
+     "n_gold": 77,
+     "hit": 77,
+     "recall": 1.0,
+     "tp_pred": 94,
+     "fp_pred": 35,
+     "precision": 0.7287
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 7,
+     "fp_pred": 1,
+     "precision": 0.875
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 7,
+     "fp_pred": 1,
+     "precision": 0.875
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 6,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0,
+     "tp_pred": 37,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 11,
+     "fp_pred": 2,
+     "precision": 0.8462
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total": {
+    "n_gold": 240,
+    "hit": 228,
+    "recall": 0.95,
+    "tp_pred": 324,
+    "fp_pred": 113,
+    "precision": 0.7414,
+    "f1": 0.8328,
+    "unmapped_fp": 0
+   },
+   "rows_veil_scope": {
+    "A": {
+     "n_gold": 40,
+     "hit": 38,
+     "recall": 0.95,
+     "tp_pred": 68,
+     "fp_pred": 66,
+     "precision": 0.5075
+    },
+    "B": {
+     "n_gold": 56,
+     "hit": 56,
+     "recall": 1.0,
+     "tp_pred": 80,
+     "fp_pred": 4,
+     "precision": 0.9524
+    },
+    "C": {
+     "n_gold": 22,
+     "hit": 22,
+     "recall": 1.0,
+     "tp_pred": 39,
+     "fp_pred": 35,
+     "precision": 0.527
+    },
+    "D": {
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75,
+     "tp_pred": 7,
+     "fp_pred": 1,
+     "precision": 0.875
+    },
+    "E": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 7,
+     "fp_pred": 1,
+     "precision": 0.875
+    },
+    "F": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "G": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 6,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "H": {
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "I": {
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0,
+     "tp_pred": 37,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "J": {
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0,
+     "tp_pred": 11,
+     "fp_pred": 2,
+     "precision": 0.8462
+    },
+    "K": {
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 2,
+     "fp_pred": 2,
+     "precision": 0.5
+    },
+    "L": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "M": {
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "N": {
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5,
+     "tp_pred": 1,
+     "fp_pred": 3,
+     "precision": 0.25
+    },
+    "O": {
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0,
+     "precision": 1.0
+    },
+    "P": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "Q": {
+     "n_gold": 0,
+     "hit": 0,
+     "recall": null,
+     "tp_pred": 0,
+     "fp_pred": 0,
+     "precision": null
+    },
+    "R": {
+     "n_gold": 11,
+     "hit": 10,
+     "recall": 0.9091,
+     "tp_pred": 10,
+     "fp_pred": 0,
+     "precision": 1.0
+    }
+   },
+   "total_veil_scope": {
+    "n_gold": 185,
+    "hit": 173,
+    "recall": 0.9351,
+    "tp_pred": 269,
+    "fp_pred": 113,
+    "precision": 0.7042,
+    "f1": 0.8034,
+    "unmapped_fp": 0
+   },
+   "breakdown": [
+    {
+     "letter": "A",
+     "sub": "employer",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "full",
+     "n_gold": 26,
+     "hit": 26,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "obfuscated",
+     "n_gold": 5,
+     "hit": 3,
+     "recall": 0.6
+    },
+    {
+     "letter": "A",
+     "sub": "prose",
+     "n_gold": 4,
+     "hit": 4,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "relative",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "A",
+     "sub": "surname",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "city",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "county",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "street",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "B",
+     "sub": "zip",
+     "n_gold": 19,
+     "hit": 19,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "age90",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "dob",
+     "n_gold": 21,
+     "hit": 21,
+     "recall": 1.0
+    },
+    {
+     "letter": "C",
+     "sub": "svc",
+     "n_gold": 55,
+     "hit": 55,
+     "recall": 1.0
+    },
+    {
+     "letter": "D",
+     "sub": "-",
+     "n_gold": 4,
+     "hit": 3,
+     "recall": 0.75
+    },
+    {
+     "letter": "E",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "F",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "-",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "G",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "H",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 3,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "bare",
+     "n_gold": 1,
+     "hit": 1,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "labelled",
+     "n_gold": 18,
+     "hit": 18,
+     "recall": 1.0
+    },
+    {
+     "letter": "I",
+     "sub": "spaced",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "J",
+     "sub": "labelled",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "K",
+     "sub": "-",
+     "n_gold": 3,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "L",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "M",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 0,
+     "recall": 0.0
+    },
+    {
+     "letter": "N",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 1,
+     "recall": 0.5
+    },
+    {
+     "letter": "O",
+     "sub": "-",
+     "n_gold": 2,
+     "hit": 2,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "claim",
+     "n_gold": 10,
+     "hit": 10,
+     "recall": 1.0
+    },
+    {
+     "letter": "R",
+     "sub": "trial",
+     "n_gold": 1,
+     "hit": 0,
+     "recall": 0.0
+    }
+   ],
+   "false_positives": {
+    "by_label": {
+     "ORGANIZATION": 45,
+     "DATE_TIME": 35,
+     "PERSON": 17,
+     "PROFILE_PERSON": 4,
+     "US_ZIP": 3,
+     "URL": 3,
+     "MEDICAL_LICENSE": 2,
+     "ACCOUNT_NO": 2,
+     "LOCATION": 1,
+     "PHONE_NUMBER": 1
+    },
+    "examples": [
+     {
+      "label": "DATE_TIME",
+      "text": "180 days",
+      "count": 9
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "30 days",
+      "count": 9
+     },
+     {
+      "label": "PERSON",
+      "text": "Bill",
+      "count": 8
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Veil",
+      "count": 6
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "Description | Service",
+      "count": 5
+     },
+     {
+      "label": "DATE_TIME",
+      "text": "year 2026",
+      "count": 4
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "NSH884217353         Group",
+      "count": 3
+     },
+     {
+      "label": "ORGANIZATION",
+      "text": "IL 62704\nProvider",
+      "count": 3
+     }
+    ]
+   },
+   "gold_by_source": {
+    "C": {
+     "corpus": 67,
+     "hard": 10
+    },
+    "R": {
+     "corpus": 8,
+     "hard": 2,
+     "extra": 1
+    },
+    "A": {
+     "corpus": 24,
+     "hard": 14,
+     "extra": 2
+    },
+    "I": {
+     "corpus": 16,
+     "hard": 4,
+     "extra": 1
+    },
+    "B": {
+     "corpus": 48,
+     "extra": 8
+    },
+    "J": {
+     "corpus": 8,
+     "hard": 2
+    },
+    "G": {
+     "hard": 3
+    },
+    "D": {
+     "extra": 4
+    },
+    "E": {
+     "extra": 2
+    },
+    "F": {
+     "extra": 2
+    },
+    "H": {
+     "extra": 3
+    },
+    "K": {
+     "extra": 3
+    },
+    "L": {
+     "extra": 2
+    },
+    "M": {
+     "extra": 2
+    },
+    "N": {
+     "extra": 2
+    },
+    "O": {
+     "extra": 2
+    }
+   }
+  }
+ },
+ "identifiers": [
+  {
+   "letter": "A",
+   "name": "Names",
+   "short": "Names",
+   "status": "tested",
+   "note": "",
+   "n_gold": 40,
+   "gold_by_source": {
+    "corpus": 24,
+    "hard": 14,
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.8,
+     "hit": 32,
+     "precision": 1.0,
+     "tp_pred": 32,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.925,
+     "hit": 37,
+     "precision": 0.9487,
+     "tp_pred": 37,
+     "fp_pred": 2
+    },
+    "presidio_default": {
+     "recall": 0.925,
+     "hit": 37,
+     "precision": 0.3861,
+     "tp_pred": 39,
+     "fp_pred": 62
+    },
+    "presidio_custom": {
+     "recall": 0.925,
+     "hit": 37,
+     "precision": 0.3981,
+     "tp_pred": 41,
+     "fp_pred": 62
+    },
+    "presidio_custom_profile": {
+     "recall": 0.95,
+     "hit": 38,
+     "precision": 0.5075,
+     "tp_pred": 68,
+     "fp_pred": 66
+    }
+   }
+  },
+  {
+   "letter": "B",
+   "name": "Geographic subdivisions smaller than a state (street, city, county, precinct, ZIP, geocodes)",
+   "short": "Geography (street, city, ZIP, county)",
+   "status": "tested",
+   "note": "",
+   "n_gold": 56,
+   "gold_by_source": {
+    "corpus": 48,
+    "extra": 8
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.9643,
+     "hit": 54,
+     "precision": 1.0,
+     "tp_pred": 18,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.9643,
+     "hit": 54,
+     "precision": 1.0,
+     "tp_pred": 18,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.5357,
+     "hit": 30,
+     "precision": 0.9643,
+     "tp_pred": 27,
+     "fp_pred": 1
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 56,
+     "precision": 0.9412,
+     "tp_pred": 64,
+     "fp_pred": 4
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 56,
+     "precision": 0.9524,
+     "tp_pred": 80,
+     "fp_pred": 4
+    }
+   }
+  },
+  {
+   "letter": "C",
+   "name": "All elements of dates except year, directly related to the individual (birth, admission, discharge, death); ages over 89",
+   "short": "Dates except year; ages over 89",
+   "status": "tested",
+   "note": "",
+   "n_gold": 77,
+   "gold_by_source": {
+    "corpus": 67,
+    "hard": 10
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.2727,
+     "hit": 21,
+     "precision": 1.0,
+     "tp_pred": 21,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.2727,
+     "hit": 21,
+     "precision": 1.0,
+     "tp_pred": 21,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 1.0,
+     "hit": 77,
+     "precision": 0.6875,
+     "tp_pred": 77,
+     "fp_pred": 35
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 77,
+     "precision": 0.6875,
+     "tp_pred": 77,
+     "fp_pred": 35
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 77,
+     "precision": 0.7287,
+     "tp_pred": 94,
+     "fp_pred": 35
+    }
+   }
+  },
+  {
+   "letter": "D",
+   "name": "Telephone numbers",
+   "short": "Phone numbers",
+   "status": "synthetic_only",
+   "note": "4 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 4,
+   "gold_by_source": {
+    "extra": 4
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.75,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.75,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.75,
+     "hit": 3,
+     "precision": 0.8333,
+     "tp_pred": 5,
+     "fp_pred": 1
+    },
+    "presidio_custom": {
+     "recall": 0.75,
+     "hit": 3,
+     "precision": 0.8333,
+     "tp_pred": 5,
+     "fp_pred": 1
+    },
+    "presidio_custom_profile": {
+     "recall": 0.75,
+     "hit": 3,
+     "precision": 0.875,
+     "tp_pred": 7,
+     "fp_pred": 1
+    }
+   }
+  },
+  {
+   "letter": "E",
+   "name": "Fax numbers",
+   "short": "Fax numbers",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 0.8333,
+     "tp_pred": 5,
+     "fp_pred": 1
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 0.8333,
+     "tp_pred": 5,
+     "fp_pred": 1
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 0.875,
+     "tp_pred": 7,
+     "fp_pred": 1
+    }
+   }
+  },
+  {
+   "letter": "F",
+   "name": "Email addresses",
+   "short": "Email addresses",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "G",
+   "name": "Social security numbers",
+   "short": "Social security numbers",
+   "status": "synthetic_only",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 3,
+   "gold_by_source": {
+    "hard": 3
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.3333,
+     "hit": 1,
+     "precision": 1.0,
+     "tp_pred": 1,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.3333,
+     "hit": 1,
+     "precision": 1.0,
+     "tp_pred": 1,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 1.0,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 5,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 6,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "H",
+   "name": "Medical record numbers",
+   "short": "Medical record numbers",
+   "status": "synthetic_only",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 3,
+   "gold_by_source": {
+    "extra": 3
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.3333,
+     "hit": 1,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.3333,
+     "hit": 1,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.3333,
+     "hit": 1,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 3,
+     "precision": 1.0,
+     "tp_pred": 3,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "I",
+   "name": "Health plan beneficiary numbers",
+   "short": "Health plan IDs",
+   "status": "tested",
+   "note": "",
+   "n_gold": 21,
+   "gold_by_source": {
+    "corpus": 16,
+    "hard": 4,
+    "extra": 1
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.9048,
+     "hit": 19,
+     "precision": 1.0,
+     "tp_pred": 19,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.9048,
+     "hit": 19,
+     "precision": 1.0,
+     "tp_pred": 19,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.4286,
+     "hit": 9,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 21,
+     "precision": 1.0,
+     "tp_pred": 21,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 21,
+     "precision": 1.0,
+     "tp_pred": 37,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "J",
+   "name": "Account numbers",
+   "short": "Account numbers",
+   "status": "tested",
+   "note": "",
+   "n_gold": 10,
+   "gold_by_source": {
+    "corpus": 8,
+    "hard": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 1.0,
+     "hit": 10,
+     "precision": 0.8333,
+     "tp_pred": 10,
+     "fp_pred": 2
+    },
+    "veil_primed": {
+     "recall": 1.0,
+     "hit": 10,
+     "precision": 0.8333,
+     "tp_pred": 10,
+     "fp_pred": 2
+    },
+    "presidio_default": {
+     "recall": 0.1,
+     "hit": 1,
+     "precision": 1.0,
+     "tp_pred": 1,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 10,
+     "precision": 0.8462,
+     "tp_pred": 11,
+     "fp_pred": 2
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 10,
+     "precision": 0.8462,
+     "tp_pred": 11,
+     "fp_pred": 2
+    }
+   }
+  },
+  {
+   "letter": "K",
+   "name": "Certificate/license numbers",
+   "short": "Certificate / license numbers",
+   "status": "synthetic_only",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 3,
+   "gold_by_source": {
+    "extra": 3
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": 0.5,
+     "tp_pred": 2,
+     "fp_pred": 2
+    },
+    "presidio_custom": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": 0.5,
+     "tp_pred": 2,
+     "fp_pred": 2
+    },
+    "presidio_custom_profile": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": 0.5,
+     "tp_pred": 2,
+     "fp_pred": 2
+    }
+   }
+  },
+  {
+   "letter": "L",
+   "name": "Vehicle identifiers and serial numbers, including license plates",
+   "short": "Vehicle IDs, plates",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "M",
+   "name": "Device identifiers and serial numbers",
+   "short": "Device IDs, serials",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "N",
+   "name": "Web URLs",
+   "short": "Web URLs",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.5,
+     "hit": 1,
+     "precision": 0.25,
+     "tp_pred": 1,
+     "fp_pred": 3
+    },
+    "presidio_custom": {
+     "recall": 0.5,
+     "hit": 1,
+     "precision": 0.25,
+     "tp_pred": 1,
+     "fp_pred": 3
+    },
+    "presidio_custom_profile": {
+     "recall": 0.5,
+     "hit": 1,
+     "precision": 0.25,
+     "tp_pred": 1,
+     "fp_pred": 3
+    }
+   }
+  },
+  {
+   "letter": "O",
+   "name": "IP addresses",
+   "short": "IP addresses",
+   "status": "synthetic_only",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
+   "n_gold": 2,
+   "gold_by_source": {
+    "extra": 2
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 1.0,
+     "hit": 2,
+     "precision": 1.0,
+     "tp_pred": 2,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "P",
+   "name": "Biometric identifiers, including finger and voice prints",
+   "short": "Biometrics",
+   "status": "not_tested",
+   "note": "not in corpus / not tested: the benchmark is text-only (a fingerprint or voiceprint is not text)",
+   "n_gold": 0,
+   "gold_by_source": {},
+   "tools": {
+    "veil": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "Q",
+   "name": "Full-face photographs and comparable images",
+   "short": "Face photos",
+   "status": "not_tested",
+   "note": "not in corpus / not tested: the benchmark is text-only (no images are processed)",
+   "n_gold": 0,
+   "gold_by_source": {},
+   "tools": {
+    "veil": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": null,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    }
+   }
+  },
+  {
+   "letter": "R",
+   "name": "Any other unique identifying number, characteristic, or code",
+   "short": "Other unique IDs (claim no. etc.)",
+   "status": "tested",
+   "note": "",
+   "n_gold": 11,
+   "gold_by_source": {
+    "corpus": 8,
+    "hard": 2,
+    "extra": 1
+   },
+   "tools": {
+    "veil": {
+     "recall": 0.9091,
+     "hit": 10,
+     "precision": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 0
+    },
+    "veil_primed": {
+     "recall": 0.9091,
+     "hit": 10,
+     "precision": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 0
+    },
+    "presidio_default": {
+     "recall": 0.0,
+     "hit": 0,
+     "precision": null,
+     "tp_pred": 0,
+     "fp_pred": 0
+    },
+    "presidio_custom": {
+     "recall": 0.9091,
+     "hit": 10,
+     "precision": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 0
+    },
+    "presidio_custom_profile": {
+     "recall": 0.9091,
+     "hit": 10,
+     "precision": 1.0,
+     "tp_pred": 10,
+     "fp_pred": 0
+    }
+   }
+  }
+ ],
+ "safe_harbor_letters": [
+  {
+   "letter": "A",
+   "name": "Names"
+  },
+  {
+   "letter": "B",
+   "name": "Geographic subdivisions smaller than a state (street, city, county, precinct, ZIP, geocodes)"
+  },
+  {
+   "letter": "C",
+   "name": "All elements of dates except year, directly related to the individual (birth, admission, discharge, death); ages over 89"
+  },
+  {
+   "letter": "D",
+   "name": "Telephone numbers"
+  },
+  {
+   "letter": "E",
+   "name": "Fax numbers"
+  },
+  {
+   "letter": "F",
+   "name": "Email addresses"
+  },
+  {
+   "letter": "G",
+   "name": "Social security numbers"
+  },
+  {
+   "letter": "H",
+   "name": "Medical record numbers"
+  },
+  {
+   "letter": "I",
+   "name": "Health plan beneficiary numbers"
+  },
+  {
+   "letter": "J",
+   "name": "Account numbers"
+  },
+  {
+   "letter": "K",
+   "name": "Certificate/license numbers"
+  },
+  {
+   "letter": "L",
+   "name": "Vehicle identifiers and serial numbers, including license plates"
+  },
+  {
+   "letter": "M",
+   "name": "Device identifiers and serial numbers"
+  },
+  {
+   "letter": "N",
+   "name": "Web URLs"
+  },
+  {
+   "letter": "O",
+   "name": "IP addresses"
+  },
+  {
+   "letter": "P",
+   "name": "Biometric identifiers, including finger and voice prints"
+  },
+  {
+   "letter": "Q",
+   "name": "Full-face photographs and comparable images"
+  },
+  {
+   "letter": "R",
+   "name": "Any other unique identifying number, characteristic, or code"
+  }
+ ],
+ "notes": [
+  "Dates: HIPAA Safe Harbor requires removing every element of a date directly related to the patient except the year. Veil deliberately keeps service, notice and statement dates in the clear so the audit math (deductibles, 180-day appeal windows) works. Veil therefore does NOT meet Safe Harbor by design, and its recall on service dates is 0 on purpose. It removes birth dates.",
+  "The same applies to provider names and addresses, ZIP codes of providers, CPT codes and dollar amounts: Veil may keep them. HHS FAQ 3.8 does not require removing provider names, so they are scored neutral (neither a miss nor a false alarm); patient addresses, ZIP codes and cities are scored as identifiers (letter B).",
+  "Two scopes are reported. 'All identifiers' counts every Safe Harbor letter as printed, including service dates. 'Veil scope' drops service dates for every tool so the comparison is about what Veil tries to remove.",
+  "Veil cold vs primed: cold means an empty vault (detectors only), the fair match for Presidio's stock behaviour. Primed means the patient profile is loaded, which is how the product runs; Presidio gets the same profile as exact-string deny lists in the last configuration.",
+  "Small n: the Jane/persona corpus repeats the same six identifier types in templated documents, so per-letter counts are small. Hard cases and synthetic extras are hand-written to probe known weak spots and are not a sample of real documents. Treat the numbers as a probe, not a population estimate.",
+  "Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters D through O (phone, fax, email, SSN, MRN, license, vehicle, device, URL, IP) have no instances in the generated documents and are tested on a handful of hand-written examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.",
+  "Presidio is run at three score thresholds and each configuration is reported at its best micro-F1 threshold, which favours Presidio. The custom recognizers are deliberately simple regexes, not a copy of Veil's detectors."
+ ],
+ "wins": [
+  {
+   "letter": "A",
+   "name": "Names",
+   "winner": "Presidio",
+   "veil": 0.8,
+   "presidio_default": 0.925,
+   "presidio_custom": 0.925
+  },
+  {
+   "letter": "B",
+   "name": "Geographic subdivisions smaller than a state (street, city, county, precinct, ZIP, geocodes)",
+   "winner": "Presidio",
+   "veil": 0.9643,
+   "presidio_default": 0.5357,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "C",
+   "name": "All elements of dates except year, directly related to the individual (birth, admission, discharge, death); ages over 89",
+   "winner": "Presidio",
+   "veil": 0.2727,
+   "presidio_default": 1.0,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "D",
+   "name": "Telephone numbers",
+   "winner": "tie",
+   "veil": 0.75,
+   "presidio_default": 0.75,
+   "presidio_custom": 0.75
+  },
+  {
+   "letter": "E",
+   "name": "Fax numbers",
+   "winner": "tie",
+   "veil": 1.0,
+   "presidio_default": 1.0,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "F",
+   "name": "Email addresses",
+   "winner": "tie",
+   "veil": 1.0,
+   "presidio_default": 1.0,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "G",
+   "name": "Social security numbers",
+   "winner": "Presidio",
+   "veil": 0.3333,
+   "presidio_default": 1.0,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "H",
+   "name": "Medical record numbers",
+   "winner": "Presidio",
+   "veil": 0.3333,
+   "presidio_default": 0.3333,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "I",
+   "name": "Health plan beneficiary numbers",
+   "winner": "Presidio",
+   "veil": 0.9048,
+   "presidio_default": 0.4286,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "J",
+   "name": "Account numbers",
+   "winner": "tie",
+   "veil": 1.0,
+   "presidio_default": 0.1,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "K",
+   "name": "Certificate/license numbers",
+   "winner": "tie",
+   "veil": 0.0,
+   "presidio_default": 0.0,
+   "presidio_custom": 0.0
+  },
+  {
+   "letter": "L",
+   "name": "Vehicle identifiers and serial numbers, including license plates",
+   "winner": "tie",
+   "veil": 0.0,
+   "presidio_default": 0.0,
+   "presidio_custom": 0.0
+  },
+  {
+   "letter": "M",
+   "name": "Device identifiers and serial numbers",
+   "winner": "tie",
+   "veil": 0.0,
+   "presidio_default": 0.0,
+   "presidio_custom": 0.0
+  },
+  {
+   "letter": "N",
+   "name": "Web URLs",
+   "winner": "Presidio",
+   "veil": 0.0,
+   "presidio_default": 0.5,
+   "presidio_custom": 0.5
+  },
+  {
+   "letter": "O",
+   "name": "IP addresses",
+   "winner": "Presidio",
+   "veil": 0.0,
+   "presidio_default": 1.0,
+   "presidio_custom": 1.0
+  },
+  {
+   "letter": "R",
+   "name": "Any other unique identifying number, characteristic, or code",
+   "winner": "tie",
+   "veil": 0.9091,
+   "presidio_default": 0.0,
+   "presidio_custom": 0.9091
+  }
+ ]
+}

@@ -113,6 +113,37 @@ Identifiers = ground-truth name, last-first name, DOB, member ID, SSN, phone, em
 
 Caveats: 6 synthetic patients is a smoke-level sample, not a benchmark; SSN, phone and email do not appear in the generated EOBs and bills, so the identifier count covers name, last-first name, DOB, member ID, street, claim and account numbers (those kinds are covered by unit tests instead). Cases e1-e5 are profile-unseeded, so the gateway learned each patient from labelled fields in the documents themselves.
 
+### Head to head with Microsoft Presidio (scored against the HIPAA Safe Harbor identifier list)
+
+`eval/presidio_benchmark.py` runs Veil and Presidio 2.2.366 (`en_core_web_lg`) on the same synthetic documents (16 generated documents, 35 hand-written hard cases, 27 synthetic extras for categories the corpus lacks) and scores precision and recall for each of the 18 [HHS Safe Harbor identifiers](https://www.hhs.gov/hipaa/for-professionals/special-topics/de-identification/index.html). Results: `eval/presidio_results.md` and `.json`, and the "Veil vs Presidio" panel on the judge page. Local run, no network. Cells are precision / recall. Presidio is reported at its best score threshold, which favours it; its custom setup adds simple regex recognizers.
+
+**Veil does not meet Safe Harbor, by design.** Safe Harbor removes every date element except the year. Veil keeps service dates, amounts, CPT codes and provider names in the clear so the audit math works, so its recall on service dates is 0. This is a benchmark against the identifier list, not a HIPAA compliance claim for either tool.
+
+| | Identifier | n | Veil (cold) | Presidio defaults | Presidio + custom regex |
+|---|---|---:|---|---|---|
+| A | Names | 40 | 100% / 80% | 39% / 92% | 40% / 92% |
+| B | Geography (street, city, ZIP, county) | 56 | 100% / 96% | 96% / 54% | 94% / 100% |
+| C | Dates except year; ages over 89 | 77 | 100% / 27% | 69% / 100% | 69% / 100% |
+| D | Phone numbers (few examples) | 4 | 100% / 75% | 83% / 75% | 83% / 75% |
+| E | Fax numbers (few examples) | 2 | 100% / 100% | 83% / 100% | 83% / 100% |
+| F | Email addresses (few examples) | 2 | 100% / 100% | 100% / 100% | 100% / 100% |
+| G | Social security numbers (few examples) | 3 | 100% / 33% | 100% / 100% | 100% / 100% |
+| H | Medical record numbers (few examples) | 3 | n/a / 33% | n/a / 33% | 100% / 100% |
+| I | Health plan IDs | 21 | 100% / 90% | n/a / 43% | 100% / 100% |
+| J | Account numbers | 10 | 83% / 100% | 100% / 10% | 85% / 100% |
+| K | Certificate / license numbers (few examples) | 3 | n/a / 0% | 50% / 0% | 50% / 0% |
+| L | Vehicle IDs, plates (few examples) | 2 | n/a / 0% | n/a / 0% | n/a / 0% |
+| M | Device IDs, serials (few examples) | 2 | n/a / 0% | n/a / 0% | n/a / 0% |
+| N | Web URLs (few examples) | 2 | n/a / 0% | 25% / 50% | 25% / 50% |
+| O | IP addresses (few examples) | 2 | n/a / 0% | 100% / 100% | 100% / 100% |
+| P | Biometrics | 0 | *not in corpus / not tested* | | |
+| Q | Face photos | 0 | *not in corpus / not tested* | | |
+| R | Other unique IDs (claim no. etc.) | 11 | 100% / 91% | n/a / 0% | 100% / 91% |
+| | **All identifiers** | 240 | 98% / 65% | 61% / 70% | 69% / 95% |
+| | **Without service dates** | 185 | 98% / 84% | 50% / 61% | 63% / 93% |
+
+Honest reading: Presidio wins on dates, spaced or bare SSNs, names in prose, relatives, employers, counties, URLs and IPs; with simple regex added it also finds medical record numbers and matches Veil on claim, account and member IDs. Veil wins on precision (2 false positives against 109 for Presidio plus custom) and on health-plan, claim and account IDs and street addresses out of the box, and a primed Veil catches obfuscated names that Presidio mostly misses. Veil has no detector for license, vehicle, device, URL or IP identifiers. Letters P and Q (biometrics, photographs) are not tested. Letters D through O have no instances in the generated documents, only a few hand-written ones. Small n and templated documents: a probe, not a population estimate. Reproduce with `~/.venvs/presidio-bench/bin/python eval/presidio_benchmark.py` after `pip install presidio-analyzer presidio-anonymizer` and `python -m spacy download en_core_web_lg`.
+
 ## Setup
 
 Needs Python 3.11+, `pdftotext` (poppler; pypdf is the fallback) and a Nebius Token Factory key. About 100 MB of dependencies, no containers.

@@ -143,3 +143,8 @@ footer{padding:var(--s5) 0 var(--s6);color:var(--dim)}
  .kv2{grid-template-columns:1fr;gap:0}.kv2 dd{margin-bottom:var(--s2)}
  .syn{flex-basis:100%}
 }
+
+/* benchmark proof */
+.bench th[colspan]{text-align:center;border-left:1px solid var(--line)}.bench td:nth-child(4),.bench td:nth-child(6),.bench td:nth-child(8){border-left:1px solid var(--line)}
+.bench td.win{font-weight:600;color:var(--accent)}.bench tr.tot td{border-top:2px solid var(--line);background:var(--sunk)}
+.warnbox{background:var(--warn-soft);border-color:#e3cf9c;margin-bottom:var(--s3)}.warnbox p{margin:0}

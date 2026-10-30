@@ -3236,6 +3236,7 @@
   {
    "letter": "A",
    "name": "Names",
+   "short": "Names",
    "status": "tested",
    "note": "",
    "n_gold": 40,
@@ -3285,6 +3286,7 @@
   {
    "letter": "B",
    "name": "Geographic subdivisions smaller than a state (street, city, county, precinct, ZIP, geocodes)",
+   "short": "Geography (street, city, ZIP, county)",
    "status": "tested",
    "note": "",
    "n_gold": 56,
@@ -3333,6 +3335,7 @@
   {
    "letter": "C",
    "name": "All elements of dates except year, directly related to the individual (birth, admission, discharge, death); ages over 89",
+   "short": "Dates except year; ages over 89",
    "status": "tested",
    "note": "",
    "n_gold": 77,
@@ -3381,8 +3384,9 @@
   {
    "letter": "D",
    "name": "Telephone numbers",
+   "short": "Phone numbers",
    "status": "synthetic_only",
-   "note": "tested on 4 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "4 hand-written example(s) only; the generated corpus has none",
    "n_gold": 4,
    "gold_by_source": {
     "extra": 4
@@ -3428,8 +3432,9 @@
   {
    "letter": "E",
    "name": "Fax numbers",
+   "short": "Fax numbers",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3475,8 +3480,9 @@
   {
    "letter": "F",
    "name": "Email addresses",
+   "short": "Email addresses",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3522,8 +3528,9 @@
   {
    "letter": "G",
    "name": "Social security numbers",
-   "status": "tested",
-   "note": "",
+   "short": "Social security numbers",
+   "status": "synthetic_only",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
    "n_gold": 3,
    "gold_by_source": {
     "hard": 3
@@ -3569,8 +3576,9 @@
   {
    "letter": "H",
    "name": "Medical record numbers",
+   "short": "Medical record numbers",
    "status": "synthetic_only",
-   "note": "tested on 3 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
    "n_gold": 3,
    "gold_by_source": {
     "extra": 3
@@ -3616,6 +3624,7 @@
   {
    "letter": "I",
    "name": "Health plan beneficiary numbers",
+   "short": "Health plan IDs",
    "status": "tested",
    "note": "",
    "n_gold": 21,
@@ -3665,6 +3674,7 @@
   {
    "letter": "J",
    "name": "Account numbers",
+   "short": "Account numbers",
    "status": "tested",
    "note": "",
    "n_gold": 10,
@@ -3713,8 +3723,9 @@
   {
    "letter": "K",
    "name": "Certificate/license numbers",
+   "short": "Certificate / license numbers",
    "status": "synthetic_only",
-   "note": "tested on 3 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "3 hand-written example(s) only; the generated corpus has none",
    "n_gold": 3,
    "gold_by_source": {
     "extra": 3
@@ -3760,8 +3771,9 @@
   {
    "letter": "L",
    "name": "Vehicle identifiers and serial numbers, including license plates",
+   "short": "Vehicle IDs, plates",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3807,8 +3819,9 @@
   {
    "letter": "M",
    "name": "Device identifiers and serial numbers",
+   "short": "Device IDs, serials",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3854,8 +3867,9 @@
   {
    "letter": "N",
    "name": "Web URLs",
+   "short": "Web URLs",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3901,8 +3915,9 @@
   {
    "letter": "O",
    "name": "IP addresses",
+   "short": "IP addresses",
    "status": "synthetic_only",
-   "note": "tested on 2 synthetic example(s) only; the Jane/persona corpus has none",
+   "note": "2 hand-written example(s) only; the generated corpus has none",
    "n_gold": 2,
    "gold_by_source": {
     "extra": 2
@@ -3948,6 +3963,7 @@
   {
    "letter": "P",
    "name": "Biometric identifiers, including finger and voice prints",
+   "short": "Biometrics",
    "status": "not_tested",
    "note": "not in corpus / not tested: the benchmark is text-only (a fingerprint or voiceprint is not text)",
    "n_gold": 0,
@@ -3993,6 +4009,7 @@
   {
    "letter": "Q",
    "name": "Full-face photographs and comparable images",
+   "short": "Face photos",
    "status": "not_tested",
    "note": "not in corpus / not tested: the benchmark is text-only (no images are processed)",
    "n_gold": 0,
@@ -4038,6 +4055,7 @@
   {
    "letter": "R",
    "name": "Any other unique identifying number, characteristic, or code",
+   "short": "Other unique IDs (claim no. etc.)",
    "status": "tested",
    "note": "",
    "n_gold": 11,
@@ -4165,7 +4183,7 @@
   "Two scopes are reported. 'All identifiers' counts every Safe Harbor letter as printed, including service dates. 'Veil scope' drops service dates for every tool so the comparison is about what Veil tries to remove.",
   "Veil cold vs primed: cold means an empty vault (detectors only), the fair match for Presidio's stock behaviour. Primed means the patient profile is loaded, which is how the product runs; Presidio gets the same profile as exact-string deny lists in the last configuration.",
   "Small n: the Jane/persona corpus repeats the same six identifier types in templated documents, so per-letter counts are small. Hard cases and synthetic extras are hand-written to probe known weak spots and are not a sample of real documents. Treat the numbers as a probe, not a population estimate.",
-  "Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters K, L, M, N, O, E are tested on a few synthetic examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.",
+  "Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters D through O (phone, fax, email, SSN, MRN, license, vehicle, device, URL, IP) have no instances in the generated documents and are tested on a handful of hand-written examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.",
   "Presidio is run at three score thresholds and each configuration is reported at its best micro-F1 threshold, which favours Presidio. The custom recognizers are deliberately simple regexes, not a copy of Veil's detectors."
  ],
  "wins": [

@@ -53,6 +53,9 @@ LETTERS = [
     ("Q", "Full-face photographs and comparable images"),
     ("R", "Any other unique identifying number, characteristic, or code"),
 ]
+SHORT = dict(A="Names", B="Geography (street, city, ZIP, county)", C="Dates except year; ages over 89", D="Phone numbers", E="Fax numbers", F="Email addresses",
+             G="Social security numbers", H="Medical record numbers", I="Health plan IDs", J="Account numbers", K="Certificate / license numbers",
+             L="Vehicle IDs, plates", M="Device IDs, serials", N="Web URLs", O="IP addresses", P="Biometrics", Q="Face photos", R="Other unique IDs (claim no. etc.)")
 NOT_TESTED = {"P": "not in corpus / not tested: the benchmark is text-only (a fingerprint or voiceprint is not text)",
               "Q": "not in corpus / not tested: the benchmark is text-only (no images are processed)"}
 FAMILY = {"D": "DE", "E": "DE"}
@@ -412,11 +415,11 @@ def build_json(results, items):
             status, note = "not_tested", NOT_TESTED[L]
         elif n == 0:
             status, note = "not_tested", "not in corpus / not tested"
-        elif set(src) == {"extra"}:
-            status, note = "synthetic_only", f"tested on {n} synthetic example(s) only; the Jane/persona corpus has none"
+        elif "corpus" not in src:
+            status, note = "synthetic_only", f"{n} hand-written example(s) only; the generated corpus has none"
         else:
             status, note = "tested", ""
-        idrows.append(dict(letter=L, name=name, status=status, note=note, n_gold=n, gold_by_source=src,
+        idrows.append(dict(letter=L, name=name, short=SHORT[L], status=status, note=note, n_gold=n, gold_by_source=src,
                            tools={t: {k: tools[t]["rows"][L][k] for k in ("recall", "hit", "precision", "tp_pred", "fp_pred")} for t in TOOLS}))
     return dict(meta=meta, tools=tools, identifiers=idrows, safe_harbor_letters=[dict(letter=a, name=b) for a, b in LETTERS], notes=NOTES)
 
@@ -427,7 +430,7 @@ NOTES = [
     "Two scopes are reported. 'All identifiers' counts every Safe Harbor letter as printed, including service dates. 'Veil scope' drops service dates for every tool so the comparison is about what Veil tries to remove.",
     "Veil cold vs primed: cold means an empty vault (detectors only), the fair match for Presidio's stock behaviour. Primed means the patient profile is loaded, which is how the product runs; Presidio gets the same profile as exact-string deny lists in the last configuration.",
     "Small n: the Jane/persona corpus repeats the same six identifier types in templated documents, so per-letter counts are small. Hard cases and synthetic extras are hand-written to probe known weak spots and are not a sample of real documents. Treat the numbers as a probe, not a population estimate.",
-    "Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters K, L, M, N, O, E are tested on a few synthetic examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.",
+    "Letters P (biometrics) and Q (photographs) are not tested: the benchmark is text-only. Letters D through O (phone, fax, email, SSN, MRN, license, vehicle, device, URL, IP) have no instances in the generated documents and are tested on a handful of hand-written examples only, and Veil has no detector for K, L, M, N, O or free-text employer/relative names.",
     "Presidio is run at three score thresholds and each configuration is reported at its best micro-F1 threshold, which favours Presidio. The custom recognizers are deliberately simple regexes, not a copy of Veil's detectors.",
 ]
 
@@ -517,6 +520,7 @@ if __name__ == "__main__":
     J["wins"] = [dict(letter=l, name=n, winner=w, veil=vr, presidio_default=a, presidio_custom=b) for l, n, w, vr, a, b in W]
     (ROOT / "eval" / "presidio_results.json").write_text(json.dumps(J, indent=1, ensure_ascii=False) + "\n")
     (ROOT / "eval" / "presidio_results.md").write_text(build_md(J))
+    (ROOT / "web" / "presidio_results.json").write_text((ROOT / "eval" / "presidio_results.json").read_text())   # the judge page fetches this byte-identical copy
     print("wrote eval/presidio_results.json and .md")
     for t in TOOLS:
         a = J["tools"][t]["total"]

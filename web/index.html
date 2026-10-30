@@ -36,6 +36,7 @@ async function boot(){
   $('#mLive').disabled=!S.liveOk;$('#mLive').title=S.liveOk?'':'Live mode needs the local app: python -m veil app';
   document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{if(b.disabled)return;const u=new URL(location);u.searchParams.set('mode',b.dataset.mode);location=u});
   S.R=S.mode==='live'?await (await fetch('/api/run')).json():(window.VEIL_RUN||await (await fetch('run.json')).json());
+  try{const r=await fetch('presidio_results.json');S.bench=r.ok?await r.json():null}catch(e){S.bench=null}
   render();
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>{t.hidden=true},4500)}
@@ -165,7 +166,7 @@ function step3(R){
 function pf(id,title,stat,body,open){return `<details class="pf" id="${id}"${open?' open':''}><summary><b>${title}</b><span>${stat}</span></summary><div class="body">${body}</div></details>`}
 function secProof(R){
   return `<section class="proof" aria-label="Proof"><h2>Proof, one claim at a time</h2>
-   ${pLedger(R)}${pChain(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pToolArgs(R)}${pInject(R)}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
+   ${pLedger(R)}${pChain(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pToolArgs(R)}${pInject(R)}${pBench()}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
 }
 function pLedger(R){
   const t=R.totals||{};
@@ -301,6 +302,27 @@ function pReceipts(R){
    `<p><b>Cached data.</b> ${esc(src.note||'')} Response id, served model and usage are fields Nebius returned.</p>
    <p class="dim">Cost is an estimate, not an invoice: Nebius list price (<a href="${esc(c.source||'#')}" target="_blank" rel="noopener noreferrer">model catalog</a>) times the token counts returned. ${c.priced_calls!=null?c.priced_calls+' of '+c.calls+' receipts priced; the rest (Tavily search) are unpriced.':''}</p>
    <div class="table-wrap tall"><table class="t"><thead><tr><th class="num">Row</th><th>For</th><th>Model</th><th>Response id</th><th class="num">Tokens in / out</th><th class="num">ms</th><th class="num">Est. cost</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+}
+function pBench(){
+  const B=S.bench,T=B&&B.tools;
+  const stat0='Scored against the HIPAA Safe Harbor identifier list. Veil does not meet Safe Harbor by design';
+  if(!T)return pf('p-bench','Veil vs Presidio',stat0,`<p class="dim">Results load from <code>presidio_results.json</code>, which needs this page served over http. The same table is in <code>eval/presidio_results.md</code>.</p>`);
+  const ids=['veil','presidio_default','presidio_custom'],pc=x=>x==null?'n/a':Math.round(x*100)+'%';
+  const win=(vals,i)=>{const v=vals.filter(x=>x!=null);return vals[i]!=null&&v.length>1&&vals[i]===Math.max(...v)&&Math.max(...v)-Math.min(...v)>=0.02?' class="num win"':' class="num"'};
+  const rows=B.identifiers.map(r=>{
+    if(r.status==='not_tested')return `<tr><td class="mono">${r.letter}</td><td>${esc(r.short)}</td><td class="num">0</td><td colspan="6" class="dim">Not in corpus / not tested</td></tr>`;
+    const P=ids.map(t=>r.tools[t].precision),R=ids.map(t=>r.tools[t].recall);
+    return `<tr><td class="mono">${r.letter}</td><td>${esc(r.short)}${r.status==='synthetic_only'?' <span class="chip warn" title="'+esc(r.note)+'">few examples</span>':''}</td><td class="num">${r.n_gold}</td>${ids.map((t,i)=>`<td${win(P,i)}>${pc(P[i])}</td><td${win(R,i)}>${pc(R[i])}</td>`).join('')}</tr>`}).join('');
+  const tot=ids.map(t=>T[t].total),tv=ids.map(t=>T[t].total_veil_scope);
+  const m=B.meta;
+  return pf('p-bench','Veil vs Presidio',`Scored against the HIPAA Safe Harbor identifier list: Veil ${pc(tot[0].precision)} precision, ${pc(tot[0].recall)} recall; Presidio + custom regex ${pc(tot[2].precision)}, ${pc(tot[2].recall)}. Veil does not meet Safe Harbor by design`,
+   `<div class="panel warnbox"><p><b>Dates, plainly.</b> Safe Harbor removes every date element except the year. Veil deliberately keeps service dates, amounts and provider names in the clear so the audit math works (deductibles, 180-day appeal windows). So Veil does <b>not</b> meet Safe Harbor, by design, and its recall on service dates is 0. This is a benchmark against the identifier list, not a HIPAA compliance claim for either tool.</p></div>
+   <p>Same synthetic documents and hand-written hard cases, same scoring, local run, no network. ${m.documents.corpus} generated documents, ${m.documents.hard_cases} hard cases, ${m.documents.synthetic_extras} synthetic extras. Presidio ${esc(m.presidio_analyzer)} with ${esc(m.spacy_model)}, each setup at its best score threshold, which favours Presidio. Bold marks a lead of 2 points or more. Source <code>eval/presidio_results.json</code>; list checked against <a href="${esc(m.safe_harbor_source)}" target="_blank" rel="noopener noreferrer">HHS de-identification guidance</a>.</p>
+   <div class="table-wrap"><table class="t bench"><thead><tr><th rowspan="2">&nbsp;</th><th rowspan="2">Safe Harbor identifier</th><th rowspan="2" class="num">n</th><th colspan="2" class="num">Veil (cold)</th><th colspan="2" class="num">Presidio defaults</th><th colspan="2" class="num">Presidio + custom regex</th></tr><tr>${'<th class="num">Prec.</th><th class="num">Recall</th>'.repeat(3)}</tr></thead>
+   <tbody>${rows}<tr class="tot"><td></td><td><b>All identifiers</b></td><td class="num">${tot[0].n_gold}</td>${tot.map(x=>`<td class="num">${pc(x.precision)}</td><td class="num">${pc(x.recall)}</td>`).join('')}</tr>
+   <tr class="tot"><td></td><td><b>Without service dates</b> <span class="dim">(what Veil tries to remove)</span></td><td class="num">${tv[0].n_gold}</td>${tv.map(x=>`<td class="num">${pc(x.precision)}</td><td class="num">${pc(x.recall)}</td>`).join('')}</tr></tbody></table></div>
+   <p><b>Where Presidio wins.</b> Dates (it flags every date, as Safe Harbor requires), social security numbers written with spaces or no dashes, free-text names in prose, relatives and employers, counties, URLs and IP addresses. With simple regex added it also finds medical record numbers and spaced member IDs, and it matches Veil on claim, account and standard member IDs. <b>Where Veil wins.</b> Precision: Presidio's stock models also flag things like "180 days", "Bill" and form headings, ${T.presidio_custom.total.fp_pred} false alarms against ${tot[0].fp_pred} for Veil. Out of the box Presidio misses most health-plan, claim and account IDs and street addresses. A primed Veil catches obfuscated names (split letters, lookalike letters) that Presidio mostly misses. Veil has no detector for license, vehicle, device, URL or IP identifiers.</p>
+   <p class="dim">Small n, templated documents: a probe, not a population estimate. Rows marked "few examples" are tested on a handful of synthetic strings. Biometrics (P) and photographs (Q) are not tested: the benchmark is text only. Full tables, hard-case breakdown and false-positive buckets: <code>eval/presidio_results.md</code>.</p>`);
 }
 function pWhy(){
   return pf('p-why','Why this matters',"Most insurer denials are never appealed. Sources checked, with their limits",
