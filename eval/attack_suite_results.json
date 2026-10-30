@@ -1,0 +1,2769 @@
+{
+ "generated": "2026-10-30T19:12:02+0530",
+ "repo_head": "f9673d6",
+ "command": ".venv/bin/python eval/attack_suite.py",
+ "synthetic": true,
+ "network_calls": 0,
+ "model_calls": 0,
+ "total_cases": 377,
+ "attack_cases": 365,
+ "leak_cases": 331,
+ "control_cases": 12,
+ "egress_cases": 34,
+ "passed": 377,
+ "failed": 0,
+ "outbound_leaks": 0,
+ "by_category": {
+  "spacing": {
+   "redacted": 20,
+   "total": 25,
+   "passed": 25,
+   "blocked_422": 5
+  },
+  "zero_width": {
+   "redacted": 29,
+   "total": 30,
+   "passed": 30,
+   "blocked_422": 1
+  },
+  "lookalike": {
+   "redacted": 24,
+   "total": 24,
+   "passed": 24
+  },
+  "json_nesting": {
+   "redacted": 22,
+   "total": 24,
+   "passed": 24,
+   "blocked_422": 2
+  },
+  "tool_surfaces": {
+   "redacted": 30,
+   "total": 31,
+   "passed": 31,
+   "blocked_422": 1
+  },
+  "encoding": {
+   "blocked_422": 15,
+   "total": 23,
+   "passed": 23,
+   "redacted": 8
+  },
+  "prose_names": {
+   "redacted": 31,
+   "total": 33,
+   "passed": 33,
+   "blocked_422": 2
+  },
+  "dates": {
+   "redacted": 43,
+   "total": 45,
+   "passed": 45,
+   "blocked_422": 2
+  },
+  "split_ids": {
+   "redacted": 32,
+   "total": 39,
+   "passed": 39,
+   "blocked_422": 7
+  },
+  "position_and_size": {
+   "redacted": 20,
+   "total": 24,
+   "passed": 24,
+   "blocked_422": 2,
+   "refused_400": 2
+  },
+  "injection": {
+   "redacted": 32,
+   "total": 33,
+   "passed": 33,
+   "blocked_422": 1
+  },
+  "egress": {
+   "refused_403": 30,
+   "total": 34,
+   "passed": 34,
+   "queued_for_approval": 4
+  },
+  "controls": {
+   "kept": 12,
+   "total": 12,
+   "passed": 12
+  }
+ },
+ "guard_off_proof": {
+  "note": "Same leak cases with the guard disabled. Every case must leak, otherwise the oracle or the case cannot fail.",
+  "canary_only": {
+   "cases": 331,
+   "leaked": 0,
+   "blocked_422": 329,
+   "refused_400": 2
+  },
+  "no_guard": {
+   "cases": 331,
+   "leaked": 329,
+   "blocked_422": 0,
+   "refused_400": 2,
+   "not_leaking": [
+    "position_and_size/model_field_is_secret",
+    "position_and_size/model_suffix_is_secret"
+   ]
+  }
+ },
+ "ledger_matches_wire": {
+  "checked": 331,
+  "ok": 331
+ },
+ "cases_without_secret_in_raw_request": [],
+ "outcomes": {
+  "redacted": 291,
+  "blocked_422": 38,
+  "refused_400": 2,
+  "refused_403": 30,
+  "queued_for_approval": 4,
+  "kept": 12
+ },
+ "failures": [],
+ "cases": [
+  {
+   "id": "spacing/name_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_dot",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_dash",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_underscore",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_tab",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_dot",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_dash",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_underscore",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/email_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/ssn_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/phone_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_groups3",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_groups_dash",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/mid_nbsp",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_double_space",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_newline",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_crlf",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_lower",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_upper",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/name_lastfirst_caps",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/ssn_nodash_vault",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "spacing/phone_dots",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "spacing/phone_plus1",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "spacing/phone_parens_tight",
+   "category": "spacing",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_zwsp",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_zwnj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_zwj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_word_joiner",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_bom",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_soft_hyphen",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_lrm",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_rlm",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_invisible_times",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_invisible_sep",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_cgj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_mongolian_vs",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_variation_sel",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_rlo",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_lre",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_tag_char",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/name_zwsp",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/ssn_zwsp",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/email_zwsp",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/name_lrm",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/ssn_lrm",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/email_lrm",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/name_invisible_times",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/ssn_invisible_times",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/email_invisible_times",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/name_cgj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/ssn_cgj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "zero_width/email_cgj",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/name_zwsp_edges",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "zero_width/mid_zw_mixed",
+   "category": "zero_width",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_cyr_a",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_cyr_multi",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_grk",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_fullwidth",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_math_bold",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_circled",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_smallcaps",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_combining",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/mid_cyr",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/mid_grk",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/mid_fullwidth",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/mid_cyr_prose",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/ssn_fullwidth",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/ssn_arabic_indic",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/phone_arabic_indic",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/dob_arabic_indic",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/email_cyr",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/email_fullwidth",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/email_fullwidth_at",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/address_cyr",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/address_fullwidth_digits",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_cyr_o_only",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/name_fullwidth_both",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "lookalike/mid_super_digits",
+   "category": "lookalike",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_json_user",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_json_user",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_json_key",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_json_key",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_json_double",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_json_double",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_json_triple",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_json_triple",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_json_array",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_json_array",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/name_tool_msg_json",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/ssn_tool_msg_json",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/unicode_escape_text",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/unicode_escape_json",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/unicode_escape_mid",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_escaped_at",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_in_code_fence",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_trailing_garbage",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_number_ssn",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_number_phone",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_bool_null_mix",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_duplicate_keys",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/json_nested_array_of_json",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "json_nesting/yaml_block",
+   "category": "json_nesting",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_tool_args",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_tool_args",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_tool_args_key",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_tool_args_key",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_tool_msg",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_tool_msg",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_schema_desc",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_schema_desc",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_schema_prop",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_schema_prop",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_schema_enum",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_schema_enum",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_history",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_history",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_system",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_system",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/mid_parts",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/email_parts",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/args_raw_not_json",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/args_dict_not_string",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_name_is_secret",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_call_id_is_secret",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tools_function_name",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_choice_name",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/response_format_schema",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/stop_sequence",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/user_field_member_id",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/multi_tool_calls",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_msg_list_content",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_args_pretty_json",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "tool_surfaces/tool_args_unicode_escaped",
+   "category": "tool_surfaces",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_base64",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_base64_sentence",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/ssn_base64",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/ssn_base64_sentence",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/mid_base64",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/mid_base64_sentence",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_base64",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_base64_sentence",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_base64_url",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_hex",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/ssn_hex",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_percent",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_percent",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/ssn_percent_full",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_html_entities",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/ssn_html_entities",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_html_at",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_hyphen_letters",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_at_dot_words",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_brackets",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_parens_at",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/email_spaces_around_at",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "encoding/name_in_two_content_parts",
+   "category": "encoding",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/my_name_is",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/i_am",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/im",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/title_mr",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/title_dr",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/title_ms",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/title_mx",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/signoff_sincerely",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/signoff_regards",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/signoff_respectfully",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/patient_prose",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/patient_label_lastfirst",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/subscriber_label",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/guarantor_label",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/insured_label",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/account_holder_label",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/name_label_apostrophe",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/name_label_hyphen",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/name_label_then_surname_alone",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/name_label_then_first_alone",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_alias_first",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_alias_last",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_possessive",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_in_url",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_in_filename",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_camel",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_hashtag",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_mixed_case",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_possessive_curly",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_initial_doe",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_a_doe",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/jane_with_title_dr",
+   "category": "prose_names",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "prose_names/relative_prose",
+   "category": "prose_names",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_slash_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_slash_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_slash_short_year",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_slash_short_year",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_slash_no_zero",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_slash_no_zero",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_dash_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_dash_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_dot_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_dot_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_iso",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_iso",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_iso_slash",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_iso_slash",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_compact",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_compact",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_long_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_long_mdy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_long_ordinal",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_long_ordinal",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_long_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_long_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_short_month",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_short_month",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_short_month_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_short_month_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_upper",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_upper",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_apostrophe_year",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_apostrophe_year",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_ordinal_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_ordinal_dmy",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_dotted_month",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_dotted_month",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_no_comma",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_no_comma",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_spaced_slash",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_spaced_slash",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cue_words",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_prose_words",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_in_json",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_tool_args",
+   "category": "dates",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cold_label",
+   "category": "dates",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cold_label_long",
+   "category": "dates",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "dates/dob_cold_dot",
+   "category": "dates",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_newline",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_crlf",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_hyphen_wrap",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_four_lines",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_tab_table",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_pipe_table",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_html_tags",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_html_attr",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_csv",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_xml",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_newline",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_tag_split",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_parenthetical",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_label_spaces",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_label_dots",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/phone_newline",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/phone_ext",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/phone_two_numbers",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_two_lines",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_abbrev",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_caps",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_apt",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_zip_plus4",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_comma_newline",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/claim_split",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/account_split",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_in_markdown_code",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/mid_in_url",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_in_query",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "split_ids/email_mailto",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/email_header",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/email_display_only",
+   "category": "split_ids",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/claim_cold_label",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/account_cold_label",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/member_cold_label",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/ssn_cold_dashed",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/phone_cold",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/email_cold",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "split_ids/address_cold",
+   "category": "split_ids",
+   "mode": "cold",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/long_prefix",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/long_suffix",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/middle_of_9k",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/repeated_200x",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/secret_only",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/member_id_only",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/adjacent_punctuation",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/glued_to_letters",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/glued_to_digits",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/after_emoji",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/hebrew_context",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/cjk_context",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/message_name_field",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/metadata_field",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/extra_user_field",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/stream_request",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/lightning_route",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/chat_template_kwargs",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/nested_extra_body",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/model_field_is_secret",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "refused_400",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/model_suffix_is_secret",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "refused_400",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/top_level_key_is_secret",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/every_role",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "position_and_size/thirty_messages",
+   "category": "position_and_size",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/ignore_previous",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/system_override",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/assistant_email",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/reveal_tokens",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/token_spoof_ssn",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/token_spoof_mid",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/fake_tool_result",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/developer_message",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/html_comment",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/markdown_link",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "blocked_422",
+   "passed": true
+  },
+  {
+   "id": "injection/image_exfil",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/role_play",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/delimiter_break",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/json_inject_roles",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/tool_call_inject",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/fn_call_xml",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/translate_attack",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/spell_out_request",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/repeat_after_me",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/multilang",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/zero_width_instruction",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/long_jailbreak",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/bypass_header_text",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/exfil_via_tool_args",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/fake_system_tag",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/bypass_field",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/redact_false",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/skip_canary",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/stream_options_secret",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/injection_in_tool_result",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/injection_in_system_prompt",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/injection_in_schema_desc",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "injection/injection_eob_line",
+   "category": "injection",
+   "mode": "profile",
+   "outcome": "redacted",
+   "passed": true
+  },
+  {
+   "id": "egress/attacker",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/attacker_list",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_plus_attacker",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/attacker_then_trusted",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/display_name_trick",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_addr_in_display",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/comma_joined",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/semicolon_joined",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/subdomain",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/prefix_domain",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/userpart_evil",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/plus_tag",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/trailing_dot",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/trailing_space",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/leading_space",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/cyrillic_a",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/fullwidth_at",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/zero_width_in_addr",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/homoglyph_domain",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/newline_header_inject",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/crlf_header_inject",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/empty_string",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/token_form",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/mangled_token",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/self_unlisted",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/display_name_only",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/mailto_scheme",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/uppercase_attacker",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/ip_literal",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/long_list_one_bad",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "refused_403",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_appeals",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "queued_for_approval",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_mercy_upper",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "queued_for_approval",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_two",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "queued_for_approval",
+   "passed": true
+  },
+  {
+   "id": "egress/trusted_sandbox_self",
+   "category": "egress",
+   "mode": "profile",
+   "outcome": "queued_for_approval",
+   "passed": true
+  },
+  {
+   "id": "controls/cpt_amounts",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/service_dates",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/provider_names",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/deductible_math",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/appeal_deadline",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/member_services",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/claim_date_phrase",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/adjustment_code",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/icd_like",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/tokens_present",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/plain_question",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  },
+  {
+   "id": "controls/provider_address",
+   "category": "controls",
+   "mode": "profile",
+   "outcome": "kept",
+   "passed": true
+  }
+ ]
+}

@@ -1,9 +1,16 @@
-"""Input folding before detection: NFKC, strip zero-width characters, and map look-alike letters (Cyrillic/Greek) to Latin inside words
-that also contain ASCII. Pure non-Latin words are left alone. Mirrored exactly by web/pseudo.js (tests/test_js_parity.py)."""
-from __future__ import annotations
-import re, unicodedata
+"""Input folding before detection: NFKC, strip zero-width and every other invisible format character (category Cf: direction marks, invisible
+operators, tag characters), strip accents and stray combining marks that sit on an ASCII letter, and map look-alike letters (Cyrillic, Greek,
+small capitals) to Latin inside words that also contain ASCII. Pure non-Latin words are left alone. web/pseudo.js mirrors NFKC, the six
+zero-width characters and CONFUSABLES; the Cf, accent and small-capital steps are Python-only until web/pseudo.js is regenerated from a
+template that has them (tools/gen_js.py).
 
-ZERO_WIDTH = "\u200b\u200c\u200d\u2060\ufeff\u00ad"
+`unwrap` lists the readable forms of a string that a transport encoding hides (HTML entities, percent encoding, markup, base64, hex). The canary
+reads them too, so an identifier behind one of those encodings fails closed."""
+from __future__ import annotations
+import base64, binascii, html, re, unicodedata
+from urllib.parse import unquote
+
+ZERO_WIDTH = "​‌‍⁠﻿­"
 _ZW = {ord(c): None for c in ZERO_WIDTH}
 CONFUSABLES = {
     # Cyrillic lower / upper
@@ -13,19 +20,84 @@ CONFUSABLES = {
     "ο": "o", "α": "a", "ν": "v", "ρ": "p", "ι": "i", "κ": "k", "υ": "u", "Α": "A", "Β": "B", "Ε": "E", "Ζ": "Z", "Η": "H", "Ι": "I", "Κ": "K", "Μ": "M",
     "Ν": "N", "Ο": "O", "Ρ": "P", "Τ": "T", "Υ": "Y", "Χ": "X",
 }
+# Latin small capitals and a few other letters NFKC leaves alone
+EXTRA_CONFUSABLES = {"ᴀ": "a", "ʙ": "b", "ᴄ": "c", "ᴅ": "d", "ᴇ": "e", "ꜰ": "f", "ɢ": "g", "ʜ": "h", "ɪ": "i", "ᴊ": "j", "ᴋ": "k", "ʟ": "l", "ᴍ": "m",
+                     "ɴ": "n", "ᴏ": "o", "ᴘ": "p", "ʀ": "r", "ꜱ": "s", "ᴛ": "t", "ᴜ": "u", "ᴠ": "v", "ᴡ": "w", "ʏ": "y", "ᴢ": "z", "ɑ": "a", "ɡ": "g", "ı": "i"}
+_ALL_CONF = {**CONFUSABLES, **EXTRA_CONFUSABLES}
 _WORD = re.compile(r"\S+")
 _ASCII = re.compile(r"[A-Za-z0-9]")
+
+
+def _strip_marks(t: str) -> str:
+    """Invisible format characters go. Accents and combining marks on an ASCII base letter go. Marks on other scripts (Devanagari, Arabic) stay."""
+    out = []
+    for ch in t:
+        if ch.isascii():
+            out.append(ch)
+            continue
+        cat = unicodedata.category(ch)
+        if cat == "Cf":
+            continue
+        if cat in ("Mn", "Me") and out and out[-1].isascii() and out[-1].isalnum():
+            continue
+        d = unicodedata.normalize("NFKD", ch)
+        out.append(d[0] if d[0].isascii() and len(d) > 1 and all(unicodedata.category(c) in ("Mn", "Me") for c in d[1:]) else ch)
+    return "".join(out)
 
 
 def fold(text: str) -> str:
     t = unicodedata.normalize("NFKC", text).translate(_ZW)
     if t.isascii():
         return t
+    t = _strip_marks(t)
+    if t.isascii():
+        return t
 
     def w(m):
         s = m.group(0)
-        if _ASCII.search(s) and any(c in CONFUSABLES for c in s):
-            return "".join(CONFUSABLES.get(c, c) for c in s)
+        if _ASCII.search(s) and any(c in _ALL_CONF for c in s):
+            return "".join(_ALL_CONF.get(c, c) for c in s)
         return s
 
     return _WORD.sub(w, t)
+
+
+_B64 = re.compile(r"[A-Za-z0-9+/_-]{8,}={0,2}")
+_HEX = re.compile(r"(?:[0-9a-fA-F]{2}){6,}")
+_TAGS = re.compile(r"<[^>]{1,80}>")
+
+
+def _texty(s: str) -> bool:
+    """Decoded bytes that read as text (mostly printable ASCII), so ordinary words that happen to be valid base64 are not mined as data."""
+    return len(s) >= 6 and sum(c.isprintable() and ord(c) < 128 for c in s) >= 0.95 * len(s)
+
+
+def unwrap(text: str) -> list[str]:
+    """Readable forms of text hidden by a transport encoding, folded. Does not include the text itself."""
+    out = []
+    for f in (html.unescape(text), unquote(text), _TAGS.sub("", text)):
+        if f != text:
+            out.append(f)
+    for src in (text, html.unescape(text)):
+        for m in _B64.finditer(src):
+            run = m.group(0).rstrip("=").replace("-", "+").replace("_", "/")
+            for off in range(4):  # a base64 string embedded in a longer run starts at any of 4 alignments
+                piece = run[off:]
+                if len(piece) % 4 == 1:
+                    piece = piece[:-1]
+                if len(piece) < 8:
+                    continue
+                try:
+                    d = base64.b64decode(piece + "=" * (-len(piece) % 4), validate=True).decode("utf-8", "ignore")
+                    if _texty(d):
+                        out.append(d)
+                except (binascii.Error, ValueError):
+                    pass
+        for m in _HEX.finditer(src):
+            try:
+                d = binascii.unhexlify(m.group(0)).decode("utf-8", "ignore")
+                if _texty(d):
+                    out.append(d)
+            except (binascii.Error, ValueError):
+                pass
+    return [fold(x) for x in out if x]

@@ -4,12 +4,24 @@ import json, re
 from collections import Counter
 from .vault import Vault, TOKEN_RE, norm
 from . import detectors
-from .fold import fold
+from .fold import fold, unwrap
 
 # Letters or digits separated by single spaces/dots/dashes/underscores ('J a n e  D o e', 'N.S.H.8.8.4...'). Collapsed and compared with the vault.
-SPLIT_RX = re.compile(r"(?<![A-Za-z0-9])(?:[A-Za-z0-9][ .\-_]{1,2}){2,}[A-Za-z0-9](?![A-Za-z0-9])")
+SPLIT_RX = re.compile(r"(?<![A-Za-z0-9])(?:[A-Za-z0-9][ \t.\-_]{1,2}){2,}[A-Za-z0-9](?![A-Za-z0-9])")
 
 SKIP_KEYS = {"model"}  # structural fields we never rewrite
+
+
+_NOT_NAME_PARTS = {"january", "february", "march", "april", "june", "july", "august", "september", "october", "november", "december",
+                   "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "plan", "health", "hospital", "clinic", "claim", "patient"}
+
+
+def _name_parts(full: str) -> list[str]:
+    """Individual words of a multi-word name (4+ letters, not a month, weekday or billing word); initials and short particles are skipped."""
+    words = re.findall(r"[A-Za-z][A-Za-z'-]*", full)
+    if len(words) < 2:
+        return []
+    return [w for w in words if len(w) >= 4 and w.lower() not in _NOT_NAME_PARTS]
 
 
 class Leak(Exception):
@@ -63,7 +75,8 @@ class Pseudonymizer:
 
     def learn(self, text: str):
         for kind, value in detectors.find(text):
-            self.vault.add(kind, value)
+            # A detected full name also teaches its parts, so "Patient: Marcus T. Whitfield ... Whitfield called again" tokenizes both.
+            self.vault.add(kind, value, aliases=_name_parts(value) if kind == "PERSON" else ())
 
     def redact_text(self, text: str, counts: Counter | None = None) -> str:
         if not text:
@@ -132,6 +145,8 @@ class Pseudonymizer:
         except Exception:
             pass
         hay = [fold(text), fold("\n".join(flat))]
+        for h in list(hay):  # identifiers behind html entities, percent encoding, markup, base64 or hex
+            hay.extend(unwrap(h))
         hay_alnum = _alnum("\n".join(hay))
         leaks: list[tuple[str, str]] = []
         for raw, tok, kind in self.vault.surfaces():
@@ -140,7 +155,7 @@ class Pseudonymizer:
             pat = re.compile(r"(?<![A-Za-z0-9])" + r"\s+".join(re.escape(p) for p in raw.split()) + r"(?![A-Za-z0-9])", re.I)
             if any(pat.search(h) for h in hay):
                 leaks.append((kind, "vault-exact"))
-            elif len(_alnum(raw)) >= 8 and _alnum(raw) in hay_alnum:
+            elif len(_alnum(raw)) >= (6 if len(raw.split()) > 1 else 8) and _alnum(raw) in hay_alnum:  # "JaneDoe" is the name, glued
                 leaks.append((kind, "vault-normalized"))
         self._compile()
         for h in hay:

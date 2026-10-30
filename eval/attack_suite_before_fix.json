@@ -1,0 +1,229 @@
+{
+ "note": "Same corpus and oracle run against the redactor and canary as committed at repo head, before the fixes in this change. Regenerate with: git stash the veil/ changes, run eval/attack_suite.py.",
+ "repo_head": "f9673d6",
+ "total_cases": 377,
+ "passed": 341,
+ "failed": 36,
+ "outbound_leaks": 36,
+ "failures": [
+  {
+   "id": "spacing/name_tab",
+   "secrets_leaked": [
+    "Jane Doe",
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "zero_width/name_lrm",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "zero_width/name_invisible_times",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "zero_width/name_cgj",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "lookalike/name_smallcaps",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "lookalike/name_combining",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/name_base64",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/name_base64_sentence",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/ssn_base64",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "encoding/ssn_base64_sentence",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "encoding/mid_base64",
+   "secrets_leaked": [
+    "NSH884217353"
+   ]
+  },
+  {
+   "id": "encoding/mid_base64_sentence",
+   "secrets_leaked": [
+    "NSH884217353"
+   ]
+  },
+  {
+   "id": "encoding/email_base64",
+   "secrets_leaked": [
+    "jane.doe@example.org"
+   ]
+  },
+  {
+   "id": "encoding/email_base64_sentence",
+   "secrets_leaked": [
+    "jane.doe@example.org"
+   ]
+  },
+  {
+   "id": "encoding/name_base64_url",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/name_hex",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/ssn_hex",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "encoding/ssn_percent_full",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "encoding/name_html_entities",
+   "secrets_leaked": [
+    "Jane Doe"
+   ]
+  },
+  {
+   "id": "encoding/ssn_html_entities",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "prose_names/name_label_then_surname_alone",
+   "secrets_leaked": [
+    "Whitfield"
+   ]
+  },
+  {
+   "id": "prose_names/jane_camel",
+   "secrets_leaked": [
+    "JaneDoe"
+   ]
+  },
+  {
+   "id": "prose_names/jane_hashtag",
+   "secrets_leaked": [
+    "JaneDoe"
+   ]
+  },
+  {
+   "id": "dates/dob_prose_slash_short_year",
+   "secrets_leaked": [
+    "4/12/85"
+   ]
+  },
+  {
+   "id": "dates/dob_cue_dot_dmy",
+   "secrets_leaked": [
+    "12.04.1985",
+    "12.04.1985"
+   ]
+  },
+  {
+   "id": "dates/dob_prose_dot_dmy",
+   "secrets_leaked": [
+    "12.04.1985",
+    "12.04.1985"
+   ]
+  },
+  {
+   "id": "dates/dob_cue_apostrophe_year",
+   "secrets_leaked": [
+    "Apr 12 '85"
+   ]
+  },
+  {
+   "id": "dates/dob_prose_apostrophe_year",
+   "secrets_leaked": [
+    "Apr 12 '85"
+   ]
+  },
+  {
+   "id": "dates/dob_cue_words",
+   "secrets_leaked": [
+    "twelfth of April, nineteen eighty-five"
+   ]
+  },
+  {
+   "id": "dates/dob_prose_words",
+   "secrets_leaked": [
+    "twelfth of April, nineteen eighty-five"
+   ]
+  },
+  {
+   "id": "dates/dob_in_json",
+   "secrets_leaked": [
+    "12.04.1985"
+   ]
+  },
+  {
+   "id": "dates/dob_cold_dot",
+   "secrets_leaked": [
+    "30.09.1978"
+   ]
+  },
+  {
+   "id": "split_ids/mid_html_tags",
+   "secrets_leaked": [
+    "NSH884217353"
+   ]
+  },
+  {
+   "id": "split_ids/ssn_tag_split",
+   "secrets_leaked": [
+    "987-65-4321"
+   ]
+  },
+  {
+   "id": "split_ids/account_split",
+   "secrets_leaked": [
+    "MV-2290417"
+   ]
+  },
+  {
+   "id": "split_ids/ssn_in_query",
+   "secrets_leaked": [
+    "04121985"
+   ]
+  }
+ ]
+}

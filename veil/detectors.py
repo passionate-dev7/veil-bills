@@ -42,6 +42,23 @@ DETECTORS: list[tuple[str, re.Pattern, int]] = [
     ("PERSON", re.compile(r"(?m)\b(?:Sincerely|Regards|Best regards|Respectfully|Yours truly|Thank you),?[ \t]*\r?\n[ \t]*" + _NAME_PROSE), 1),
 ]
 
+# Detectors the canary and the redactor use that web/pseudo.js does not carry yet: spec() leaves them out, so the generated JS stays byte-identical
+# until it is regenerated from a template that has them. Birth dates in the shapes people actually write (dotted day-first, two-digit and
+# apostrophe years, spelled out), a "born" / JSON-key cue, and an account number wrapped across two lines.
+_NUM_DATE = r"\d{1,2}[./-]\d{1,2}[./-](?:\d{4}|\d{2})|\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{8}"
+_ORD = r"(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|thirtieth|thirty-first)"
+_YEAR_WORDS = r"nineteen[\s-]+(?:(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:oh|aught)[\s-]+(?:one|two|three|four|five|six|seven|eight|nine)|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)"
+_LONG_DATE = (_MON + r"[ \t]+\d{1,2}(?:st|nd|rd|th)?,?[ \t]+(?:\d{4}|'\d{2})|\d{1,2}(?:st|nd|rd|th)?[ \t]+" + _MON + r",?[ \t]+(?:\d{4}|'\d{2})|"
+              + _ORD + r"[ \t]+(?:of[ \t]+)?" + _MON + r",?[ \t]+" + _YEAR_WORDS)
+EXTRA_DETECTORS: list[tuple[str, re.Pattern, int]] = [
+    ("DOB", re.compile(r"(?i)\b(?:DOB|D\.O\.B\.?|Date of Birth|Birth ?date|Birthday|born(?:[ \t]+(?:on|in))?)[\"'\s:=\-]{0,6}(" + _NUM_DATE + "|" + _LONG_DATE + r")(?![\d])"), 1),
+    ("DOB", re.compile(r"(?<![\d.])(\d{1,2}\.\d{1,2}\." + _OLD + r")(?![\d.])"), 1),
+    ("DOB", re.compile(r"(?<![\d-])(\d{1,2}-\d{1,2}-" + _OLD + r")(?![\d-])"), 1),
+    ("DOB", re.compile(r"(?i)\b(" + _MON + r"[ \t]+\d{1,2},?[ \t]+'\d{2})(?!\d)"), 1),
+    ("DOB", re.compile(r"(?i)\b(" + _ORD + r"[ \t]+(?:of[ \t]+)?" + _MON + r",?[ \t]+" + _YEAR_WORDS + r")\b"), 1),
+    ("ACCOUNT_NO", re.compile(r"\b([A-Z]{2,3}-[ \t]*\r?\n[ \t]*\d{6,})\b"), 1),
+]
+
 KIND_LABEL = {
     "EMAIL": "email", "SSN": "SSN", "PHONE": "phone", "DOB": "date of birth", "MEMBER_ID": "member ID",
     "ACCOUNT_NO": "account number", "CLAIM_NO": "claim number", "ADDRESS": "address", "PERSON": "person name",
@@ -50,7 +67,7 @@ KIND_LABEL = {
 
 def find(text: str):
     """Yield (kind, value) for every detector hit in text."""
-    for kind, rx, grp in DETECTORS:
+    for kind, rx, grp in DETECTORS + EXTRA_DETECTORS:
         for m in rx.finditer(text):
             v = m.group(grp).strip().rstrip(".,;")
             if v and "[" not in v:
