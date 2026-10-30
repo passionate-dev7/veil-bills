@@ -105,7 +105,7 @@ def cmd_attack(a, quiet=False):
 def cmd_judge(a):
     import functools, http.server, shutil, socketserver
     web = ROOT / "web"
-    if a.run:
+    if a.run and Path(a.run).resolve() != (web / "run.json").resolve():  # the README passes web/run.json itself
         shutil.copy(a.run, web / "run.json")
     if (web / "run.json").exists():  # also as a script so index.html works from file:// without a server
         (web / "run.js").write_text("window.VEIL_RUN = " + (web / "run.json").read_text() + ";")
