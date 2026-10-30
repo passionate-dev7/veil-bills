@@ -251,8 +251,9 @@ def _tamper_demo(db_path):
     tmp = Path(tempfile.mkdtemp()) / "ledger.sqlite"
     shutil.copy(db_path, tmp)
     db = sqlite3.connect(tmp)
-    seq, lid = db.execute("SELECT r.seq, json_extract(r.receipt,'$.ledger_id') FROM receipts r WHERE json_extract(r.receipt,'$.type')='call' "
-                          "AND json_extract(r.receipt,'$.byte_count')>0 ORDER BY seq LIMIT 1 OFFSET 3").fetchone()
+    calls = db.execute("SELECT r.seq, json_extract(r.receipt,'$.ledger_id') FROM receipts r WHERE json_extract(r.receipt,'$.type')='call' "
+                       "AND json_extract(r.receipt,'$.byte_count')>0 ORDER BY seq").fetchall()
+    seq, lid = calls[min(3, len(calls) - 1)]
     blob = bytearray(db.execute("SELECT outbound FROM ledger WHERE id=?", (lid,)).fetchone()[0])
     blob[len(blob) // 2] ^= 0x01
     db.execute("UPDATE ledger SET outbound=? WHERE id=?", (bytes(blob), lid)); db.commit()

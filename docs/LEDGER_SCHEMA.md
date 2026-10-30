@@ -35,10 +35,16 @@ them would store the leak. They still consume a `seq`, so deleting one is a visi
 `outbound_bytes` is the final serialized request body, so assistant `tool_calls[].function.arguments` (JSON in a string), `tool` role messages and
 `tools[]` schemas are inside the hashed bytes. The canary scans these same bytes and also the decoded argument values.
 
-## Reserved for receipts (added by the receipts lane, not by this contract)
+## Receipts (`veil/receipts.py`, table `receipts`)
 
-`prev_hash` (hex, fixed genesis for `seq` 1) and `receipt_hash` (SHA-256 over canonical JSON of the fields above plus `prev_hash`). Receipts are
-additive columns/fields; nothing above may be renamed once they exist. New columns must be nullable so the cached run still loads.
+Receipts live in their own table, `receipts(seq INTEGER PRIMARY KEY, receipt TEXT)`, so no `ledger` column was renamed or added. Each receipt is canonical JSON
+(sorted keys, no spaces, ASCII escapes, integers only) with: `seq`, `type` (`call` or `result`), `ts`, `ledger_id`, `kind`, `destination_host`,
+`destination_path`, `status` (`sent`, `blocked_422`, `denied`, ...), `byte_count`, `sha256` (of the exact outbound bytes), `tokens`, `http_status`,
+`origin` (`live` or `backfill`), `prev_hash`, and `receipt_hash` = SHA-256 of the canonical JSON of every other field. `seq` 1 links to the fixed genesis
+`sha256("veil/receipts/genesis/v1")`. A `call` receipt is sealed in the same transaction that inserts the ledger row (blocked and denied rows included);
+a `result` receipt is sealed when the row leaves `pending`, because tokens are only known then. `veil verify` also cross-checks the ledger table: stored
+bytes against `sha256`/`byte_count`, deleted rows, unreceipted rows, and status, tokens or http_status edited after receipting. Tamper-evident, not
+tamper-proof: anchor the head hash outside the machine and re-check with `veil verify --head`.
 
 ## `source` column
 

@@ -17,6 +17,7 @@
 <div class="wrap"><footer id="foot"></footer></div><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script src="run.js" onerror="void 0"></script>
 <script src="pseudo.js"></script>
+<script src="receipts.js" onerror="void 0"></script>
 <script>
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const usd=c=>c==null?'n/a':'$'+(c/100).toLocaleString('en-US',{minimumFractionDigits:2});
@@ -59,7 +60,7 @@ function render(){
   $('#app').innerHTML=[secAlert(R),secHero(R),`<div class="layout"><main>${secFlow(R)}</main>${secSide(R)}</div>`,secProof(R)].join('');
   const T=R.totals||{};
   $('#foot').innerHTML=`Run <code>${esc(R.run||'')}</code>, generated ${esc(R.generated||'')}. As of ${esc(R.as_of||'')}. Cached data: ledger rows, receipts and the audit come from the earlier real pipeline run, not from this page load. All documents and identifiers are synthetic. Veil is designed so the cloud never sees identifiers; this page makes no compliance claim.`;
-  bind();fitSide();showStep();verifyToolArgs(R);
+  bind();fitSide();showStep();verifyToolArgs(R);verifyChain(R);
 }
 
 /* top alert: honest and compact */
@@ -164,7 +165,7 @@ function step3(R){
 function pf(id,title,stat,body,open){return `<details class="pf" id="${id}"${open?' open':''}><summary><b>${title}</b><span>${stat}</span></summary><div class="body">${body}</div></details>`}
 function secProof(R){
   return `<section class="proof" aria-label="Proof"><h2>Proof, one claim at a time</h2>
-   ${pLedger(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pToolArgs(R)}${pInject(R)}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
+   ${pLedger(R)}${pChain(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pToolArgs(R)}${pInject(R)}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
 }
 function pLedger(R){
   const t=R.totals||{};
@@ -219,6 +220,49 @@ function verifyToolArgs(R){
   if(!(window.crypto&&crypto.subtle)){c.textContent='Web Crypto unavailable; verify with the test';return}
   crypto.subtle.digest('SHA-256',new TextEncoder().encode(D.outbound_text)).then(b=>{const h=[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
     c.className='chip '+(h===D.outbound_sha256?'ok':'bad');c.textContent=h===D.outbound_sha256?'sha256 matches the stored bytes':'MISMATCH'})
+}
+/* receipt chain: re-verified in this browser with Web Crypto, same algorithm as `veil verify` */
+const CH_KINDS=[['bytes','Flip one byte of the stored request'],['field','Edit one field of the receipt'],['delete','Delete the entry'],['reorder','Swap it with the next entry']];
+function pChain(R){
+  const C=R.chain;if(!C)return '';
+  const opts=C.entries.map(e=>`<option value="${e.seq}"${e.seq===7?' selected':''}>seq ${e.seq}, ${e.type}, ${esc(e.kind||'')} ${esc(e.destination_host||'')}${e.byte_count?', '+e.byte_count+' bytes':''}${e.status&&e.status!=='pending'?', '+esc(e.status):''}</option>`).join('');
+  return pf('p-chain','Tamper-evident receipts',`<span id="chSum">${C.count} receipts in a hash chain, checking in your browser</span>`,
+   `<p>Every call the gateway logs gets a receipt: when, which host and path, how many bytes, the sha256 of the exact bytes, the tokens that came back, and the hash of the receipt before it. Blocked (422) and denied calls get one too, so deleting a refusal leaves a gap. Change, delete or reorder any entry and the chain breaks at that entry.</p>
+   <div class="verdict"><span class="chip" id="chStat">checking in your browser</span><span id="chMsg"></span></div>
+   <dl class="kv2"><dt>Head hash</dt><dd class="mono" id="chHead">${esc(C.head)}</dd><dt>Receipts</dt><dd class="num">${C.count} (${C.entries.filter(e=>e.type==='call').length} call, ${C.entries.filter(e=>e.type==='result').length} result)</dd><dt>Genesis</dt><dd class="mono">${esc(C.genesis)}</dd></dl>
+   <p><b>Tamper-evident, not tamper-proof.</b> Anyone who can rewrite the whole database can rebuild a consistent chain from genesis. Copy the head hash above somewhere you control (a note, an email to yourself, a printout). Later, <code>veil verify --head &lt;hash&gt;</code> fails if the chain was truncated or rebuilt. Receipts for this cached run were backfilled from its ledger rows; new calls are sealed as they are logged.</p>
+   <div class="field"><label for="chAnch">Compare with a head you saved</label><input id="chAnch" class="mono" autocomplete="off" spellcheck="false" placeholder="paste a 64-character hash"><button class="btn secondary" type="button" id="chCmp">Compare</button></div>
+   <div id="chCmpOut" aria-live="polite"></div>
+   <h3>Break it yourself</h3>
+   <p>This changes a copy of the chain in memory, then runs the same check. The chain above is not touched.</p>
+   <div class="field"><label for="chSeq">Entry</label><select id="chSeq">${opts}</select></div>
+   <div class="field"><label for="chKind">Change</label><select id="chKind">${CH_KINDS.map(k=>`<option value="${k[0]}">${k[1]}</option>`).join('')}</select></div>
+   <div class="actions"><button class="btn primary" type="button" id="chGo">Tamper with a copy</button><button class="btn secondary" type="button" id="chReset">Reset</button></div>
+   <div id="chOut" aria-live="polite"></div>`,true);
+}
+async function verifyChain(R){
+  const C=R.chain,st=$('#chStat');if(!C||!st)return;
+  const V=window.VeilChain,sum=$('#chSum');
+  if(!V||!(window.crypto&&crypto.subtle)){st.className='chip warn';st.textContent='Web Crypto unavailable';$('#chMsg').textContent='Run veil verify --run-json web/run.json instead (needs https or localhost for Web Crypto).';return}
+  const showV=v=>v.ok
+    ?`<span class="chip ok">Chain OK</span><span>${v.count} receipts linked, ${v.bytes_checked} stored requests re-hashed.</span>`
+    :`<span class="chip bad">Broken at seq ${v.broken.seq}</span><span><b>${esc(v.broken.code.replace('_',' '))}:</b> ${esc(v.broken.reason)}</span>`;
+  const v=await V.verify(C.entries,C.bytes);
+  st.className='chip '+(v.ok?'ok':'bad');st.textContent=v.ok?'Chain OK':'Broken at seq '+v.broken.seq;
+  $('#chMsg').textContent=v.ok?`${v.count} receipts linked, ${v.bytes_checked} stored requests re-hashed in this browser.`:`${v.broken.code}: ${v.broken.reason}`;
+  sum.textContent=v.ok?`chain OK, ${v.count} receipts, head ${v.head.slice(0,12)}...`:`chain broken at seq ${v.broken.seq}`;
+  $('#chCmp').onclick=async()=>{
+    const h=$('#chAnch').value.trim().toLowerCase(),o=$('#chCmpOut');
+    if(!/^[0-9a-f]{64}$/.test(h)){o.innerHTML='<p class="dim">Paste the full 64-character head hash.</p>';return}
+    const r=await V.verify(C.entries,C.bytes,h);
+    o.innerHTML=`<div class="verdict">${r.ok?'<span class="chip ok">Head matches</span><span>The chain ends exactly where you anchored it.</span>':showV(r)}</div>`};
+  $('#chGo').onclick=async()=>{
+    const seq=+$('#chSeq').value,kind=$('#chKind').value,o=$('#chOut');
+    const t=V.tamper(C,seq,kind);
+    if(!t){o.innerHTML=`<p class="dim">${kind==='bytes'?'That entry has no stored request body (a result, blocked or denied receipt). Pick a call receipt with bytes.':'There is no next entry to swap with.'}</p>`;return}
+    const r=await V.verify(t.entries,t.bytes);
+    o.innerHTML=`<p>On a copy: <b>${esc(t.what)}</b>.</p><div class="verdict">${showV(r)}</div>`};
+  $('#chReset').onclick=()=>{$('#chOut').innerHTML='';$('#chCmpOut').innerHTML='';$('#chAnch').value=''};
 }
 function pCanary(R){
   const C=R.canary_demo,t=R.totals||{};if(!C)return '';

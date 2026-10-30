@@ -203,3 +203,33 @@ def test_js_and_python_agree(led, tmp_path):
         assert out["results"][v["name"]] == py, v["name"]
     assert out["results"]["intact"]["ok"]
     assert {n: r["broken"]["code"] for n, r in out["results"].items() if not r["ok"]} == {"edit": "edited", "delete": "missing", "reorder": "reordered", "bytes": "bytes", "head": "head"}
+
+
+def _cli(*args):
+    import sys
+    return subprocess.run([sys.executable, "-m", "veil", *args], cwd=ROOT, capture_output=True, text=True)
+
+
+def test_cli_verify_exits_zero_when_intact_and_nonzero_at_the_first_break(led, tmp_path):
+    db = tmp_path / "ledger.sqlite"
+    ok = _cli("verify", "--db", str(db))
+    assert ok.returncode == 0 and ok.stdout.startswith("OK") and "head " in ok.stdout and "tamper-evident, not tamper-proof" in ok.stdout
+    head = [l for l in ok.stdout.splitlines() if l.strip().startswith("head ")][0].split()[1]
+    assert _cli("verify", "--db", str(db), "--head", head).returncode == 0
+    assert _cli("verify", "--db", str(db), "--head", "0" * 64).returncode == 1
+    con = sqlite3.connect(db)
+    con.execute("UPDATE ledger SET outbound=? WHERE id=1", (BODY.replace(b"hello", b"jello"),)); con.commit(); con.close()
+    bad = _cli("verify", "--db", str(db))
+    assert bad.returncode == 1 and bad.stdout.startswith("FAIL") and "seq 1 (bytes)" in bad.stdout and "hash mismatch" in bad.stdout
+    assert json.loads(_cli("verify", "--db", str(db), "--json").stdout)["broken"]["code"] == "bytes"
+
+
+def test_cli_verify_run_json_and_demo(led, tmp_path):
+    rec = tmp_path / "run.json"
+    rec.write_text(json.dumps({"chain": led.chain()}))
+    assert _cli("verify", "--run-json", str(rec)).returncode == 0
+    d = json.loads(rec.read_text()); d["chain"]["entries"][1]["status"] = "denied"; rec.write_text(json.dumps(d))
+    out = _cli("verify", "--run-json", str(rec))
+    assert out.returncode == 1 and "seq 2 (edited)" in out.stdout
+    demo = _cli("receipts", "demo", "--db", str(tmp_path / "ledger.sqlite"))
+    assert demo.returncode == 0 and "FAIL tampered copy" in demo.stdout and "(bytes)" in demo.stdout

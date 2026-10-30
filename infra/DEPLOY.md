@@ -58,7 +58,7 @@ git ls-remote https://github.com/kamalbuilds/veil.git
 
 ## 2. Static deploy of `web/` (no backend)
 
-`web/` is self-contained: `index.html`, `veil.css`, `pseudo.js`, `run.js`, `run.json`, `vercel.json`. It runs from the cached `run.js`; judge mode never calls an API; only `localhost` probes `/api/state`. Fonts load from Google Fonts and fall back to system serif/sans if blocked. Refresh the bundle first if you changed anything: `.venv/bin/python -m veil static /tmp/veil-bundle`.
+`web/` is self-contained: `index.html`, `veil.css`, `pseudo.js`, `receipts.js`, `run.js`, `run.json`, `vercel.json`. It runs from the cached `run.js`; judge mode never calls an API; only `localhost` probes `/api/state`. Fonts load from Google Fonts and fall back to system serif/sans if blocked. Refresh the bundle first if you changed anything: `.venv/bin/python -m veil static /tmp/veil-bundle`.
 
 ### 2a. Vercel (recommended)
 
@@ -91,7 +91,7 @@ URL once built (about a minute): `https://kamalbuilds.github.io/veil/`.
 
 ```sh
 URL=https://kamalbuilds.github.io/veil   # or the Vercel URL
-for f in "" veil.css pseudo.js run.js run.json; do curl -s -o /dev/null -w "$f %{http_code}\n" "$URL/$f"; done
+for f in "" veil.css pseudo.js receipts.js run.js run.json; do curl -s -o /dev/null -w "$f %{http_code}\n" "$URL/$f"; done
 curl -s "$URL/run.json" | grep -c "/Users/"      # must print 0
 ```
 

@@ -109,6 +109,13 @@ table.t{width:100%;border-collapse:collapse}
 .verdict{display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap;margin:var(--s3) 0}
 ul.plain{margin:0;padding:0;list-style:none}ul.plain li{padding:var(--s2) 0;border-top:1px solid var(--line)}
 ul.plain li:first-child{border-top:0}
+.kv2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--s1) var(--s4);margin:var(--s3) 0}
+.kv2 dt{color:var(--dim)}.kv2 dd{margin:0;overflow-wrap:anywhere}
+.field{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3);margin:var(--s3) 0}
+.field label{font-weight:600;min-width:9em}
+.field select,.field input{font:400 14px var(--sans);min-height:44px;padding:0 var(--s3);border:1px solid var(--line);border-radius:var(--r1);background:var(--sheet);color:var(--ink);flex:1;min-width:0;max-width:100%}
+.field input{font-family:var(--mono)}
+#chOut,#chCmpOut{margin-top:var(--s3)}#chOut p{margin:0}
 .eml{margin-top:var(--s3)}
 footer{padding:var(--s5) 0 var(--s6);color:var(--dim)}
 .toast{position:fixed;bottom:var(--s5);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--sheet);padding:var(--s3) var(--s5);border-radius:var(--r1);z-index:9}
@@ -131,5 +138,8 @@ footer{padding:var(--s5) 0 var(--s6);color:var(--dim)}
  .src{grid-template-columns:1fr;gap:var(--s1)}
  .steps button{flex-direction:column;gap:0;font-size:14px}
  .btn{width:100%}
+ .field label{min-width:100%}
+ .field select,.field input{flex-basis:100%}
+ .kv2{grid-template-columns:1fr;gap:0}.kv2 dd{margin-bottom:var(--s2)}
  .syn{flex-basis:100%}
 }
