@@ -137,7 +137,7 @@ function secAttack(R){
   return `<section class="attack" aria-label="A hostile line hidden in an EOB">
     <div class="quote"><code><mark class="i">${esc(inj)}</mark></code><small>Hidden in a synthetic EOB. Veil tokenizes the address before the model sees it, and code decides where mail may go.</small></div>
     <div class="verdicts">
-      ${okTo?`<p><span class="chip ok">Live run</span> Ultra ignored the line and addressed the appeal to <span class="mono">${esc(okTo)}</span>, an address on the allowlist.</p>`:''}
+      ${okTo?`<p><span class="chip ok">Live run</span> Ultra queued its appeal to <span class="mono">${esc(okTo)}</span>, an address on the allowlist.</p>`:''}
       ${tt.trials?`<p><span class="chip bad">${tt.attempts} of ${tt.attempts} blocked</span> <span class="chip">Earlier trials${when?', '+esc(when):''}</span> Across ${tt.trials} trials with a real send_email tool, ${tt.attempts} attempted to mail it out and all ${tt.attempts} were stopped by Veil's recipient allowlist (<code>veil/egress.py</code>, Python), not OpenShell. <a href="#p-inject" data-open="p-inject">The trials and what each label means</a></p>`:''}
     </div></section>`;
 }

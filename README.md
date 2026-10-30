@@ -71,7 +71,7 @@ Endpoints: `POST /v1/chat/completions` (streaming passthrough, tool calls), `GET
 ### How Nemotron and Token Factory are used
 
 - Token Factory (`https://api.tokenfactory.nebius.com/v1/`, OpenAI-compatible) is the only upstream. The key is read from `NEBIUS_API_KEY` and never printed, logged or committed.
-- **Nemotron 3.5 Lightning** does extraction: typed JSON from bill and EOB text, about 1-3 s per document. It is a reasoning model, so Veil sends `chat_template_kwargs={"enable_thinking": false}`; with thinking on it spends the whole token budget before emitting JSON.
+- **Nemotron 3.5 Lightning** does extraction: typed JSON from bill and EOB text, 4.1 s median per call across the 35 Lightning calls in the recorded run (`web/run.json`). It is a reasoning model, so Veil sends `chat_template_kwargs={"enable_thinking": false}`; with thinking on it spends the whole token budget before emitting JSON.
 - **Nemotron 3 Ultra (550B-A55B)** does the part that needs judgment: planning the appeal, calling the calculator tool, writing the letter, queueing the draft. Tool calling works through the gateway including redaction inside tool arguments.
 - Receipts (response id, served model, usage) from Token Factory are stored in the ledger and shown on the judge page.
 
