@@ -1,0 +1,171 @@
+Version:      1
+Hash:         87e27ba1b7774fd89f212e1f71e28f70e224614a9f362cbe6556d63a91782cd4
+Status:       Effective
+Source:       sandbox
+Config rev:   10894728878365077766
+---
+version: 1
+filesystem_policy:
+  include_workdir: true
+  read_only:
+  - /usr
+  - /lib
+  - /opt/hermes
+  - /proc
+  - /dev/urandom
+  - /app
+  - /run/nemoclaw/managed-gateway-expected-exit
+  - /etc
+  - /var/log
+  - /var/lib/dpkg
+  read_write:
+  - /sandbox
+  - /tmp
+  - /dev/null
+  - /dev/pts
+  - /sandbox/.hermes
+landlock:
+  compatibility: best_effort
+process:
+  run_as_user: sandbox
+  run_as_group: sandbox
+network_policies:
+  _provider_nemoclaw_local_v1_d55f447f9fd5dd487644abee:
+    name: _provider_nemoclaw_local_v1_d55f447f9fd5dd487644abee
+    endpoints:
+    - host: host.openshell.internal
+      port: 11435
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: GET
+          path: /v1/models
+      - allow:
+          method: POST
+          path: /v1/chat/completions
+      allowed_ips:
+      - '10.0.0.0/8'
+      - '172.16.0.0/12'
+      - '192.168.0.0/16'
+    binaries:
+    - path: /usr/bin/python3
+    - path: /opt/hermes/.venv/bin/python
+    - path: /opt/hermes/.venv/bin/python3
+    - path: /opt/venv/bin/python3
+    - path: /usr/local/bin/curl
+    - path: /usr/bin/curl
+  managed_inference:
+    name: managed_inference
+    endpoints:
+    - host: inference.local
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: POST
+          path: /v1/chat/completions
+      - allow:
+          method: POST
+          path: /v1/messages
+      - allow:
+          method: POST
+          path: /v1/responses
+      - allow:
+          method: POST
+          path: /v1/completions
+      - allow:
+          method: POST
+          path: /v1/embeddings
+      - allow:
+          method: GET
+          path: /v1/models
+      - allow:
+          method: GET
+          path: /v1/models/**
+    binaries:
+    - path: /usr/local/bin/hermes
+    - path: /usr/bin/python3.11
+    - path: /opt/hermes/.venv/bin/python
+  nous_research:
+    name: nous_research
+    endpoints:
+    - host: nousresearch.com
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: GET
+          path: /**
+      - allow:
+          method: POST
+          path: /**
+    - host: hermes-agent.nousresearch.com
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: GET
+          path: /**
+      - allow:
+          method: POST
+          path: /**
+    binaries:
+    - path: /usr/local/bin/hermes
+    - path: /usr/bin/python3*
+    - path: /opt/hermes/.venv/bin/python
+  nvidia:
+    name: nvidia
+    endpoints:
+    - host: integrate.api.nvidia.com
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: POST
+          path: /v1/chat/completions
+      - allow:
+          method: POST
+          path: /v1/completions
+      - allow:
+          method: POST
+          path: /v1/embeddings
+      - allow:
+          method: GET
+          path: /v1/models
+      - allow:
+          method: GET
+          path: /v1/models/**
+    binaries:
+    - path: /usr/local/bin/hermes
+    - path: /usr/bin/python3*
+    - path: /opt/hermes/.venv/bin/python
+  pypi:
+    name: pypi
+    endpoints:
+    - host: pypi.org
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: GET
+          path: /**
+    - host: files.pythonhosted.org
+      port: 443
+      protocol: rest
+      enforcement: enforce
+      rules:
+      - allow:
+          method: GET
+          path: /**
+    binaries:
+    - path: /usr/bin/curl
+    - path: /usr/local/bin/pip3
+    - path: /usr/local/bin/curl
+    - path: /usr/bin/python3*
+    - path: /opt/hermes/.venv/bin/python
