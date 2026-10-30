@@ -42,9 +42,8 @@ DETECTORS: list[tuple[str, re.Pattern, int]] = [
     ("PERSON", re.compile(r"(?m)\b(?:Sincerely|Regards|Best regards|Respectfully|Yours truly|Thank you),?[ \t]*\r?\n[ \t]*" + _NAME_PROSE), 1),
 ]
 
-# Detectors the canary and the redactor use that web/pseudo.js does not carry yet: spec() leaves them out, so the generated JS stays byte-identical
-# until it is regenerated from a template that has them. Birth dates in the shapes people actually write (dotted day-first, two-digit and
-# apostrophe years, spelled out), a "born" / JSON-key cue, and an account number wrapped across two lines.
+# Birth dates in the shapes people actually write (dotted day-first, two-digit and apostrophe years, spelled out), a "born" / JSON-key cue, and an
+# account number wrapped across two lines. spec() exports them with DETECTORS, so web/pseudo.js carries them too.
 _NUM_DATE = r"\d{1,2}[./-]\d{1,2}[./-](?:\d{4}|\d{2})|\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{8}"
 _ORD = r"(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|thirtieth|thirty-first)"
 _YEAR_WORDS = r"nineteen[\s-]+(?:(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(?:[\s-]+(?:one|two|three|four|five|six|seven|eight|nine))?|(?:oh|aught)[\s-]+(?:one|two|three|four|five|six|seven|eight|nine)|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)"
@@ -75,11 +74,13 @@ def find(text: str):
 
 
 def spec() -> list[dict]:
-    """Portable description of DETECTORS for web/pseudo.js (tools/gen_js.py). Leading (?i)/(?m) become JS flags."""
+    """Portable description of DETECTORS + EXTRA_DETECTORS for web/pseudo.js (tools/gen_js.py). Leading (?i)/(?m) become JS flags. Python's \\d and \\w
+    are Unicode-aware and JS's are ASCII, so they become Unicode property escapes (the `u` flag) and the browser matches the same digits and letters."""
     out = []
-    for kind, rx, grp in DETECTORS:
-        src, flags = rx.pattern, ""
+    for kind, rx, grp in DETECTORS + EXTRA_DETECTORS:
+        src, flags = rx.pattern, "u"
         while src.startswith("(?") and src[2] in "im" and src[3] == ")":
             flags += src[2]; src = src[4:]
+        src = src.replace("\\d", "\\p{Nd}").replace("\\w", "\\p{L}\\p{N}_").replace('\\"', '"')
         out.append(dict(kind=kind, src=src, flags=flags, group=grp))
     return out
