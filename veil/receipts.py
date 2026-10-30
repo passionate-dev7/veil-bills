@@ -20,7 +20,7 @@ GENESIS = "0919b0da835fb3a833bd2af748041718b08f2ee538356dfa1864b01bf464a547"  # 
 DEFAULT_UPSTREAM = "https://api.tokenfactory.nebius.com/v1"
 RSCHEMA = "CREATE TABLE IF NOT EXISTS receipts(seq INTEGER PRIMARY KEY, receipt TEXT NOT NULL)"
 FIELDS = ("seq", "type", "ts", "ledger_id", "kind", "destination_host", "destination_path", "status", "byte_count", "sha256",
-          "tokens", "http_status", "origin", "prev_hash")
+          "tokens", "http_status", "origin", "prev_hash", "provider")
 
 
 def canonical(obj) -> bytes:
@@ -34,6 +34,8 @@ def receipt_hash(r: dict) -> str:
 
 def make(prev_hash: str, seq: int, **f) -> dict:
     r = {k: f.get(k) for k in FIELDS}
+    if r["provider"] is None:
+        del r["provider"]  # receipts sealed before the provider label existed hash exactly as they always did
     r.update(seq=seq, prev_hash=prev_hash)
     r["receipt_hash"] = receipt_hash(r)
     return r
@@ -90,6 +92,8 @@ def receipt_status(row: dict) -> str:
 
 def destination(row: dict) -> tuple[str, str]:
     route, meta = row.get("route") or "", row.get("meta") or {}
+    if route == "chat" and row.get("provider") == "openrouter":
+        return "openrouter.ai", "/api/v1/chat/completions"
     if isinstance(meta, str):
         try:
             meta = json.loads(meta)
@@ -122,12 +126,12 @@ def tokens_of(row: dict) -> dict | None:
 def _call_fields(row: dict, status: str, origin: str) -> dict:
     h, p = destination(row)
     out = row.get("outbound")
-    return dict(type="call", ts=row.get("ts"), ledger_id=row["id"], kind=row.get("kind"), destination_host=h, destination_path=p, status=status,
+    return dict(type="call", ts=row.get("ts"), ledger_id=row["id"], kind=row.get("kind"), destination_host=h, destination_path=p, status=status, provider=row.get("provider"),
                 byte_count=len(out) if out is not None else 0, sha256=hashlib.sha256(out).hexdigest() if out is not None else None, origin=origin)
 
 
 def _result_fields(row: dict, origin: str, ts: str | None = None) -> dict:
-    return dict(type="result", ts=ts or row.get("ts"), ledger_id=row["id"], kind=row.get("kind"), status=receipt_status(row),
+    return dict(type="result", ts=ts or row.get("ts"), ledger_id=row["id"], kind=row.get("kind"), status=receipt_status(row), provider=row.get("provider"),
                 tokens=tokens_of(row), http_status=row.get("http_status"), origin=origin)
 
 
@@ -223,6 +227,8 @@ def verify_db(db, expect_head: str | None = None) -> dict:
         if res is None and c["status"] == "pending" and row.get("status") == "pending":
             continue  # still in flight
         want = res or c
+        if want.get("provider") != row.get("provider"):
+            return fail(want["seq"], "ledger_edited", f"ledger row #{id} was edited after it was receipted: provider is {row.get('provider')!r}, receipt says {want.get('provider')!r}")
         if want["status"] != receipt_status(row):
             return fail(want["seq"], "ledger_edited", f"ledger row #{id} was edited after it was receipted: status is {receipt_status(row)!r}, receipt says {want['status']!r}")
         if res is not None and (res["tokens"] != tokens_of(row) or res["http_status"] != row.get("http_status")):

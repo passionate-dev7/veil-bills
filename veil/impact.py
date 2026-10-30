@@ -8,6 +8,7 @@ enrich_record  adds all of the above to a run record; used by build_record and b
 from __future__ import annotations
 import json, os, re
 from pathlib import Path
+from . import providers
 from .config import ROOT
 
 
@@ -21,6 +22,8 @@ PRICE_SOURCE = "https://tokenfactory.nebius.com/model-catalog.md"
 
 def receipt_cost_micro(r: dict) -> int | None:
     """List-price cost of one call in millionths of a dollar (integer). tokens x $/1M = micro-dollars exactly. None if the model or usage is unpriced."""
+    if providers.is_dev(r.get("provider")):
+        return None  # dev fallback runs are free-tier OpenRouter calls: never priced as Nebius
     pr, u = PRICES.get(r.get("upstream_model") or r.get("model") or ""), r.get("usage") or {}
     if not pr or u.get("prompt_tokens") is None:
         return None
@@ -110,6 +113,8 @@ def enrich_record(rec: dict, hermes_dir: Path | None = None, cached_note: str | 
     if td.exists():
         rec["toolarg_demo"] = json.loads(td.read_text())
     rec["hermes_runs"] = hermes_runs(hermes_dir) if hermes_dir else rec.get("hermes_runs", [])
+    if rec.get("dev_fallback"):
+        cached_note = f"{rec.get('provider_label')}. These rows come from a dev run through the same Veil gateway (same redaction, canary and receipts), served by a different provider. Not a Token Factory run, not part of the submission."
     rec.setdefault("receipts_source", dict(
         cached=True, note=cached_note or "Receipts come from the earlier real Token Factory run recorded in the gateway ledger (response id, served model and usage are Nebius's own fields). They are not re-run when this page loads."))
     return scrub_paths(rec)

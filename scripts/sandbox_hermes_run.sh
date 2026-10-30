@@ -11,6 +11,9 @@
 #   DRY_RUN=1 scripts/sandbox_hermes_run.sh injection      (or: scripts/sandbox_hermes_run.sh injection --dry-run)
 # It replays infra/logs/deny_log_sample.txt (a real earlier operator probe) through the same ingestion + export code path, with the
 # rows labelled as NOT model-driven, into a throwaway VEIL_HOME and a throwaway run.json. Override the log with DRY_LOG=<file>.
+# DEV fallback while Token Factory credit is unavailable: start the gateway with VEIL_PROVIDER=openrouter (and OPENROUTER_API_KEY in its env) and
+# run this script with the same VEIL_PROVIDER. Rows are labelled provider=openrouter, state lives in .veil-dev (never .veil), and the record is written
+# to .veil-dev/dev_runs/, NOT web/run.json or web/run.js: the submission bundle stays Token-Factory-only.
 set -e
 cd "$(dirname "$0")/.."
 SB=${SB:-veil-hermes}; START=$(date +%s); PY=${PY:-.venv/bin/python}
@@ -30,9 +33,14 @@ if [ -n "$DRY_RUN" ]; then
   echo "[dry run] ok. Throwaway output: $TMP (the real .veil and web/run.json were not touched)"
   exit 0
 fi
-mkdir -p .veil
-openshell sandbox exec -n $SB -- hermes chat -q "$Q" -Q | tee .veil/hermes_${KIND}_$START.txt
+if [ "${VEIL_PROVIDER:-tokenfactory}" != "tokenfactory" ]; then
+  export VEIL_HOME=${VEIL_HOME:-$PWD/.veil-dev}; DEV=1
+  echo "*** DEV RUN: provider=$VEIL_PROVIDER (state in $VEIL_HOME). Not a Nebius Token Factory run; web/run.json will not be touched. ***"
+fi
+HOME_DIR=${VEIL_HOME:-.veil}
+mkdir -p "$HOME_DIR"
+openshell sandbox exec -n $SB -- hermes chat -q "$Q" -Q | tee "$HOME_DIR/hermes_${KIND}_$START.txt"
 sleep 3
 $PY -m veil sandbox-events --since $START --model-driven --trigger "Hermes agent in sandbox ($KIND prompt, model-driven; log lines are OpenShell's own)"
 $PY -m veil export-run
-echo "web/run.json + web/run.js refreshed. Review with: git diff --stat web/ ; then commit."
+if [ -n "$DEV" ]; then echo "dev record written under $HOME_DIR/dev_runs/ (web/ untouched)."; else echo "web/run.json + web/run.js refreshed. Review with: git diff --stat web/ ; then commit."; fi

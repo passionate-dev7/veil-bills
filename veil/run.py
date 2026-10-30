@@ -11,6 +11,7 @@ from .egress import Policy, Outbox, render_eml
 from .extract import extract, pdf_text
 from .impact import enrich_record
 from .vault import Vault
+from . import providers
 
 
 def _jsonable(o):
@@ -134,8 +135,14 @@ def build_record(settings: Settings, as_of: date, run: str | None = None, live: 
         egress=[strip(e) for e in reversed(led.list(2000, kind="egress"))],  # all runs: includes the live injection trials
         receipts=[dict(ledger_id=e["id"], tag=e.get("tag"), model=e.get("model"), upstream_model=e.get("upstream_model"), upstream_id=e.get("upstream_id"),
                        usage=e.get("usage"), latency_ms=e.get("latency_ms"), sha256=e.get("outbound_sha256"), bytes=e.get("outbound_bytes"),
-                       redacted=e.get("redacted_total"), status=e.get("status")) for e in entries if e.get("kind") in ("inference", "search")],
+                       redacted=e.get("redacted_total"), status=e.get("status"), provider=e.get("provider")) for e in entries if e.get("kind") in ("inference", "search")],
         injection_trials=json.loads(inj.read_text()) if inj.exists() else None,
     )
     rec["chain"] = led.chain()  # tamper-evident receipt chain; web/receipts.js re-verifies it in the browser
+    seen = sorted({e["provider"] for e in entries + rec["egress"] if e.get("provider")})
+    dev = [p for p in seen if providers.is_dev(p)]
+    rec["provider"] = dev[0] if dev else "tokenfactory"  # rows that predate the label are Token Factory rows
+    rec["providers_seen"] = seen
+    rec["dev_fallback"] = bool(dev)
+    rec["provider_label"] = providers.label(dev[0]) if dev else None  # the page shows this on any dev run
     return enrich_record(rec, settings.home)

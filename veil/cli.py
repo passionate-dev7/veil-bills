@@ -1,6 +1,6 @@
 """veil CLI: runs the whole product without Hermes."""
 from __future__ import annotations
-import argparse, json, sys, time, uuid
+import argparse, json, re, sys, time, uuid
 from datetime import date
 from pathlib import Path
 from .client import ensure_gateway, Gateway, DEFAULT_URL
@@ -8,6 +8,7 @@ from .config import Settings, ROOT
 from .egress import Policy, Outbox
 from .ledger import Ledger
 from .appeal import handle_tool
+from . import providers
 
 
 def _gw(a, settings, run=""):
@@ -19,8 +20,12 @@ def cmd_gateway(a):
     from .gateway import create_app
     from urllib.parse import urlparse
     u = urlparse(a.url)
+    st = Settings()
     print(f"Veil gateway on {a.url}  (OpenAI-compatible: /v1/chat/completions, /v1/models; ledger: /ledger)")
-    uvicorn.run(create_app(Settings()), host=u.hostname, port=u.port or 8790, log_level="info")
+    if st.dev:
+        print(f"  *** DEV ONLY: provider={st.provider} ({providers.DEV_LABEL}). Rows are labelled provider={st.provider}; never use in the submission. ***")
+        print(f"  upstream {st.upstream}, key {st.key_env} {'set' if st.api_key else 'MISSING'}, home {st.home}")
+    uvicorn.run(create_app(st), host=u.hostname, port=u.port or 8790, log_level="info")
 
 
 def cmd_audit(a):
@@ -166,9 +171,22 @@ def cmd_app(a):
 STATIC_FILES = ("index.html", "veil.css", "pseudo.js", "receipts.js", "run.js", "run.json", "presidio_results.json", "vercel.json")
 
 
+def dev_data_in(path: Path) -> str | None:
+    """Why this file must not ship in the static bundle: it holds data from a non-default (dev fallback) provider, or None."""
+    t = path.read_text(errors="ignore")
+    if re.search(r'"provider"\s*:\s*"openrouter"', t) or re.search(r'"dev_fallback"\s*:\s*true', t):
+        return f"{path.name} contains provider=openrouter data (dev fallback)"
+    return None
+
+
 def cmd_static(a):
     import shutil
     out = Path(a.out)
+    for f in STATIC_FILES:  # the submission bundle is Token-Factory-only: refuse to copy anything from a dev fallback run
+        why = dev_data_in(ROOT / "web" / f)
+        if why:
+            print(f"refusing to write the static bundle: {why}")
+            return 1
     out.mkdir(parents=True, exist_ok=True)
     web = ROOT / "web"
     for f in STATIC_FILES:
@@ -190,7 +208,11 @@ def cmd_sandbox_events(a):
 
 
 def _write_run(rec, out):
-    out = Path(out); out.parent.mkdir(parents=True, exist_ok=True)
+    out = Path(out)
+    if (rec.get("dev_fallback") or providers.is_dev(rec.get("provider"))) and (ROOT / "web").resolve() in (out.resolve(), *out.resolve().parents):
+        raise SystemExit(f"refusing to write {out}: this record is from the dev fallback provider ({rec.get('provider')}) and web/ is the static bundle. "
+                         "Use the default dev path (<VEIL_HOME>/dev_runs/).")
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rec, indent=2, default=str))
     if out.resolve().parent == (ROOT / "web").resolve():
         (out.parent / "run.js").write_text("window.VEIL_RUN = " + out.read_text() + ";")
@@ -202,7 +224,10 @@ def cmd_export_run(a):
     from .run import build_record
     s = Settings()
     rec = build_record(s, date.fromisoformat(a.as_of) if a.as_of else date.today(), a.run)
-    _write_run(rec, a.out)
+    out = a.out or (str(ROOT / "web" / "run.json") if not rec.get("dev_fallback") else str(s.home / "dev_runs" / f"run_{rec['provider']}_{time.strftime('%Y%m%d-%H%M%S')}.json"))
+    if rec.get("dev_fallback"):
+        print(f"  DEV RUN ({rec['provider_label']}): written outside web/, never part of the static bundle")
+    _write_run(rec, out)
     print(f"  {rec['totals']['calls']} gateway calls, {len(rec['receipts'])} receipts, {len(rec['hermes_runs'])} Hermes transcript(s), sandbox rows model-driven: "
           f"{sum(1 for e in rec['egress'] if (e.get('meta') or {}).get('model_driven'))}, impact ${rec['impact']['total_cents'] / 100:,.2f}")
 
@@ -328,7 +353,7 @@ def main(argv=None):
     x.set_defaults(f=cmd_sandbox_events)
     x = sub.add_parser("toolargs-demo", help="offline stub demo: tool-call arguments through the gateway"); x.add_argument("--out", default=str(ROOT / "eval" / "toolargs_demo.json"))
     x.set_defaults(f=cmd_toolargs_demo)
-    x = sub.add_parser("export-run", help="refresh web/run.json from the local ledger"); x.add_argument("--out", default=str(ROOT / "web" / "run.json"))
+    x = sub.add_parser("export-run", help="refresh web/run.json from the local ledger (a dev-fallback run goes to <VEIL_HOME>/dev_runs/ instead)"); x.add_argument("--out", default=None)
     x.add_argument("--as-of"); x.add_argument("--run"); x.set_defaults(f=cmd_export_run)
     x = sub.add_parser("enrich-run", help="add impact/parity to an existing run.json (offline)"); x.add_argument("path", nargs="?", default=str(ROOT / "web" / "run.json"))
     x.add_argument("--hermes-dir"); x.set_defaults(f=cmd_enrich_run)

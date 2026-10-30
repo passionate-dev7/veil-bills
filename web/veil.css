@@ -27,6 +27,7 @@ section{min-width:0}
 
 /* compact alert */
 .alert{margin-top:var(--s4);border:1px solid var(--crit);border-left:4px solid var(--crit);background:var(--crit-soft);border-radius:var(--r1);padding:var(--s3) var(--s4)}
+.devbanner{margin-top:var(--s4);border:2px dashed var(--warn);background:var(--sheet);border-radius:var(--r1);padding:var(--s3) var(--s4)}.devbanner p{margin:0}.devbanner strong{color:var(--warn)}
 .alert p{margin:0}.alert strong{color:var(--crit)}.alert .mono{background:var(--sheet);padding:0 var(--s1);border:1px solid #d9b3ab;border-radius:var(--r1)}
 
 /* hero */
@@ -64,6 +65,7 @@ mark.i{background:var(--warn-soft);color:var(--warn);font-weight:500;padding:0 2
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .chip{display:inline-flex;align-items:center;font-weight:500;min-height:24px;padding:0 var(--s2);border-radius:var(--r1);background:var(--sunk);border:1px solid var(--line)}
 .chip.ok{background:var(--accent-soft);color:var(--accent);border-color:#b9cfc0}
+.chip.warn{background:var(--sheet);color:var(--warn);border-color:var(--warn)}
 .chip.bad{background:var(--crit-soft);color:var(--crit);border-color:#d9b3ab}
 .chip.warn{background:var(--warn-soft);color:var(--warn);border-color:#e3cf9c}
 input[type=file]{font:400 14px var(--sans);max-width:100%}

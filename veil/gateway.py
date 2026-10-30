@@ -1,6 +1,7 @@
 """Veil gateway: OpenAI-compatible, pseudonymizes everything outbound, rehydrates everything inbound, fails closed."""
 from __future__ import annotations
-import json, time
+import asyncio, json, time
+from contextlib import asynccontextmanager
 from collections import Counter
 import httpx
 from fastapi import FastAPI, Request
@@ -9,7 +10,7 @@ from .config import Settings, ALLOWED_MODELS
 from .vault import Vault
 from .pseudo import Pseudonymizer, StreamRehydrator
 from .ledger import Ledger
-from . import toolargs
+from . import toolargs, providers
 
 
 def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTransport | None = None) -> FastAPI:
@@ -28,11 +29,12 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
 
     @app.get("/health")
     def health():
-        return {"ok": True, "service": "veil-gateway", "vault": vault.stats(), "key_configured": bool(s.api_key), "upstream": s.upstream}
+        return {"ok": True, "service": "veil-gateway", "vault": vault.stats(), "key_configured": bool(s.api_key), "upstream": s.upstream,
+                "provider": s.provider, "dev_fallback": s.dev, "provider_label": providers.label(s.provider)}
 
     @app.get("/v1/models")
     def models():
-        return {"object": "list", "data": [{"id": m, "object": "model", "owned_by": "nebius-token-factory"} for m in ALLOWED_MODELS]}
+        return {"object": "list", "data": [{"id": m, "object": "model", "owned_by": "nebius-token-factory" if s.provider == "tokenfactory" else s.provider} for m in ALLOWED_MODELS]}
 
     @app.get("/ledger")
     def ledger_list(limit: int = 100, kind: str | None = None, run: str | None = None, full: bool = False):
@@ -61,7 +63,7 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         body = pseudo.redact_payload({"query": q, "search_depth": "basic", "max_results": 5, "include_answer": "basic"}, counts)
         outbound = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         leaks = pseudo.canary(outbound)
-        base = dict(kind="search", run=run, tag=tag, route="tavily", model="tavily/search", redacted_total=sum(counts.values()),
+        base = dict(kind="search", run=run, tag=tag, route="tavily", provider=s.provider, model="tavily/search", redacted_total=sum(counts.values()),
                     redacted_by_kind=dict(counts))
         if leaks:
             ledger.add(**base, status="blocked", leaked_count=len(leaks), leaked_kinds=[f"{k}:{how}" for k, how in leaks],
@@ -96,7 +98,7 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
             return err(400, "body must be JSON", "bad_request")
         model = body.get("model")
         if model not in ALLOWED_MODELS:
-            ledger.add(kind="inference", run=run, tag=tag, route="chat", model=str(model), status="blocked",
+            ledger.add(kind="inference", run=run, tag=tag, route="chat", model=str(model), status="blocked", provider=s.provider,
                        reason="model not allowed by gateway policy")
             return err(400, f"model not allowed; use one of {list(ALLOWED_MODELS)}", "model_not_allowed")
         stream = bool(body.get("stream"))
@@ -104,9 +106,10 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         redacted = pseudo.redact_payload(body, counts)
         if stream:
             redacted.setdefault("stream_options", {"include_usage": True})
+        redacted = providers.adapt_request(s.provider, redacted)  # model ids / reasoning flags for the dev fallback; before the canary, so the canary sees the final bytes
         outbound = json.dumps(redacted, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         leaks = pseudo.canary(outbound)  # FAIL CLOSED: checked against the final bytes
-        base = dict(kind="inference", run=run, tag=tag, route="chat", model=model, stream=int(stream),
+        base = dict(kind="inference", run=run, tag=tag, route="chat", model=model, stream=int(stream), provider=s.provider,
                     redacted_total=sum(counts.values()), redacted_by_kind=dict(counts))
         tool_meta = toolargs.summary(redacted)
         if any(tool_meta.values()):
@@ -119,17 +122,29 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
             return err(422, "Veil canary refused this request: sensitive values remained after redaction", "leak_blocked",
                        leaked_kinds=kinds, leaked_count=len(leaks))
         if not s.api_key and transport is None:
-            return err(500, "NEBIUS_API_KEY not configured", "no_key")
+            return err(500, f"{s.key_env} not configured", "no_key")
         entry = ledger.add(**base, status="pending", outbound=outbound, leaked_count=0)
-        headers = {"Authorization": f"Bearer {s.api_key or 'test'}", "Content-Type": "application/json"}
+        headers = providers.upstream_headers(s.provider, s.api_key)  # never stored: the ledger holds the body bytes only
         url = s.upstream.rstrip("/") + "/chat/completions"
         if not stream:
+            retries = 0
             try:
-                r = await client.post(url, content=outbound, headers=headers)
+                while True:
+                    r = await client.post(url, content=outbound, headers=headers)
+                    if r.status_code not in providers.RETRY_STATUSES or retries >= s.retries:
+                        break
+                    await asyncio.sleep(providers.retry_delay(retries, r.headers.get("retry-after"), s.retry_base_s))
+                    retries += 1
             except Exception as e:
                 ledger.update(entry, status="error", reason=f"upstream: {type(e).__name__}", latency_ms=int((time.time() - t0) * 1000))
                 return err(502, f"upstream unreachable: {type(e).__name__}", "upstream_error")
             ms = int((time.time() - t0) * 1000)
+            if r.status_code in providers.RETRY_STATUSES:  # still rate limited after every retry: fail cleanly, nothing half-done
+                ledger.update(entry, status="error", http_status=r.status_code, latency_ms=ms, meta={**(base.get("meta") or {}), "retries": retries},
+                              reason=f"upstream rate limited (429) after {retries} retries")
+                return err(429, f"upstream rate limited (429) after {retries} retries; try again later", "rate_limited", retries=retries)
+            if retries:
+                base["meta"] = {**(base.get("meta") or {}), "retries": retries}
             try:
                 data = r.json()
             except Exception:
@@ -137,20 +152,38 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
                 return err(502, "upstream returned non-JSON", "upstream_error")
             ledger.update(entry, status="ok" if r.status_code < 400 else "error", http_status=r.status_code, latency_ms=ms,
                           upstream_id=data.get("id"), upstream_model=data.get("model"), usage=data.get("usage") or {},
-                          response_text=json.dumps(data, ensure_ascii=False))
+                          response_text=json.dumps(data, ensure_ascii=False), **({"meta": base["meta"]} if retries else {}))
             return JSONResponse(pseudo.rehydrate_obj(data), status_code=r.status_code)
+
+        tries = {"n": 0}
+
+        @asynccontextmanager
+        async def open_stream():  # 429 before the first byte: back off and retry the same bytes, then give up cleanly
+            while True:
+                r = await client.send(client.build_request("POST", url, content=outbound, headers=headers), stream=True)
+                if r.status_code in providers.RETRY_STATUSES and tries["n"] < s.retries:
+                    delay = providers.retry_delay(tries["n"], r.headers.get("retry-after"), s.retry_base_s)
+                    await r.aclose()
+                    tries["n"] += 1
+                    await asyncio.sleep(delay)
+                    continue
+                try:
+                    yield r
+                finally:
+                    await r.aclose()
+                return
 
         async def gen():
             rh: dict[tuple, StreamRehydrator] = {}
             meta, texts = {}, []
             status = 200
             try:
-                async with client.stream("POST", url, content=outbound, headers=headers) as r:
+                async with open_stream() as r:
                     status = r.status_code
                     if r.status_code >= 400:
                         raw = (await r.aread()).decode("utf-8", "replace")
-                        ledger.update(entry, status="error", http_status=status, response_text=raw,
-                                      latency_ms=int((time.time() - t0) * 1000))
+                        ledger.update(entry, status="error", http_status=status, response_text=raw, latency_ms=int((time.time() - t0) * 1000),
+                                      **({"reason": f"upstream rate limited (429) after {tries['n']} retries"} if status == 429 else {}))
                         yield f"data: {json.dumps({'error': {'message': 'upstream error', 'status': status}})}\n\n"
                         return
                     async for line in r.aiter_lines():

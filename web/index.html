@@ -58,10 +58,16 @@ function render(){
   $('#modeNote').textContent=S.mode==='live'?'Live: local gateway on this machine.':'Judge mode: cached run of the real pipeline, no backend.';
   $('#mLive').classList.toggle('on',S.mode==='live');$('#mJudge').classList.toggle('on',S.mode==='judge');
   S.doc=Math.max(0,Math.min(S.doc,(R.documents||[]).length-1));
-  $('#app').innerHTML=[secAlert(R),secHero(R),`<div class="layout"><main>${secFlow(R)}</main>${secSide(R)}</div>`,secProof(R)].join('');
+  $('#app').innerHTML=[secDev(R),secAlert(R),secHero(R),`<div class="layout"><main>${secFlow(R)}</main>${secSide(R)}</div>`,secProof(R)].join('');
   const T=R.totals||{};
   $('#foot').innerHTML=`Run <code>${esc(R.run||'')}</code>, generated ${esc(R.generated||'')}. As of ${esc(R.as_of||'')}. Cached data: ledger rows, receipts and the audit come from the earlier real pipeline run, not from this page load. All documents and identifiers are synthetic. Veil is designed so the cloud never sees identifiers; this page makes no compliance claim.`;
   bind();fitSide();showStep();verifyToolArgs(R);verifyChain(R);
+}
+
+/* dev-fallback banner: shown on any run whose rows say provider=openrouter. Never present in the Token Factory submission bundle. */
+function secDev(R){
+  if(!(R.dev_fallback||R.provider==='openrouter'))return '';
+  return `<section class="devbanner" role="alert"><p><strong>${esc(R.provider_label||'OpenRouter dev fallback, not a Nebius Token Factory run')}.</strong> Every row, receipt and token count on this page came from the free OpenRouter tier while Token Factory credit was unavailable. Same gateway, same redaction and canary, different provider. It is not a Nebius run and is not part of the submission.</p></section>`;
 }
 
 /* top alert: honest and compact */
@@ -297,7 +303,7 @@ function pInject(R){
 }
 function pReceipts(R){
   const t=R.totals||{},c=R.cost||{},src=R.receipts_source||{};
-  const rows=(R.receipts||[]).map(r=>`<tr><td class="mono num">${r.ledger_id}</td><td>${esc(r.tag)}</td><td class="mono">${esc((r.upstream_model||r.model||'').replace('nvidia/',''))}</td><td class="mono"><span class="trunc">${esc(r.upstream_id||'')}</span></td><td class="num">${r.usage&&r.usage.prompt_tokens!=null?r.usage.prompt_tokens+' / '+r.usage.completion_tokens:''}</td><td class="num">${r.latency_ms??''}</td><td class="num mono">${micro(r.cost_micro_usd)}</td></tr>`).join('');
+  const rows=(R.receipts||[]).map(r=>`<tr><td class="mono num">${r.ledger_id}</td><td>${esc(r.tag)}</td><td class="mono">${esc((r.upstream_model||r.model||'').replace('nvidia/',''))}${r.provider==='openrouter'?' <span class="chip warn">openrouter dev</span>':''}</td><td class="mono"><span class="trunc">${esc(r.upstream_id||'')}</span></td><td class="num">${r.usage&&r.usage.prompt_tokens!=null?r.usage.prompt_tokens+' / '+r.usage.completion_tokens:''}</td><td class="num">${r.latency_ms??''}</td><td class="num mono">${micro(r.cost_micro_usd)}</td></tr>`).join('');
   return pf('p-receipts','Receipts',`${t.calls??0} real calls, ${(t.total_tokens||0).toLocaleString('en-US')} tokens, ${((t.latency_ms||0)/1000).toFixed(1)} s, about ${c.total_micro_usd!=null?micro(c.total_micro_usd):'n/a'} (estimate). Cached from the earlier real run`,
    `<p><b>Cached data.</b> ${esc(src.note||'')} Response id, served model and usage are fields Nebius returned.</p>
    <p class="dim">Cost is an estimate, not an invoice: Nebius list price (<a href="${esc(c.source||'#')}" target="_blank" rel="noopener noreferrer">model catalog</a>) times the token counts returned. ${c.priced_calls!=null?c.priced_calls+' of '+c.calls+' receipts priced; the rest (Tavily search) are unpriced.':''}</p>

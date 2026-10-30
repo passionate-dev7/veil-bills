@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib, json, sqlite3, threading, time
 from pathlib import Path
 from . import receipts as rc
+from . import providers
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS ledger(
@@ -10,7 +11,7 @@ CREATE TABLE IF NOT EXISTS ledger(
   status TEXT, http_status INTEGER, outbound BLOB, outbound_sha256 TEXT, outbound_bytes INTEGER,
   redacted_total INTEGER DEFAULT 0, redacted_by_kind TEXT DEFAULT '{}', leaked_count INTEGER DEFAULT 0,
   leaked_kinds TEXT DEFAULT '[]', reason TEXT, latency_ms INTEGER, upstream_id TEXT, upstream_model TEXT,
-  usage TEXT, response_text TEXT, meta TEXT DEFAULT '{}');
+  usage TEXT, response_text TEXT, meta TEXT DEFAULT '{}', provider TEXT);
 """
 
 
@@ -21,6 +22,8 @@ class Ledger:
         self.lock = threading.RLock()
         with self.lock:
             self.db.executescript(SCHEMA)
+            if "provider" not in {r[1] for r in self.db.execute("PRAGMA table_info(ledger)")}:
+                self.db.execute("ALTER TABLE ledger ADD COLUMN provider TEXT")  # older ledgers: NULL = predates the provider label
             self.db.execute(rc.RSCHEMA)
             self.db.commit()
             rc.migrate(self.db)  # first run only: chain rows that predate receipts (origin=backfill)
@@ -35,6 +38,7 @@ class Ledger:
             if k in f and not isinstance(f[k], str):
                 f[k] = json.dumps(f[k])
         f.setdefault("ts", time.strftime("%Y-%m-%dT%H:%M:%S%z"))
+        f.setdefault("provider", providers.active_provider())  # every row says which upstream provider this run used (VEIL_PROVIDER)
         cols = ",".join(f)
         with self.lock:
             # one transaction: the row and its call receipt are logged together, so a call is never in the ledger without a receipt
@@ -113,6 +117,7 @@ class Ledger:
         return {"calls": len(rows), "redacted": sum(r["redacted_total"] or 0 for r in rows),
                 "leaked": sum(r["leaked_count"] or 0 for r in rows),
                 "blocked": sum(1 for r in rows if r["status"] == "blocked"),
+                "providers": sorted({r["provider"] for r in rows if r.get("provider")}),
                 "latency_ms": sum(r["latency_ms"] or 0 for r in rows), **u}
 
     def verify(self, head: str | None = None) -> dict:

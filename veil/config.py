@@ -2,7 +2,9 @@
 from __future__ import annotations
 import os, re
 from dataclasses import dataclass, field
+from typing import Any
 from pathlib import Path
+from . import providers
 
 ROOT = Path(__file__).resolve().parent.parent
 ULTRA = "nvidia/Nemotron-3-Ultra-550b-a55b"
@@ -37,15 +39,38 @@ def load_tavily_key() -> str | None:
     return None
 
 
+_UNSET: Any = object()
+
+
 @dataclass
 class Settings:
-    upstream: str = field(default_factory=lambda: os.environ.get("VEIL_UPSTREAM", "https://api.tokenfactory.nebius.com/v1"))
+    provider: str = field(default_factory=providers.active_provider)  # VEIL_PROVIDER=tokenfactory (default) | openrouter (DEV ONLY)
+    upstream: str = _UNSET  # VEIL_UPSTREAM overrides; else the provider's base URL
     home: Path = field(default_factory=lambda: Path(os.environ.get("VEIL_HOME", ROOT / ".veil")))
     profile: Path = field(default_factory=lambda: Path(os.environ.get("VEIL_PROFILE", ROOT / "demo" / "profile.json")))
-    api_key: str | None = field(default_factory=load_api_key)
+    api_key: str | None = _UNSET  # tokenfactory: load_api_key(); openrouter: OPENROUTER_API_KEY from the environment only
     timeout: float = 300.0
+    retries: int = 4  # 429 from the upstream: back off and retry this many times, then fail cleanly
+    retry_base_s: float = 2.0
     tavily_key: str | None = field(default_factory=load_tavily_key)
     tavily_url: str = "https://api.tavily.com/search"
+
+    def __post_init__(self):
+        if self.provider not in providers.PROVIDERS:
+            raise ValueError(f"unknown provider {self.provider!r}")
+        if self.upstream is _UNSET:
+            self.upstream = os.environ.get("VEIL_UPSTREAM") if self.provider == "tokenfactory" and os.environ.get("VEIL_UPSTREAM") \
+                else providers.PROVIDERS[self.provider]["base"]
+        if self.api_key is _UNSET:
+            self.api_key = providers.key_for(self.provider) if self.provider != "tokenfactory" else load_api_key()
+
+    @property
+    def dev(self) -> bool:
+        return providers.is_dev(self.provider)
+
+    @property
+    def key_env(self) -> str:
+        return providers.PROVIDERS[self.provider]["key_env"]
 
     @property
     def vault_db(self) -> Path:
