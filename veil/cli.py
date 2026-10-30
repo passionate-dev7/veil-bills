@@ -176,12 +176,40 @@ def cmd_static(a):
 def cmd_sandbox_events(a):
     from . import sandbox_events as se
     s = Settings()
-    lines = se.read_logs(a.sandbox)
-    ids = se.ingest(s, lines, a.trigger, since=a.since, only=a.only)
+    lines = Path(a.from_file).read_text().splitlines() if a.from_file else se.read_logs(a.sandbox)
+    ids = se.ingest(s, lines, a.trigger, since=a.since, only=a.only, model_driven=a.model_driven)
     denied = [l for l in lines if se.parse(l)]
     print(f"{len(denied)} DENIED line(s) in the sandbox log; {len(ids)} new ledger row(s): {ids}")
+    if a.model_driven and not ids:
+        print("  note: no new DENIED line after --since, so nothing is labelled model-driven.")
     for i in ids:
         print("  ", Ledger(s.ledger_db).get(i)["meta"]["raw"])
+
+
+def _write_run(rec, out):
+    out = Path(out); out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(rec, indent=2, default=str))
+    if out.resolve().parent == (ROOT / "web").resolve():
+        (out.parent / "run.js").write_text("window.VEIL_RUN = " + out.read_text() + ";")
+    print("run record:", out)
+
+
+def cmd_export_run(a):
+    """Rebuild the judge record from the local ledger/memory/outbox (what a live run just wrote) and refresh web/run.json + run.js."""
+    from .run import build_record
+    s = Settings()
+    rec = build_record(s, date.fromisoformat(a.as_of) if a.as_of else date.today(), a.run)
+    _write_run(rec, a.out)
+    print(f"  {rec['totals']['calls']} gateway calls, {len(rec['receipts'])} receipts, {len(rec['hermes_runs'])} Hermes transcript(s), sandbox rows model-driven: "
+          f"{sum(1 for e in rec['egress'] if (e.get('meta') or {}).get('model_driven'))}, impact ${rec['impact']['total_cents'] / 100:,.2f}")
+
+
+def cmd_enrich_run(a):
+    """Add impact / parity / receipts_source to an existing run record without touching any database (offline, no credit needed)."""
+    from .impact import enrich_record
+    p = Path(a.path)
+    rec = enrich_record(json.loads(p.read_text()), Path(a.hermes_dir) if a.hermes_dir else None)
+    _write_run(rec, p)
 
 
 def main(argv=None):
@@ -206,7 +234,13 @@ def main(argv=None):
     x.add_argument("--no-appeal", action="store_true"); x.set_defaults(f=cmd_app)
     x = sub.add_parser("sandbox-events", help="ingest real OpenShell DENIED lines into the ledger (live)"); x.add_argument("--sandbox", default="veil-hermes")
     x.add_argument("--trigger", required=True, help="honest label of what caused the traffic"); x.add_argument("--since", type=float, default=0.0); x.add_argument("--only")
+    x.add_argument("--model-driven", action="store_true", help="the traffic came from Hermes' own tool calls (set only by scripts/sandbox_hermes_run.sh)")
+    x.add_argument("--from-file", help="read OCSF lines from a file instead of `openshell logs` (dry runs and tests)")
     x.set_defaults(f=cmd_sandbox_events)
+    x = sub.add_parser("export-run", help="refresh web/run.json from the local ledger"); x.add_argument("--out", default=str(ROOT / "web" / "run.json"))
+    x.add_argument("--as-of"); x.add_argument("--run"); x.set_defaults(f=cmd_export_run)
+    x = sub.add_parser("enrich-run", help="add impact/parity to an existing run.json (offline)"); x.add_argument("path", nargs="?", default=str(ROOT / "web" / "run.json"))
+    x.add_argument("--hermes-dir"); x.set_defaults(f=cmd_enrich_run)
     x = sub.add_parser("static", help="write a static judge bundle (no backend)"); x.add_argument("out"); x.set_defaults(f=cmd_static)
     a = p.parse_args(argv)
     a.f(a)

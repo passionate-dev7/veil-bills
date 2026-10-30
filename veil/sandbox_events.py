@@ -24,7 +24,7 @@ def read_logs(sandbox: str, n: int = 3000) -> list[str]:
     return r.stdout.splitlines()
 
 
-def ingest(s: Settings, lines: list[str], trigger: str, run: str = "sandbox-hermes", since: float = 0.0, only: str | None = None) -> list[int]:
+def ingest(s: Settings, lines: list[str], trigger: str, run: str = "sandbox-hermes", since: float = 0.0, only: str | None = None, model_driven: bool = False) -> list[int]:
     """Ledger every DENIED line (optionally only those whose target contains `only`). Idempotent: a raw line is stored once."""
     led = Ledger(s.ledger_db)
     seen = {(e.get("meta") or {}).get("raw") for e in led.list(5000, kind="egress")}
@@ -37,5 +37,5 @@ def ingest(s: Settings, lines: list[str], trigger: str, run: str = "sandbox-herm
         out.append(led.add(kind="egress", run=run, tag="openshell-deny", route=f"openshell:{d['kind']}", status="blocked", ts=t,
                            reason=f"OpenShell sandbox denied {d['bin']} -> {d['target']}: {d.get('reason') or 'not allowed by any policy'}",
                            meta=dict(source="openshell", live=True, raw=raw.strip(), observed=t, binary=d["bin"], pid=int(d["pid"]), target=d["target"],
-                                     policy=d["policy"], engine=d["engine"], trigger=trigger, to=[d["target"]], subject="(network connection)")))
+                                     policy=d["policy"], engine=d["engine"], trigger=trigger, model_driven=model_driven, to=[d["target"]], subject="(network connection)")))
     return out

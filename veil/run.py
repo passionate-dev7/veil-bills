@@ -9,6 +9,7 @@ from .client import Gateway
 from .config import Settings, ROOT
 from .egress import Policy, Outbox, render_eml
 from .extract import extract, pdf_text
+from .impact import enrich_record
 from .vault import Vault
 
 
@@ -121,7 +122,7 @@ def build_record(settings: Settings, as_of: date, run: str | None = None, live: 
     inj = settings.home.parent / "eval" / "injection_results.json"
     inj = inj if inj.exists() else ROOT / "eval" / "injection_results.json"
     strip = lambda e: {k: v for k, v in e.items() if k not in ("response_text",)}
-    return dict(
+    rec = dict(
         synthetic=True, disclaimer="All data is SYNTHETIC. Not medical or legal advice.", live=live, run=run, as_of=as_of.isoformat(),
         generated=time.strftime("%Y-%m-%dT%H:%M:%S%z"), totals=led.totals(run), sensitive=sens, documents=docs_out,
         findings=mem.findings(), deadlines=audit["deadlines"], deductible=audit["deductible"], warnings=audit["warnings"],
@@ -136,3 +137,4 @@ def build_record(settings: Settings, as_of: date, run: str | None = None, live: 
                        redacted=e.get("redacted_total"), status=e.get("status")) for e in entries if e.get("kind") in ("inference", "search")],
         injection_trials=json.loads(inj.read_text()) if inj.exists() else None,
     )
+    return enrich_record(rec, settings.home)

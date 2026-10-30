@@ -1,0 +1,49 @@
+{
+  "source": "tools/canary_demo.py",
+  "note": "The real Veil gateway code with a stub upstream (no network, no model). Shows the fail-closed path the cached live run never needed to take: it ran with 0 blocked.",
+  "rows": [
+    {
+      "label": "A normal bill line, identifiers present",
+      "input": "Patient: Jane Doe\nMember ID: NSH884217353\nCPT 99213 office visit, billed $214.00 on 2026-05-02.",
+      "http": 200,
+      "error_code": null,
+      "sent_upstream": true,
+      "ledger_status": "ok",
+      "leaked_kinds": [],
+      "redacted_total": 2,
+      "redacted_by_kind": {
+        "PERSON": 1,
+        "MEMBER_ID": 1
+      },
+      "outbound": "Patient: [PERSON_1]\nMember ID: [MEMBER_ID_1]\nCPT 99213 office visit, billed $214.00 on 2026-05-02."
+    },
+    {
+      "label": "Same member ID, but spaced out so no pattern recognises it",
+      "input": "Please re-check my coverage, member id NSH 884 217 353, for the 2026-05-02 visit.",
+      "http": 422,
+      "error_code": "leak_blocked",
+      "sent_upstream": false,
+      "ledger_status": "blocked",
+      "leaked_kinds": [
+        "MEMBER_ID:vault-normalized"
+      ],
+      "redacted_total": 0,
+      "redacted_by_kind": {},
+      "outbound": null
+    },
+    {
+      "label": "Social Security number typed with spaces",
+      "input": "ssn 987 65 4321, visit on 2026-05-02",
+      "http": 422,
+      "error_code": "leak_blocked",
+      "sent_upstream": false,
+      "ledger_status": "blocked",
+      "leaked_kinds": [
+        "SSN:vault-normalized"
+      ],
+      "redacted_total": 0,
+      "redacted_by_kind": {},
+      "outbound": null
+    }
+  ]
+}
