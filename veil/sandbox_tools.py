@@ -33,7 +33,11 @@ def router(s: Settings) -> APIRouter:
     mem, outbox, policy = Memory(s.memory_db), Outbox(s), Policy(s)
 
     def gw_for(request: Request) -> Gateway:  # call our own gateway, so extraction and search are ledgered like everything else
-        return Gateway(str(request.base_url).rstrip("/"), request.headers.get("x-veil-run", "sandbox-hermes"))
+        # Loop back to OUR OWN listener. request.base_url is built from the Host header, which from the sandbox is host.openshell.internal:8000 and does not
+        # resolve on the host (the extraction and search calls then died with "nodename nor servname provided").
+        srv = request.scope.get("server")
+        url = f"http://127.0.0.1:{srv[1]}" if srv and srv[1] else str(request.base_url).rstrip("/")
+        return Gateway(url, request.headers.get("x-veil-run", "sandbox-hermes"))
 
     def summary(audit: dict) -> dict:
         names = {d["_name"] for d in mem.docs()}

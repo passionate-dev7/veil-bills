@@ -1,6 +1,7 @@
 .venv/
 .veil/
 .veil-dev/
+.veil-dev.*/
 __pycache__/
 *.pyc
 .pytest_cache/

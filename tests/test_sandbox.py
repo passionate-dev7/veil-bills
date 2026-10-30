@@ -48,3 +48,12 @@ def test_audit_rejects_unknown_and_traversal_paths(client):
 def test_lookup_rejects_free_text_topic(client):
     r = client.post("/tools/veil/lookup_appeal_rules", json={"insurer_type": "Jane Doe NSH884217353", "topic": "x"})
     assert r.status_code == 400
+
+
+def test_tool_callbacks_loop_back_to_our_own_listener_not_the_host_header(client, monkeypatch):
+    """From the sandbox the Host header is host.openshell.internal:8000, which does not resolve on the host: tool-internal gateway calls must use loopback."""
+    import veil.sandbox_tools as st, veil.research as research
+    seen = {}
+    monkeypatch.setattr(research, "lookup", lambda gw, *a, **k: seen.setdefault("url", gw.url) and {"ok": True})
+    r = client.post("/tools/veil/lookup_appeal_rules", json={"insurer_type": "aca_marketplace", "topic": "external_review"}, headers={"host": "host.openshell.internal:8000"})
+    assert r.status_code == 200 and seen["url"].startswith("http://127.0.0.1:") and "openshell" not in seen["url"]
