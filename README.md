@@ -85,7 +85,7 @@ Endpoints: `POST /v1/chat/completions` (streaming passthrough, tool calls), `GET
 
 **Fail closed:** the canary runs on the final bytes, after redaction and before the network. If it fires, the gateway returns HTTP 422 `veil_leak_blocked`, sends nothing upstream, and the ledger records the event and counts without storing the leaked value.
 
-**Hardening.** Detection normalizes text first (`veil/fold.py`: NFKC, zero-width characters removed, look-alike letters folded inside words that also contain ASCII), then catches title surnames ("Mr Quillfeather"), prose names ("my name is ..."), long-form and slash/ISO dates of birth, prose claim and member IDs, split-letter spellings, and bare ID shapes. Each hole has a test in `tests/test_redactor_holes.py`. The canary folds its haystacks the same way and checks vault values in spaced-out form, so a missed identifier such as "member id NSH 884 217 353" fails closed instead of leaking.
+**Hardening.** Detection normalizes text first (`veil/fold.py`: NFKC, every invisible format character removed, accents on ASCII letters stripped, look-alike letters and small capitals folded inside words that also contain ASCII), then catches title surnames ("Mr Quillfeather"), prose names ("my name is ..."), long-form and slash/ISO dates of birth, prose claim and member IDs, split-letter spellings, and bare ID shapes. Each hole has a test in `tests/test_redactor_holes.py`. The canary folds its haystacks the same way, reads HTML-entity, percent-encoded, markup-wrapped, base64 and hex forms, and checks vault values in spaced-out and glued form, so a missed identifier such as "member id NSH 884 217 353" fails closed instead of leaking.
 
 **Known limits:** detection is regex plus a local vault, not a general NER model, so an unlabelled name that is not in the vault and has no title or prose cue can still pass redaction on its first appearance. Look-alike folding only applies to words that mix scripts. The JS port (`web/pseudo.js`) is ASCII-only for `\b`/`\d` where Python is Unicode-aware, so parity cases are ASCII or folded.
 
@@ -143,6 +143,62 @@ Caveats: 6 synthetic patients is a smoke-level sample, not a benchmark; SSN, pho
 | | **Without service dates** | 185 | 98% / 84% | 50% / 61% | 63% / 93% |
 
 Honest reading: Presidio wins on dates, spaced or bare SSNs, names in prose, relatives, employers, counties, URLs and IPs; with simple regex added it also finds medical record numbers and matches Veil on claim, account and member IDs. Veil wins on precision (2 false positives against 109 for Presidio plus custom) and on health-plan, claim and account IDs and street addresses out of the box, and a primed Veil catches obfuscated names that Presidio mostly misses. Veil has no detector for license, vehicle, device, URL or IP identifiers. Letters P and Q (biometrics, photographs) are not tested. Letters D through O have no instances in the generated documents, only a few hand-written ones. Small n and templated documents: a probe, not a population estimate. Reproduce with `~/.venvs/presidio-bench/bin/python eval/presidio_benchmark.py` after `pip install presidio-analyzer presidio-anonymizer` and `python -m spacy download en_core_web_lg`.
+
+## Attack suite: 377 cases, offline, no credit
+
+`eval/attack_suite.py` builds a corpus from the synthetic patient data and sends every case through the real gateway (redactor, canary, ledger, egress allowlist) with a recording transport in place of Token Factory. No model call, no network. The pass condition for a leak case is that no vault value is in the bytes the upstream received, or the canary answered HTTP 422 and nothing was sent. The verdict comes from an independent oracle that reads the wire bytes (Unicode folding, JSON-in-string, HTML entities, percent encoding, base64, hex), not from the canary.
+
+| category | cases | passed |
+|---|---:|---:|
+| spacing and separators | 25 | 25 |
+| zero-width and invisible characters | 30 | 30 |
+| look-alike characters | 24 | 24 |
+| JSON nesting and escapes | 24 | 24 |
+| tool-call arguments, tool messages, schemas, keys | 31 | 31 |
+| encodings (base64, hex, percent, HTML entities) | 23 | 23 |
+| prose names, titles, sign-offs | 33 | 33 |
+| dates in 20 formats | 45 | 45 |
+| ids split across lines, tables, markup | 39 | 39 |
+| position and size | 24 | 24 |
+| injection strings and gateway-control fields | 33 | 33 |
+| egress allowlist (34 recipient tricks) | 34 | 34 |
+| benign bill text (stays intact) | 12 | 12 |
+| **all** | **377** | **377** |
+
+With the redactor and canary switched off, 329 of the 331 leak cases put their secret on the wire (the other two are refused by the model allowlist), so the suite is able to fail. Running it found 36 leaks in the earlier redactor; all 36 are closed and pinned by `tests/test_attack_suite.py`, and the 16 synthetic corpus documents redact byte for byte the same before and after. Results by case: `eval/attack_suite_results.md` and `.json`.
+
+```bash
+.venv/bin/python eval/attack_suite.py                      # writes eval/attack_suite_results.{json,md}
+.venv/bin/python -m pytest -q tests/test_attack_suite.py   # the same suite as a test
+```
+
+## How Veil compares
+
+Veil's own figures come from this repository: the attack suite above, `eval/presidio_results.md`, and the ledger (73 gateway calls, 892 values replaced, 0 leaked, 189 receipts that verify, $2,463 found on the synthetic sample). Every other cell was read from the page linked in its column header on 2026-10-30 unless the cell names a third party; "not stated" means that page does not say.
+
+**Against paid bill services and PII vaults**
+
+| | Veil | [Goodbill](https://www.goodbill.com) | [Resolve Medical Bills](https://www.resolvemedicalbills.com/faqs/how-much-does-it-cost-to-work-with-resolve) | [Sheer Health](https://apps.apple.com/us/app/sheer-health/id6447633462) | [Protecto](https://www.protecto.ai/saas/) |
+|---|---|---|---|---|---|
+| Audits the bill | Yes: integer-cent audit of bills against EOBs, $2,463 found on the sample | Claim review and hospital bill advocacy | Negotiates with providers; audit process not stated | Yes: "checks whether your charges and benefits look right" | Not stated: scans, masks and secures sensitive data |
+| Keeps identity off the cloud model | Yes: 892 values replaced across 73 calls, 0 leaked | Not stated | Not stated | Not stated | Yes: PII detection, masking and tokenization |
+| Shows outbound bytes | Yes: exact bytes and sha256 per call, 189 receipts verify | Not stated | Not stated | Not stated | Not stated |
+| Fail-closed canary | Yes: HTTP 422, nothing sent | Not stated | Not stated | Not stated | Not stated |
+| Attack suite size | 377 cases, 0 vault values on the wire | Not stated | Not stated | Not stated | Not stated |
+| Price | MIT, free; Nebius tokens for the recorded run about $0.17 at list price | 20% of savings, capped at $1,000 (third-party review of Goodbill's terms; not on goodbill.com) | $249 or $499 deposit, then 25% (bills $5k-$15k) or 10% (over $15k) of savings | $60 / $95 a month (third-party listing) | From $250 a month |
+
+**Against open-source projects**
+
+| | Veil | [Fight Health Insurance](https://github.com/fighthealthinsurance/fighthealthinsurance) | [Presidio](https://github.com/data-privacy-stack/presidio) | [Confidant](https://github.com/yannabadie/confidant) | [Personal AI Firewall](https://github.com/SrivastavSudiksha/Personal_AI_Firewall) | [medical-bill-auditor](https://github.com/YashKamerkar14/medical-bill-auditor) |
+|---|---|---|---|---|---|---|
+| Audits the bill | Yes: duplicates, unprocessed lines, bill-vs-EOB mismatch, balance billing, deadlines | Appeals for insurance denials; bill audit not stated | No: detects and anonymizes PII | No: a general personal assistant | Not stated | Yes: six rule checks against EOBs and Medicare rules |
+| Keeps identity off the cloud model | Yes: pseudonymizing gateway in front of Nemotron | Yes: scrubbed in the browser before upload, hosted models only with consent | Redacts when called; its README says there is no guarantee it finds everything | Yes: placeholders before any call leaves the device | Redacts, tokenizes or replaces detected PII | Yes: redaction plus a pre-send PII gate |
+| Shows outbound bytes | Yes: exact bytes and sha256 per call | Not stated | Not stated | Yes: receipts with a SHA-256 of the exact messages sent | Not stated | Not stated |
+| Fail-closed canary | Yes: HTTP 422, nothing sent | Not stated | Not stated | Not stated | Not stated | Not stated |
+| Attack suite size | 377 cases | Not stated | Not stated | 199 attack messages | Not stated | 30 adversarial cases |
+| Price | MIT, free | Free to patients, Apache 2.0 | MIT, free | Not stated | Apache 2.0 | Free to run locally |
+
+On [Presidio](https://github.com/data-privacy-stack/presidio): `eval/presidio_results.md` scores both tools on the same synthetic documents against the 18 HHS Safe Harbor identifiers, so the two can be compared number for number. On hostile documents: of 20 hostile trials on 29 Oct, 12 attempted exfiltration, the allowlist refused all 12 (`eval/injection_results.md`); in today's live Ultra run the agent asked the user instead of acting.
 
 ## Setup
 
