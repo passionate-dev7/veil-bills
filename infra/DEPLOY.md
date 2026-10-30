@@ -2,7 +2,7 @@
 
 Status: prepared only. Do not run any of this until Kamal says OK. Every command below is copy-paste; none prints the GitHub token, and none writes it to `.git/config`.
 
-Before anything: `cd ~/Desktop/nvdia-personal && .venv/bin/python -m pytest -q` (expect everything green except `tests/test_live.py::test_ultra_through_gateway_sees_only_tokens`, a 402 from Token Factory).
+Before anything: `cd ~/Desktop/nvdia-personal && .venv/bin/python -m pytest -q` (expect everything green; `tests/test_live.py` needs Token Factory credit and passed on 2026-10-30).
 
 ## 0. Pre-publish checklist
 
