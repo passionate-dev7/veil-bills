@@ -149,5 +149,5 @@ Every inference call goes to Nebius Token Factory (`https://api.tokenfactory.neb
 - Commit `4d96ec6`: `host.openshell.internal` does not resolve on the host. Commit `3afed25`: Hermes background probes labelled apart from model-driven denials.
 - `veil/egress.py`, `veil/audit.py`, `veil/impact.py`: allowlist and integer-cent audit. `tests/test_toolargs.py`: tool-call argument redaction.
 - Live demo: https://veil-bills.vercel.app, Vercel project `kamaleths-projects/veil-bills` (vca profile sksingh7979), deployment `dpl_GPRkpF2nRmBKAzs7Abmssn4mhwL9` READY on 2026-10-30, serving commit `a583b19` web/. Opened in Brave (deepsurge): judge mode renders the three steps and the "What Nebius received" panel, 0 console exceptions.
-- Repo: https://github.com/passionate-dev7/veil-bills, public, MIT, master at `a583b19`.
+- Repo: https://github.com/passionate-dev7/veil-bills, public, MIT; web/ fixes in `a583b19`, this file in `e7aceac`.
 - Before paste: the rules require a public YouTube video under 3 minutes. Add a "Video" line to the Links field once it is uploaded.
