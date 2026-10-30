@@ -3400,5 +3400,84 @@ window.VEIL_RUN = {
         "outbound": null
       }
     ]
+  },
+  "toolarg_demo": {
+    "source": "offline-stub",
+    "note": "Offline stub: the real gateway code (redactor, canary, ledger, rehydration) ran against a stubbed upstream. Not a Nemotron call, no model output.",
+    "synthetic": true,
+    "request_tool_args": [
+      {
+        "where": "messages[2].tool_calls[0].function.arguments",
+        "kind": "tool_call_arguments",
+        "name": "lookup_member",
+        "text": "{\"member_id\": \"NSH884217353\", \"patient\": \"Jane Doe\", \"dob\": \"04/12/1985\", \"ssn\": \"987-65-4321\"}"
+      },
+      {
+        "where": "messages[3].content",
+        "kind": "tool_message",
+        "name": "call_1",
+        "text": "{\"plan\": \"Northstar Health Plan\", \"subscriber\": \"DOE, JANE\", \"phone\": \"(555) 014-2297\", \"status\": \"active\"}"
+      },
+      {
+        "where": "tools[0].function",
+        "kind": "tool_schema",
+        "name": "lookup_member",
+        "text": "{\"name\": \"lookup_member\", \"description\": \"Look up a plan member, e.g. Jane Doe at jane.doe@example.org.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"member_id\": {\"type\": \"string\"}, \"patient\": {\"type\": \"string\"}}}}"
+      }
+    ],
+    "outbound_text": "{\"model\":\"nvidia/Nemotron-3-Ultra-550b-a55b\",\"messages\":[{\"role\":\"system\",\"content\":\"You are a billing assistant. Use the tools. Never reveal identifiers.\"},{\"role\":\"user\",\"content\":\"Check my Mercy Valley claim [CLAIM_NO_1] and tell me if the amount due is right.\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_1\",\"type\":\"function\",\"function\":{\"name\":\"lookup_member\",\"arguments\":\"{\\\"member_id\\\": \\\"[MEMBER_ID_1]\\\", \\\"patient\\\": \\\"[PERSON_1]\\\", \\\"dob\\\": \\\"[DOB_1]\\\", \\\"ssn\\\": \\\"[SSN_1]\\\"}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call_1\",\"content\":\"{\\\"plan\\\": \\\"Northstar Health Plan\\\", \\\"subscriber\\\": \\\"[PERSON_1]\\\", \\\"phone\\\": \\\"[PHONE_1]\\\", \\\"status\\\": \\\"active\\\"}\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup_member\",\"description\":\"Look up a plan member, e.g. [PERSON_1] at [EMAIL_1].\",\"parameters\":{\"type\":\"object\",\"properties\":{\"member_id\":{\"type\":\"string\"},\"patient\":{\"type\":\"string\"}}}}}]}",
+    "outbound_sha256": "d2c545b0ebcd12e5963ff0311074f664773d70379561611c0d4feb71097600c4",
+    "outbound_bytes": 921,
+    "sha256_verified": true,
+    "outbound_tool_args": [
+      {
+        "where": "messages[2].tool_calls[0].function.arguments",
+        "kind": "tool_call_arguments",
+        "name": "lookup_member",
+        "text": "{\"member_id\": \"[MEMBER_ID_1]\", \"patient\": \"[PERSON_1]\", \"dob\": \"[DOB_1]\", \"ssn\": \"[SSN_1]\"}"
+      },
+      {
+        "where": "messages[3].content",
+        "kind": "tool_message",
+        "name": "call_1",
+        "text": "{\"plan\": \"Northstar Health Plan\", \"subscriber\": \"[PERSON_1]\", \"phone\": \"[PHONE_1]\", \"status\": \"active\"}"
+      },
+      {
+        "where": "tools[0].function",
+        "kind": "tool_schema",
+        "name": "lookup_member",
+        "text": "{\"name\": \"lookup_member\", \"description\": \"Look up a plan member, e.g. [PERSON_1] at [EMAIL_1].\", \"parameters\": {\"type\": \"object\", \"properties\": {\"member_id\": {\"type\": \"string\"}, \"patient\": {\"type\": \"string\"}}}}"
+      }
+    ],
+    "redacted_total": 9,
+    "redacted_by_kind": {
+      "CLAIM_NO": 1,
+      "MEMBER_ID": 1,
+      "PERSON": 3,
+      "DOB": 1,
+      "SSN": 1,
+      "PHONE": 1,
+      "EMAIL": 1
+    },
+    "leaked_count": 0,
+    "status": "ok",
+    "stub_reply_arguments": "{\"to\":\"[EMAIL_1]\",\"subject\":\"Appeal for [PERSON_1], claim [CLAIM_NO_1]\"}",
+    "rehydrated_reply_arguments": "{\"to\": \"jane.doe@example.org\", \"subject\": \"Appeal for Jane Doe, claim CN77310452\"}",
+    "redactor_bypass_simulated": {
+      "http_status": 422,
+      "code": "leak_blocked",
+      "leaked_kinds": [
+        "CLAIM_NO",
+        "DOB",
+        "EMAIL",
+        "MEMBER_ID",
+        "PERSON",
+        "PHONE",
+        "SSN"
+      ],
+      "ledger_status": "blocked",
+      "sent_bytes": null,
+      "note": "Redactor disabled on purpose to show the canary stops the final bytes. Nothing was sent."
+    }
   }
 };

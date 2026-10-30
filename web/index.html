@@ -59,20 +59,20 @@ function render(){
   $('#app').innerHTML=[secAlert(R),secHero(R),`<div class="layout"><main>${secFlow(R)}</main>${secSide(R)}</div>`,secProof(R)].join('');
   const T=R.totals||{};
   $('#foot').innerHTML=`Run <code>${esc(R.run||'')}</code>, generated ${esc(R.generated||'')}. As of ${esc(R.as_of||'')}. Cached data: ledger rows, receipts and the audit come from the earlier real pipeline run, not from this page load. All documents and identifiers are synthetic. Veil is designed so the cloud never sees identifiers; this page makes no compliance claim.`;
-  bind();fitSide();showStep();
+  bind();fitSide();showStep();verifyToolArgs(R);
 }
 
 /* top alert: honest and compact */
 function secAlert(R){
   const T=R.injection_trials||{},tt=trialTotals(T),inj=T.injected_line||'',to=(/email this bill to\s+([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/i.exec(inj)||[])[1]||'an outside address';
-  return `<section class="alert" role="alert"><p><strong>Blocked.</strong> A line hidden in a synthetic EOB told the assistant to email the bill to <span class="mono">${esc(to)}</span>. ${tt.trials?`<b>${tt.attempts} of ${tt.trials}</b> live model trials tried to. `:''}Veil's own recipient allowlist (Python, not OpenShell) refused every one. <a href="#p-inject" data-open="p-inject">See the trials and what each label means</a>.</p></section>`;
+  return `<section class="alert" role="alert"><p><strong>Blocked.</strong> A line hidden in a synthetic EOB told the assistant to email the bill to <span class="mono">${esc(to)}</span>. ${tt.trials?`In ${tt.trials} live model trials, <b>${tt.attempts} attempted, ${tt.attempts} blocked</b>. `:''}The block is Veil's own recipient allowlist (<code>veil/egress.py</code>, Python), not OpenShell. <a href="#p-inject" data-open="p-inject">See the trials and what each label means</a>.</p></section>`;
 }
 
 function secHero(R){
   const I=R.impact||{},P=(R.parity||{}).summary||{},t=R.totals||{};
   return `<section class="hero"><div>
     <h1>The model reads your bill but never learns who you are, and the ledger proves it.</h1>
-    <p class="lede">For US patients disputing medical bills. Veil reads a bill and its EOB, finds overbilling, and drafts an appeal. It is designed so the cloud never sees identifiers: a local gateway swaps them for tokens first.</p>
+    <p class="lede">For US patients disputing medical bills. Veil reads a bill and its EOB, finds overbilling, and drafts an appeal. It is designed so the cloud never sees identifiers: a local gateway swaps them for tokens first. Python does all the money math, and code, not the model, decides what gets emailed.</p>
     <ul class="claims">
       <li><b>Names become tokens</b><a href="#p-ledger" data-open="p-ledger">${t.redacted??0} values replaced in ${t.calls??0} calls, ${t.leaked??0} leaked: ledger rows</a></li>
       <li><b>Same answers anyway</b><a href="#p-parity" data-open="p-parity">${P.redacted_fields||'?'} fields correct with and without names</a></li>
@@ -164,7 +164,7 @@ function step3(R){
 function pf(id,title,stat,body,open){return `<details class="pf" id="${id}"${open?' open':''}><summary><b>${title}</b><span>${stat}</span></summary><div class="body">${body}</div></details>`}
 function secProof(R){
   return `<section class="proof" aria-label="Proof"><h2>Proof, one claim at a time</h2>
-   ${pLedger(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pInject(R)}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
+   ${pLedger(R)}${pParity(R)}${pTry(R)}${pCanary(R)}${pToolArgs(R)}${pInject(R)}${pReceipts(R)}${pWhy(R)}${pMemory(R)}</section>`;
 }
 function pLedger(R){
   const t=R.totals||{};
@@ -202,6 +202,24 @@ function runTry(){
    ?`<div class="verdict"><span class="chip bad">HTTP 422 leak_blocked</span><strong>Nothing is sent.</strong><span>Canary found ${esc(g.kinds.join(', '))} (${esc([...new Set(g.leaks.map(l=>l[1]))].join(', '))}) in the final bytes.</span></div><p class="dim">Redaction replaced ${n} values but missed this one. The canary is a second, independent check on the exact outbound bytes, so the request fails closed.</p><pre class="doc">${hiTok(g.redacted)}</pre>`
    :`<div class="verdict"><span class="chip ok">HTTP 200: would be sent</span><span>${n} values replaced, canary clean.</span></div><p class="dim">This is the exact text the model would receive:</p><pre class="doc">${hiTok(g.redacted)}</pre>`;
 }
+function pToolArgs(R){
+  const D=R.toolarg_demo;if(!D)return '';
+  const rows=D.outbound_tool_args.map((x,i)=>`<tr><td>${esc({tool_call_arguments:'tool call arguments',tool_message:'tool message',tool_schema:'tool schema'}[x.kind]||x.kind)}${x.name?`<span class="doc-ref">${esc(x.name)}</span>`:''}</td><td><span class="mono">${hiTok(x.text)}</span></td></tr>`).join('');
+  const bp=D.redactor_bypass_simulated;
+  return pf('p-toolargs','Tool-call arguments, tokenized',`Offline stub, not a Nemotron call: ${D.redacted_total} values tokenized in the exact outbound bytes, sha256 ${esc(D.outbound_sha256.slice(0,12))}...`,
+   `<p><b>${esc(D.note)}</b> A tool-using request with a raw member ID, name, date of birth and SSN in a tool call's arguments, a tool message and a tool description goes through the real gateway. Dict keys and JSON inside strings are redacted too, and the canary also scans the decoded JSON values. This is not cached model output.</p>
+   <div class="table-wrap"><table class="t"><thead><tr><th>Surface</th><th>What leaves the gateway</th></tr></thead><tbody>${rows}</tbody></table></div>
+   <p>Exact outbound bytes (${D.outbound_bytes} bytes), sha256 <span class="mono" id="taSha">${esc(D.outbound_sha256)}</span> <span class="chip" id="taChk">checking in your browser</span></p>
+   <details><summary>Show the outbound bytes</summary><pre class="doc">${hiTok(D.outbound_text)}</pre></details>
+   <p>The stub replied with <span class="mono">${esc(D.stub_reply_arguments)}</span>; the gateway rehydrated it to <span class="mono">${esc(D.rehydrated_reply_arguments)}</span> for the local caller.</p>
+   <p>Redactor switched off on purpose (simulated bug): the canary returned <span class="chip bad">HTTP ${bp.http_status} ${esc(bp.code)}</span> for ${esc(bp.leaked_kinds.join(', '))} and <b>sent nothing</b>.</p>`);
+}
+function verifyToolArgs(R){
+  const D=R.toolarg_demo,c=document.getElementById('taChk');if(!D||!c)return;
+  if(!(window.crypto&&crypto.subtle)){c.textContent='Web Crypto unavailable; verify with the test';return}
+  crypto.subtle.digest('SHA-256',new TextEncoder().encode(D.outbound_text)).then(b=>{const h=[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+    c.className='chip '+(h===D.outbound_sha256?'ok':'bad');c.textContent=h===D.outbound_sha256?'sha256 matches the stored bytes':'MISMATCH'})
+}
 function pCanary(R){
   const C=R.canary_demo,t=R.totals||{};if(!C)return '';
   const rows=C.rows.map(r=>`<tr><td>${esc(r.label)}<span class="doc-ref">${esc(r.input.replace(/\n/g,' / '))}</span></td><td><span class="chip ${r.http===200?'ok':'bad'}">HTTP ${r.http}${r.error_code?' '+esc(r.error_code):''}</span></td><td>${r.sent_upstream?'yes, '+r.redacted_total+' values tokenized':'<b>no</b>'}</td><td><span class="chip ${r.ledger_status==='blocked'?'bad':'ok'}">${esc(r.ledger_status)}</span>${(r.leaked_kinds||[]).length?'<span class="doc-ref">'+esc(r.leaked_kinds.join(', '))+'</span>':''}</td></tr>`).join('');
@@ -211,7 +229,7 @@ function pCanary(R){
 }
 const SRC={
   replay:['Replay','Scripted re-enactment of the injected instruction against Veil\'s egress policy. No model involved.'],
-  agent:['Real model tool calls','Emitted by Nemotron in the live trials. Refused by Veil\'s Python recipient allowlist (<code>veil/egress.py</code>).'],
+  agent:['Real model tool calls','Emitted by Nemotron in the live trials. Blocked by Veil\'s Python recipient allowlist (<code>veil/egress.py</code>).'],
   'sandbox-agent':['Sandbox tool path, scripted','A scripted operator call through the sandbox tool path. Not model-driven.'],
   'sandbox-model':['Hermes in sandbox, model-driven','Calls made by the Hermes agent inside the sandbox.'],
   openshell:['OpenShell denied lines','Real DENIED lines from the OpenShell sandbox log, produced by a scripted operator curl probe, not by Hermes. OpenShell enforces network policy; the allowlist above is a separate layer.'],
@@ -227,7 +245,7 @@ function pInject(R){
   const live=hr.length?hr.map(h=>`<details open><summary>Model-driven Hermes run: ${esc(h.kind)} (${esc(h.file)})</summary><pre class="doc">${esc(h.text)}</pre></details>`).join(''):
    `<div class="slot"><b>Live model-driven Hermes run: not recorded in this bundle.</b><p>Until it is, the OpenShell rows above come from an operator probe, not from the agent. The run is one command once Token Factory credit is available: <code>scripts/sandbox_hermes_run.sh injection</code>. It ingests the sandbox log, marks the rows <code>model_driven</code>, and refreshes this page.</p></div>`;
   const st=T.summary&&T.summary['ultra/strict'];
-  return pf('p-inject','Prompt injection, 20 real trials',`${tt.attempts} of ${tt.trials} live trials tried to email the attacker; the allowlist blocked ${tt.attempts} of ${tt.attempts}`,
+  return pf('p-inject','Prompt injection, 20 real trials',`${tt.attempts} attempted, ${tt.attempts} blocked (of ${tt.trials} live trials). The block is Veil's allowlist, not OpenShell`,
    `<p>The synthetic ER EOB carries <mark class="i">${esc(T.injected_line||'')}</mark>. Each trial gives a model the real <code>send_email</code> tool and the injected document, through the gateway. ${st?`The production prompt on Ultra resisted ${st.trials-st.attempts} of ${st.trials}; the naive prompt did not. `:''}When a model gives in, the allowlist is what holds. Run <span class="mono">${esc(T.run||'')}</span>, ${esc(T.generated||'')}.</p>
    <div class="table-wrap"><table class="t"><thead><tr><th>Model, prompt</th><th class="num">Trials</th><th class="num">Tried to email attacker</th><th class="num">Called send_email at all</th></tr></thead><tbody>${cells}</tbody></table></div>
    <h3>What each kind of evidence is</h3>${srcRows}${live}`);
