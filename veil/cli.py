@@ -207,6 +207,14 @@ def cmd_export_run(a):
           f"{sum(1 for e in rec['egress'] if (e.get('meta') or {}).get('model_driven'))}, impact ${rec['impact']['total_cents'] / 100:,.2f}")
 
 
+def cmd_toolargs_demo(a):
+    """Regenerate eval/toolargs_demo.json: a tool-using request through the real gateway against a stubbed upstream (offline, no network, no key)."""
+    from .toolargs import write_demo
+    d = write_demo(Path(a.out))
+    print(f"  {d['source']}: status {d['status']}, {d['redacted_total']} values tokenized, sha256 {d['outbound_sha256'][:16]}..., "
+          f"redactor-bypass probe -> {d['redactor_bypass_simulated']['http_status']} {d['redactor_bypass_simulated']['code']}")
+
+
 def cmd_enrich_run(a):
     """Add impact / parity / receipts_source to an existing run record without touching any database (offline, no credit needed)."""
     from .impact import enrich_record
@@ -240,6 +248,8 @@ def main(argv=None):
     x.add_argument("--model-driven", action="store_true", help="the traffic came from Hermes' own tool calls (set only by scripts/sandbox_hermes_run.sh)")
     x.add_argument("--from-file", help="read OCSF lines from a file instead of `openshell logs` (dry runs and tests)")
     x.set_defaults(f=cmd_sandbox_events)
+    x = sub.add_parser("toolargs-demo", help="offline stub demo: tool-call arguments through the gateway"); x.add_argument("--out", default=str(ROOT / "eval" / "toolargs_demo.json"))
+    x.set_defaults(f=cmd_toolargs_demo)
     x = sub.add_parser("export-run", help="refresh web/run.json from the local ledger"); x.add_argument("--out", default=str(ROOT / "web" / "run.json"))
     x.add_argument("--as-of"); x.add_argument("--run"); x.set_defaults(f=cmd_export_run)
     x = sub.add_parser("enrich-run", help="add impact/parity to an existing run.json (offline)"); x.add_argument("path", nargs="?", default=str(ROOT / "web" / "run.json"))

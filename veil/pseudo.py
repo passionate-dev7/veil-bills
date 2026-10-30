@@ -90,25 +90,37 @@ class Pseudonymizer:
 
         return self._rx.sub(sub, text)
 
-    def redact_payload(self, obj, counts: Counter | None = None):
+    def redact_payload(self, obj, counts: Counter | None = None, _top: bool = True):
+        """Redact every string that will leave the gateway: values AND dict keys, at any depth, including JSON that is encoded inside a
+        string (tool-call `arguments`, tool-role message content, a JSON blob in a user message)."""
         if isinstance(obj, str):
-            return self.redact_text(obj, counts)
+            return self._redact_str(obj, counts)
         if isinstance(obj, list):
-            return [self.redact_payload(x, counts) for x in obj]
+            return [self.redact_payload(x, counts, False) for x in obj]
         if isinstance(obj, dict):
-            return {k: (v if k in SKIP_KEYS else self._redact_field(k, v, counts)) for k, v in obj.items()}
+            out = {}
+            for k, v in obj.items():
+                if _top and k in SKIP_KEYS:  # structural field we never rewrite (only at the top level of the request body)
+                    out[k] = v
+                    continue
+                nk = self.redact_text(k, counts) if isinstance(k, str) else k
+                out[nk] = self.redact_payload(v, counts, False)
+            return out
         return obj
 
-    def _redact_field(self, k, v, counts):
-        # Tool-call `arguments` is JSON encoded inside a string. Redact the decoded values, not the escaped text
-        # (otherwise "\\n" + "name@x.org" reads as the address "nname@x.org"), then re-encode.
-        if k == "arguments" and isinstance(v, str):
+    def _redact_str(self, s: str, counts):
+        """JSON-in-a-string is parsed, redacted on the decoded values, and re-serialized (so "\\n" + "name@x.org" is never read as "nname@x.org").
+        If nothing changed the original string is returned byte for byte. Anything that does not parse as a JSON object/array is redacted as text."""
+        t = s.lstrip()
+        if t[:1] in ("{", "["):
             try:
-                parsed = json.loads(v)
+                parsed = json.loads(s)
             except ValueError:
-                return self.redact_text(v, counts)
-            return json.dumps(self.redact_payload(parsed, counts))
-        return self.redact_payload(v, counts)
+                parsed = None
+            if isinstance(parsed, (dict, list)):
+                red = self.redact_payload(parsed, counts, False)
+                return s if red == parsed else json.dumps(red, ensure_ascii=False)
+        return self.redact_text(s, counts)
 
     # -- canary ---------------------------------------------------------------
     def canary(self, outbound: bytes) -> list[tuple[str, str]]:
@@ -169,15 +181,25 @@ class Pseudonymizer:
         return obj
 
 
-def _collect_strings(o, acc):
+def _collect_strings(o, acc, depth: int = 0):
+    """Every string the upstream could read: values, dict keys, and the decoded content of JSON-in-a-string (tool arguments, tool results)."""
     if isinstance(o, str):
         acc.append(o)
+        if depth < 4 and o.lstrip()[:1] in ("{", "["):
+            try:
+                inner = json.loads(o)
+            except ValueError:
+                return
+            if isinstance(inner, (dict, list)):
+                _collect_strings(inner, acc, depth + 1)
     elif isinstance(o, list):
         for x in o:
-            _collect_strings(x, acc)
+            _collect_strings(x, acc, depth)
     elif isinstance(o, dict):
-        for v in o.values():
-            _collect_strings(v, acc)
+        for k, v in o.items():
+            if isinstance(k, str):
+                acc.append(k)
+            _collect_strings(v, acc, depth)
 
 
 class StreamRehydrator:

@@ -106,6 +106,9 @@ def enrich_record(rec: dict, hermes_dir: Path | None = None, cached_note: str | 
     cd = ROOT / "eval" / "canary_demo.json"
     if cd.exists():
         rec["canary_demo"] = json.loads(cd.read_text())
+    td = ROOT / "eval" / "toolargs_demo.json"
+    if td.exists():
+        rec["toolarg_demo"] = json.loads(td.read_text())
     rec["hermes_runs"] = hermes_runs(hermes_dir) if hermes_dir else rec.get("hermes_runs", [])
     rec.setdefault("receipts_source", dict(
         cached=True, note=cached_note or "Receipts come from the earlier real Token Factory run recorded in the gateway ledger (response id, served model and usage are Nebius's own fields). They are not re-run when this page loads."))

@@ -9,6 +9,7 @@ from .config import Settings, ALLOWED_MODELS
 from .vault import Vault
 from .pseudo import Pseudonymizer, StreamRehydrator
 from .ledger import Ledger
+from . import toolargs
 
 
 def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTransport | None = None) -> FastAPI:
@@ -107,6 +108,9 @@ def create_app(settings: Settings | None = None, transport: httpx.AsyncBaseTrans
         leaks = pseudo.canary(outbound)  # FAIL CLOSED: checked against the final bytes
         base = dict(kind="inference", run=run, tag=tag, route="chat", model=model, stream=int(stream),
                     redacted_total=sum(counts.values()), redacted_by_kind=dict(counts))
+        tool_meta = toolargs.summary(redacted)
+        if any(tool_meta.values()):
+            base["meta"] = {"tool_surfaces": tool_meta}  # counts of tool_call arguments / tool messages / tool schemas inside the hashed bytes
         if leaks:
             kinds = sorted({k for k, _ in leaks})
             ledger.add(**base, status="blocked", leaked_count=len(leaks), leaked_kinds=[f"{k}:{how}" for k, how in leaks],
