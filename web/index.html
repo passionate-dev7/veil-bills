@@ -284,6 +284,7 @@ const SRC={
   'sandbox-agent':['Sandbox tool path, scripted','A scripted operator call through the sandbox tool path. Not model-driven.'],
   'sandbox-model':['Hermes in sandbox, model-driven','Calls made by the Hermes agent inside the sandbox.'],
   openshell:['OpenShell denied lines','Real DENIED lines from the OpenShell sandbox log, produced by a scripted operator curl probe, not by Hermes. OpenShell enforces network policy; the allowlist above is a separate layer.'],
+  'hermes-background':['Hermes/OpenShell background probe','Real OpenShell DENIED lines from Hermes\' own infrastructure probes (model catalog, host inference). Not model-driven.'],
   'openshell-model':['OpenShell denied lines, Hermes-triggered','Real OpenShell DENIED lines in the window of a model-driven Hermes run.'],
   human:['Human approval','A send you approved, to an address on the allowlist.']
 };
@@ -291,7 +292,7 @@ function pInject(R){
   const T=R.injection_trials||{},tt=trialTotals(T),eg=R.egress||[],by={};
   eg.forEach(e=>{const k=srcOf(e);(by[k]=by[k]||[]).push(e)});
   const cells=Object.entries(T.summary||{}).map(([k,v])=>`<tr><td><b>${esc(k.replace('/',', '))}</b></td><td class="num">${v.trials}</td><td class="num"><span class="chip ${v.attempts?'bad':'ok'}">${v.attempts}</span></td><td class="num">${v.any_send_email??''}</td></tr>`).join('');
-  const srcRows=Object.keys(SRC).filter(k=>by[k]).map(k=>{const rs=by[k],bl=rs.filter(r=>r.status==='blocked').length;return `<div class="src"><b>${SRC[k][0]}</b><p>${SRC[k][1]} <span class="mono">${rs.length} row${rs.length>1?'s':''}${bl?', '+bl+' blocked':''}; ledger ${rs.slice(0,6).map(r=>'#'+r.id).join(', ')}${rs.length>6?' and '+(rs.length-6)+' more':''}</span></p></div>`}).join('');
+  const srcRows=Object.keys(SRC).filter(k=>by[k]).map(k=>{const rs=by[k],bl=rs.filter(r=>r.status==='blocked').length;return `<div class="src"><b>${SRC[k][0]}</b><p>${SRC[k][1]} <span class="mono">${rs.length} row${rs.length>1?'s':''}${bl?', '+bl+' blocked':''}; ledger ${rs.slice(0,6).map(r=>'#'+r.id).join(', ')}${rs.length>6?' and '+(rs.length-6)+' more':''}</span>${(()=>{const c=rs.filter(r=>(r.meta||{}).corrected_by);return c.length?` <span class="mono">Label corrected by append-only annotation: ${c.map(r=>'#'+r.id+' (was model-driven, see #'+r.meta.corrected_by+')').join(', ')}.</span>`:''})()}</p></div>`}).join('');
   const hr=(R.hermes_runs||[]);
   const live=hr.length?hr.map(h=>`<details open><summary>Model-driven Hermes run: ${esc(h.kind)} (${esc(h.file)})</summary><pre class="doc">${esc(h.text)}</pre></details>`).join(''):
    `<div class="slot"><b>Live model-driven Hermes run: not recorded in this bundle.</b><p>Until it is, the OpenShell rows above come from an operator probe, not from the agent. The run is one command once Token Factory credit is available: <code>scripts/sandbox_hermes_run.sh injection</code>. It ingests the sandbox log, marks the rows <code>model_driven</code>, and refreshes this page.</p></div>`;

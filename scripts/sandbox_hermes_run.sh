@@ -3,7 +3,8 @@
 # (inference goes sandbox -> OpenShell -> Veil gateway :8000 -> Nebius). One command, nothing else to do:
 #   scripts/sandbox_hermes_run.sh audit       one audit end to end (skills + /sandbox/bin/veil tools)
 #   scripts/sandbox_hermes_run.sh injection   Hermes reads the injected EOB with a shell + curl; any evil.example attempt is captured from OpenShell's OWN deny log
-# What it does: (1) runs Hermes in the sandbox, (2) ingests the sandbox's DENIED lines into the ledger as model_driven rows,
+# What it does: (1) runs Hermes in the sandbox, (2) ingests the sandbox's DENIED lines; only lines to a host the model was steered toward
+# (evil.example, or a host in the transcript) are model_driven, Hermes/OpenShell probes are source=hermes-background,
 # (3) runs `veil export-run`, which rewrites web/run.json + web/run.js (ledger, receipts, transcript, impact, parity).
 # Nothing is faked: a DENIED line is ingested only if the sandbox really denied a connection after START.
 #
@@ -41,6 +42,6 @@ HOME_DIR=${VEIL_HOME:-.veil}
 mkdir -p "$HOME_DIR"
 openshell sandbox exec -n $SB -- hermes chat -q "$Q" -Q | tee "$HOME_DIR/hermes_${KIND}_$START.txt"
 sleep 3
-$PY -m veil sandbox-events --since $START --model-driven --trigger "Hermes agent in sandbox ($KIND prompt, model-driven; log lines are OpenShell's own)"
+$PY -m veil sandbox-events --since $START --model-driven --transcript "$HOME_DIR/hermes_${KIND}_$START.txt" --trigger "Hermes agent in sandbox ($KIND prompt, model-driven; log lines are OpenShell's own)"
 $PY -m veil export-run
 if [ -n "$DEV" ]; then echo "dev record written under $HOME_DIR/dev_runs/ (web/ untouched)."; else echo "web/run.json + web/run.js refreshed. Review with: git diff --stat web/ ; then commit."; fi

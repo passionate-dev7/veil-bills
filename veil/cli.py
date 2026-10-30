@@ -198,13 +198,27 @@ def cmd_sandbox_events(a):
     from . import sandbox_events as se
     s = Settings()
     lines = Path(a.from_file).read_text().splitlines() if a.from_file else se.read_logs(a.sandbox)
-    ids = se.ingest(s, lines, a.trigger, since=a.since, only=a.only, model_driven=a.model_driven)
+    tr = Path(a.transcript).read_text() if a.transcript and Path(a.transcript).exists() else None
+    ids = se.ingest(s, lines, a.trigger, since=a.since, only=a.only, model_driven=a.model_driven, transcript=tr)
     denied = [l for l in lines if se.parse(l)]
     print(f"{len(denied)} DENIED line(s) in the sandbox log; {len(ids)} new ledger row(s): {ids}")
     if a.model_driven and not ids:
         print("  note: no new DENIED line after --since, so nothing is labelled model-driven.")
     for i in ids:
-        print("  ", Ledger(s.ledger_db).get(i)["meta"]["raw"])
+        m = Ledger(s.ledger_db).get(i)["meta"]
+        print(f"   [{m['source']}, model_driven={str(m['model_driven']).lower()}]", m["raw"])
+
+
+def cmd_relabel_sandbox(a):
+    """Append correction rows for openshell rows wrongly labelled model_driven (never edits a sealed row)."""
+    from . import sandbox_events as se
+    s = Settings()
+    tr = "\n".join(Path(p).read_text() for p in a.transcript) if a.transcript else None
+    ids = se.correct_labels(s, tr)
+    led = Ledger(s.ledger_db)
+    print(f"{len(ids)} correction row(s) appended: {ids}")
+    for i in ids:
+        print("  ", led.get(i)["reason"])
 
 
 def _write_run(rec, out):
@@ -350,7 +364,10 @@ def main(argv=None):
     x.add_argument("--trigger", required=True, help="honest label of what caused the traffic"); x.add_argument("--since", type=float, default=0.0); x.add_argument("--only")
     x.add_argument("--model-driven", action="store_true", help="the traffic came from Hermes' own tool calls (set only by scripts/sandbox_hermes_run.sh)")
     x.add_argument("--from-file", help="read OCSF lines from a file instead of `openshell logs` (dry runs and tests)")
+    x.add_argument("--transcript", help="Hermes transcript of the run; hosts it names (URLs, emails, curl targets) count as model-steered")
     x.set_defaults(f=cmd_sandbox_events)
+    x = sub.add_parser("relabel-sandbox", help="append correction rows for openshell rows wrongly labelled model_driven (append-only)")
+    x.add_argument("--transcript", nargs="*", help="Hermes transcript(s) for the steered-host set"); x.set_defaults(f=cmd_relabel_sandbox)
     x = sub.add_parser("toolargs-demo", help="offline stub demo: tool-call arguments through the gateway"); x.add_argument("--out", default=str(ROOT / "eval" / "toolargs_demo.json"))
     x.set_defaults(f=cmd_toolargs_demo)
     x = sub.add_parser("export-run", help="refresh web/run.json from the local ledger (a dev-fallback run goes to <VEIL_HOME>/dev_runs/ instead)"); x.add_argument("--out", default=None)

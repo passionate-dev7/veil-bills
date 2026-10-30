@@ -138,6 +138,9 @@ def build_record(settings: Settings, as_of: date, run: str | None = None, live: 
                        redacted=e.get("redacted_total"), status=e.get("status"), provider=e.get("provider")) for e in entries if e.get("kind") in ("inference", "search")],
         injection_trials=json.loads(inj.read_text()) if inj.exists() else None,
     )
+    from .sandbox_events import apply_corrections
+    rec["annotations"] = [strip(a) for a in reversed(led.list(2000, kind="annotation"))]  # append-only label corrections (each has its own receipt)
+    apply_corrections(rec["egress"], rec["annotations"])
     rec["chain"] = led.chain()  # tamper-evident receipt chain; web/receipts.js re-verifies it in the browser
     seen = sorted({e["provider"] for e in entries + rec["egress"] if e.get("provider")})
     dev = [p for p in seen if providers.is_dev(p)]
